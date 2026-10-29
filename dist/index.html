@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#fff8ed">
+  <meta name="robots" content="noai, noimageai">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="우연히 태어난 머리카락 친구 헤뭉이의 공식 홈페이지. 작은 방, 영상, 카드뉴스, 일상다반사, 굿즈와 세계관을 만나보세요.">
+  <meta property="og:title" content="헤뭉이의 작은 세계">
+  <meta property="og:description" content="사소한 우연이 포근한 친구가 되는 곳.">
+  <title>헤뭉이의 작은 세계 | HAEMUNGI</title>
+  <link rel="preload" as="image" href="assets/haemungi-hero.webp" fetchpriority="high">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Gowun+Dodum&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="content-config.js" defer></script>
+  <script src="analytics.js" defer></script>
+  <script src="main.js" defer></script>
+  <script src="translations.js" defer></script>
+  <script src="i18n.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문으로 이동</a>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="header" id="header">
+    <a href="#home" data-page="home" class="brand" aria-label="헤뭉이 홈페이지"><span class="brand-mark">ꕤ</span><span><b>헤뭉이</b><small>HAEMUNGI'S LITTLE WORLD</small></span></a>
+    <div class="header-right">
+      <div class="language-selector" id="languageSelector">
+        <button class="language-toggle" id="languageToggle" type="button" aria-label="언어 선택" aria-expanded="false" aria-controls="languageMenu" aria-haspopup="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-3 3-4.3 6-4.3 9s1.3 6 4.3 9M12 3c3 3 4.3 6 4.3 9s-1.3 6-4.3 9"/></svg>
+          <span id="languageCurrent">KO</span><span class="language-caret" aria-hidden="true">⌄</span>
+        </button>
+        <div class="language-menu" id="languageMenu" role="group" aria-label="언어 선택 목록" hidden>
+          <button type="button" data-lang="ko" aria-pressed="true"><span>한국어</span><small>KO</small></button>
+          <button type="button" data-lang="en" aria-pressed="false"><span>English</span><small>EN</small></button>
+          <button type="button" data-lang="ja" aria-pressed="false"><span>日本語</span><small>JA</small></button>
+          <button type="button" data-lang="zh" aria-pressed="false"><span>简体中文</span><small>ZH</small></button>
+          <p class="language-note">그림 속 글자는 원화 그대로 표시됩니다.</p>
+        </div>
+      </div>
+      <button class="music-control" id="musicButton" aria-label="배경 음악 켜기" aria-pressed="false" type="button"><span>♫</span><span class="music-caption">음악 켜기</span><i class="equalizer"><i></i><i></i><i></i></i></button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-controls="menu" aria-expanded="false" aria-label="메뉴 열기"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <nav class="menu" id="menu" aria-label="전체 메뉴" inert>
+    <div class="menu-flower" aria-hidden="true">✿</div>
+    <p class="eyebrow">어디로 놀러 갈까요?</p>
+    <ul>
+      <li><a href="#home" data-page="home"><small>01</small> 작은 세계 홈 <span>↗</span></a></li>
+      <li><a href="#videos" data-page="videos"><small>02</small> 헤뭉이 영상 <span>↗</span></a></li>
+      <li><a href="#cards" data-page="cards"><small>03</small> 카드뉴스 <span>↗</span></a></li>
+      <li><a href="#daily" data-page="daily"><small>04</small> 일상다반사 <span>↗</span></a></li>
+      <li><a href="#goods" data-page="goods"><small>05</small> 헤뭉이 굿즈 <span>↗</span></a></li>
+      <li><a href="#room" data-page="room"><small>06</small> 헤뭉이의 방 <span>↗</span></a></li>
+      <li><a href="#about" data-page="about"><small>07</small> 헤뭉이 소개 <span>↗</span></a></li>
+    </ul>
+    <p class="menu-footer">하루에 하나쯤, 작고 따뜻한 우연을.</p>
+  </nav>
+
+  <main id="main" tabindex="-1">
+    <div class="page active" id="page-home" data-view="home">
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="dot"></span> A HAIRY LITTLE MIRACLE <span class="dot"></span></p>
+          <p class="hero-topline">어느 평범한 오후에 찾아온, 아주 작은 기적</p>
+          <h1 id="hero-heading">사소한 우연이<br><em>포근한 친구가</em><br>되는 곳.</h1>
+          <p class="hero-desc">어느 날, 바닥에 떨어진 머리카락 한 올이 눈을 떴어요.<br>아주 작지만 매일 새로운 세상을 발견하는 친구.<br>안녕, 나는 <strong>헤뭉이</strong>야.</p>
+          <div class="hero-actions"><a href="#about" data-page="about" class="button-primary">헤뭉이 만나기 <span>↗</span></a><a href="#daily" data-page="daily" class="button-link">작은 이야기 보기 <span>→</span></a></div>
+        </div>
+        <div class="hero-visual">
+          <div class="sun-aura"></div>
+          <div class="hero-figure" aria-hidden="true"><img src="assets/haemungi-hero.webp" alt="" fetchpriority="high" decoding="async"></div>
+          <div class="hero-floor"></div>
+          <span class="float-symbol float-one">✿</span><span class="float-symbol float-two">✧</span><span class="float-symbol float-three">⋆</span>
+          <div class="hero-label"><small>meet</small><b>헤뭉이</b><span>✳</span></div>
+          <p class="hero-note">little moments,<br>little magic.</p>
+        </div>
+        <div class="scroll-hint"><span>SCROLL TO EXPLORE</span><span>↓</span></div>
+      </section>
+
+      <section class="world section-padding">
+        <div class="section-intro center reveal"><span class="eyebrow">WELCOME TO MY LITTLE WORLD</span><h2>세상엔 이름 붙이지 못한<br><em>작은 행복</em>들이 있어요.</h2><p>바람이 지나가는 소리, 창가에 내려앉는 빛, 그리고 작은 머리카락 친구.<br>헤뭉이의 세계는 그런 순간들로 이루어져 있어요.</p></div>
+        <div class="world-grid">
+          <article class="world-item reveal"><span class="world-icon">☀</span><small>01 / THE LIGHT</small><h3>햇살 한 조각</h3><p>따뜻한 자리를 발견하면<br>조금 오래 머물러요.</p><span class="world-word">SUNNY</span></article>
+          <article class="world-item reveal"><span class="world-icon">〰</span><small>02 / THE BREEZE</small><h3>바람의 인사</h3><p>살랑이는 바람이 오면<br>머리카락이 먼저 웃어요.</p><span class="world-word">BREEZY</span></article>
+          <article class="world-item reveal"><span class="world-icon">✳</span><small>03 / THE WONDER</small><h3>우연한 발견</h3><p>아무것도 아닌 것 속에서<br>작은 기적을 찾아내요.</p><span class="world-word">LOVELY</span></article>
+        </div>
+      </section>
+      <section class="interlude"><span class="eyebrow">A SMALL KIND OF MAGIC</span><blockquote>“아무 의미 없이 흩어진 것들이<br>때로는 <em>가장 특별한 형태</em>로 남는다.”</blockquote><span class="interlude-flower">✿</span></section>
+      <section class="explore section-padding">
+        <div class="section-intro reveal"><span class="eyebrow">TAKE A LITTLE WALK</span><h2>헤뭉이와 함께<br><em>천천히 둘러봐요.</em></h2><p>이야기를 보고, 넘기고, 잠시 쉬어 가도 좋아요.</p></div>
+        <div class="explore-grid">
+          <a class="explore-card card-videos" href="#videos" data-page="videos"><div class="explore-illustration"><span class="play-illustration">▶</span><span class="art-spark">✧</span></div><div class="explore-copy"><small>01 / WATCH</small><h3>헤뭉이 영상</h3><p>움직이는 작은 순간들</p><span class="arrow-bubble">↗</span></div></a>
+          <a class="explore-card card-cards" href="#cards" data-page="cards"><div class="explore-illustration"><span class="paper-illustration">✿</span></div><div class="explore-copy"><small>02 / READ</small><h3>카드뉴스</h3><p>한 장씩 펼치는 이야기</p><span class="arrow-bubble">↗</span></div></a>
+          <a class="explore-card card-daily" href="#daily" data-page="daily"><div class="explore-illustration"><span class="cloud-illustration">☁</span><span class="art-pencil">✎</span></div><div class="explore-copy"><small>03 / DAILY</small><h3>일상다반사</h3><p>평범해서 더 사랑스러운 날</p><span class="arrow-bubble">↗</span></div></a>
+          <a class="explore-card card-about" href="#about" data-page="about"><div class="explore-illustration about-mini"><img src="assets/haemungi-hero.webp" alt="" loading="lazy" decoding="async"></div><div class="explore-copy"><small>04 / HELLO</small><h3>헤뭉이 소개</h3><p>조그만 친구의 모든 것</p><span class="arrow-bubble">↗</span></div></a>
+          <a class="explore-card explore-goods" href="#goods" data-page="goods"><div class="explore-illustration explore-photo"><img src="assets/merch-collection.webp" alt="리뉴얼된 헤뭉이 캐릭터로 디자인한 굿즈 모음" loading="lazy" decoding="async" draggable="false"></div><div class="explore-copy"><small>05 / LITTLE MARKET</small><h3>헤뭉이 굿즈</h3><p>작고 귀여운 소장품들</p><span class="arrow-bubble">↗</span></div></a>
+          <a class="explore-card explore-room" href="#room" data-page="room"><div class="explore-illustration explore-photo"><img src="assets/haemungi-room.webp" alt="햇살 가득한 헤뭉이의 방" loading="lazy" draggable="false"></div><div class="explore-copy"><small>06 / MY ROOM</small><h3>헤뭉이의 방</h3><p>어디부터 살펴볼까요?</p><span class="arrow-bubble">↗</span></div></a>
+        </div>
+      </section>
+    </div>
+
+    <div class="page" id="page-videos" data-view="videos" hidden>
+      <section class="sub-hero sub-videos"><p class="eyebrow">HAEMUNGI'S LITTLE CINEMA</p><h1>움직이는<br><em>헤뭉이의 하루.</em></h1><p>바람이 불면 머리카락도 춤을 춰요.<br>헤뭉이의 영상이 모이는 작은 극장입니다.</p><span class="sub-decoration">✳</span></section>
+      <section class="section-padding gallery-section"><div class="gallery-heading"><div><p class="eyebrow">VIDEO ARCHIVE</p><h2>작은 극장 <small>준비 중</small></h2></div><div class="filters" aria-label="영상 필터"><button type="button" class="filter active" data-filter="all" aria-pressed="true">전체</button><button type="button" class="filter" data-filter="short" aria-pressed="false">짧은 영상</button><button type="button" class="filter" data-filter="story" aria-pressed="false">이야기</button></div></div>
+        <div class="videos-grid">
+          <article class="video-tile" data-video-kind="short"><div class="video-poster poster-sun"><span class="poster-icon">☀</span><span class="waiting">영상 등록 예정</span></div><small>SHORT FILM · COMING SOON</small><h3>햇살이 포근한 날</h3><p>첫 번째 작은 이야기를 준비하고 있어요.</p></article>
+          <article class="video-tile" data-video-kind="story"><div class="video-poster poster-wind"><span class="poster-icon">〰</span><span class="waiting">영상 등록 예정</span></div><small>STORY · COMING SOON</small><h3>바람이 건네는 말</h3><p>머리카락이 살랑이는 장면이 찾아올 거예요.</p></article>
+          <article class="video-tile" data-video-kind="short"><div class="video-poster poster-night"><span class="poster-icon">☾</span><span class="waiting">영상 등록 예정</span></div><small>SHORT FILM · COMING SOON</small><h3>동그란 낮잠</h3><p>고요한 오후를 기록할 작은 자리입니다.</p></article>
+        </div><div class="archive-note">✿ &nbsp; 현재는 영상 아카이브의 시안입니다. 실제 영상이 등록되면 재생 화면과 상세 정보가 이 자리에 연결됩니다.</div>
+      </section>
+    </div>
+
+    <div class="page" id="page-cards" data-view="cards" hidden>
+      <section class="sub-hero sub-cards"><p class="eyebrow">LITTLE STORIES, ONE CARD AT A TIME</p><h1>한 장씩<br><em>마음을 넘겨요.</em></h1><p>작고 별것 아닌 하루도<br>자세히 보면 반짝이는 장면이 있어요.</p><span class="sub-decoration">✿</span></section>
+      <section class="story-section section-padding" aria-labelledby="story-heading">
+        <div class="story-intro"><span class="eyebrow">ORIGINAL STORY · 01 / 09</span><h2 id="story-heading">어느 날, 머리카락 한 올이<br><em>눈을 떴다.</em></h2><p>아홉 개의 장면, 하나의 작은 기적.<br>그림을 터치하거나 좌우로 넘겨 헤뭉이의 첫 이야기를 만나 보세요.</p></div>
+        <div class="story-reader">
+          <article class="story-stage" aria-label="헤뭉이 카드뉴스 읽기">
+            <button class="story-art protected-media" id="storyArt" type="button" aria-label="다음 카드 보기"><img id="storyImage" alt="헤뭉이 카드뉴스 첫 장" decoding="async" draggable="false"><span class="copyright-seal">© HAEMUNGI · 일현 조성훈</span><span class="story-tap-hint">그림을 눌러 다음 장 보기 ↗</span></button>
+            <div class="story-text" aria-live="polite"><span id="storyCounter" class="eyebrow">01 / 09</span><span class="story-flower" aria-hidden="true">✻</span><span class="story-chapter">SERIES 01 · A HAIRY LITTLE MIRACLE</span><h3 id="storyTitle">어느 날, 머리카락 한 올이 눈을 떴다.</h3><p id="storyBody">햇살이 드는 방. 바닥에 떨어진 머리카락 한 올이 조용히 눈을 뜨기 시작했어요.</p><div class="story-progress" id="storyDots" aria-label="카드뉴스 진행 상태"></div><div class="story-controls"><button type="button" id="storyPrev" aria-label="이전 카드뉴스 장면">← 이전 장</button><button type="button" id="storyNext" aria-label="다음 카드뉴스 장면">다음 장 →</button></div><span class="story-reader-note">그림을 터치하거나 양옆으로 밀어서 넘겨 보세요.</span></div>
+          </article>
+          <div class="story-thumbnails-head"><span class="eyebrow">THE NINE MOMENTS</span><p>보고 싶은 장면을 바로 선택할 수도 있어요.</p></div>
+          <div class="story-thumbnails" id="storyThumbs" role="group" aria-label="카드뉴스 아홉 장 선택"></div>
+          <p class="story-footnote">SERIES 01 · 헤뭉이의 탄생 · © 2026 HAEMUNGI / 일현 조성훈</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="page" id="page-daily" data-view="daily" hidden>
+      <section class="sub-hero sub-daily"><p class="eyebrow">ORDINARY DAYS, EXTRAORDINARY LITTLE THINGS</p><h1>헤뭉이의<br><em>일상다반사.</em></h1><p>아무 일도 일어나지 않는 날이<br>가끔은 가장 다정한 날이니까요.</p><span class="sub-decoration">☁</span></section>
+      <section class="section-padding manga-section" aria-labelledby="manga-heading"><div class="section-intro center"><span class="eyebrow">ORIGINAL ILLUSTRATION ARCHIVE</span><h2 id="manga-heading">헤뭉이의 하루를<br><em>그림으로 만나세요.</em></h2><p>첨부해 주신 두 장의 원화를 그대로 전시했어요. 그림을 누르면 크게 볼 수 있어요.</p></div><div class="manga-grid">
+        <button class="manga-item protected-media" type="button" data-lightbox="assets/daily-first-encounter.webp" data-caption="헤뭉이의 첫 만남"><img src="assets/daily-first-encounter.webp" alt="머리카락에서 깨어난 헤뭉이가 한 소녀와 만나고 방울 목걸이를 선물받는 장면으로 이어진 웹툰 원화" draggable="false" loading="lazy" decoding="async"><span class="manga-overlay"><b>01 · 첫 만남</b><small>원화 크게 보기 ↗</small></span><span class="copyright-seal">© HAEMUNGI · 일현 조성훈</span></button>
+        <button class="manga-item protected-media" type="button" data-lightbox="assets/daily-little-moments.webp" data-caption="헤뭉이의 일상다반사"><img src="assets/daily-little-moments.webp" alt="낮잠, 나비, 책, 머그잔, 비 오는 날 등 헤뭉이의 다정한 일상 장면을 모은 원화" draggable="false" loading="lazy" decoding="async"><span class="manga-overlay"><b>02 · 일상다반사</b><small>원화 크게 보기 ↗</small></span><span class="copyright-seal">© HAEMUNGI · 일현 조성훈</span></button>
+      </div></section>
+      <section class="section-padding"><div class="section-intro center"><span class="eyebrow">THE LITTLE DIARY</span><h2>오늘은 무슨 일이<br><em>있었을까요?</em></h2><p>세계관을 바탕으로 쓴 작은 일상 이야기 세 편.</p></div>
+        <div class="diary-grid">
+          <article class="diary-card"><span class="diary-number">LITTLE DAY 01</span><span class="diary-art">☀</span><h3>햇살을 발견한 날</h3><p>창가의 햇살이 바닥에 동그랗게 내려앉았다. 헤뭉이는 그 안에 발끝을 넣고, 조금 오래 가만히 있었다.</p><span class="diary-mood">오늘의 기분: 포근함 ♡</span></article>
+          <article class="diary-card"><span class="diary-number">LITTLE DAY 02</span><span class="diary-art">〰</span><h3>바람이 지나간 자리</h3><p>커튼이 살짝 흔들렸다. 헤뭉이의 머리카락도 한 박자 늦게, 살랑 하고 인사했다.</p><span class="diary-mood">오늘의 기분: 간지러움 ♡</span></article>
+          <article class="diary-card"><span class="diary-number">LITTLE DAY 03</span><span class="diary-art">☾</span><h3>아무것도 하지 않은 오후</h3><p>놀라운 일은 없었다. 그런데 이상하게도 참 좋은 하루였다고, 헤뭉이는 생각했다.</p><span class="diary-mood">오늘의 기분: 나른함 ♡</span></article>
+        </div>
+      </section>
+    </div>
+
+    <div class="page" id="page-goods" data-view="goods" hidden>
+      <section class="sub-hero sub-goods"><p class="eyebrow">THE LITTLE HAEMUNGI MARKET</p><h1>작은 행복을<br><em>소장하는 방법.</em></h1><p>헤뭉이와 함께하는 상상 속 작은 상점.<br>지금은 굿즈를 소개하는 쇼룸입니다.</p><span class="sub-decoration">✧</span></section>
+      <section class="goods-intro section-padding"><div class="goods-intro-text"><span class="eyebrow">PREVIEW COLLECTION · NOT FOR SALE YET</span><h2>헤뭉이의<br><em>포근한 소장품들.</em></h2><p>리뉴얼된 헤뭉이의 표정과 작은 일상을 담은 굿즈 컬렉션입니다. 각 상품을 눌러 디자인·컬러·활용 장면이 담긴 상세 이미지를 살펴보세요.</p><p class="goods-prototype-note">전시된 제품과 상세 규격은 제작 전 디자인 콘셉트이며, 실제 제작·재고·판매가 확정된 상품이 아닙니다.</p><span class="status-chip">ꕤ 전체 상품 제작 준비 중</span></div><div class="goods-feature protected-media"><img src="assets/merch-collection.webp" alt="새 헤뭉이 캐릭터로 구성한 티셔츠, 모자, 키링, 휴대전화 케이스, 머그컵, 코인, 스티커, 에코백, 노트, 인형 굿즈 모음" loading="lazy" decoding="async" draggable="false"><span class="copyright-seal">© HAEMUNGI · 일현 조성훈</span></div></section>
+      <section class="goods-shop section-padding" aria-label="헤뭉이 굿즈 쇼핑몰 미리보기"><div class="goods-heading"><div><span class="eyebrow">HAEMUNGI LITTLE COLLECTION</span><h2>굿즈 진열장 <small id="goodsCount">10가지 콘셉트</small></h2></div><p>아직 구매할 수 없는 전시 상품입니다.</p></div>
+      <div class="goods-toolbar"><div class="goods-filters" role="group" aria-label="굿즈 분류"><button class="goods-filter active" data-goods-filter="all" aria-pressed="true" type="button">전체</button><button class="goods-filter" data-goods-filter="fashion" aria-pressed="false" type="button">패션·잡화</button><button class="goods-filter" data-goods-filter="living" aria-pressed="false" type="button">리빙</button><button class="goods-filter" data-goods-filter="collectible" aria-pressed="false" type="button">컬렉션</button><button class="goods-filter" data-goods-filter="stationery" aria-pressed="false" type="button">문구</button></div><div class="goods-controls"><label class="goods-search-label">굿즈 찾기 <input id="goodsSearch" type="search" placeholder="이름 검색" autocomplete="off"></label><label class="goods-sort-label">정렬 <select id="goodsSort"><option value="curated">추천순</option><option value="name">이름순</option><option value="kind">종류순</option></select></label></div></div>
+      <div class="goods-grid" id="goodsGrid">
+        <button type="button" class="goods-item" data-goods-kind="fashion" data-goods-name="헤뭉이 티셔츠" data-goods-img="assets/merch-tshirt.webp" data-goods-desc="아이보리·블랙·핑크에 헤뭉이의 낮과 밤을 담은 티셔츠 디자인입니다."><span class="goods-thumb protected-media"><img src="assets/merch-tshirt.webp" alt="헤뭉이 티셔츠의 컬러, 착용 컷, 프린팅 디테일을 보여주는 시안" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">FASHION · 01</span><strong>헤뭉이 티셔츠</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+        <button type="button" class="goods-item" data-goods-kind="fashion" data-goods-name="헤뭉이 모자" data-goods-img="assets/merch-cap.webp" data-goods-desc="아이보리·핑크·블랙·베이지 컬러에 헤뭉이를 자수로 표현한 모자 디자인입니다."><span class="goods-thumb protected-media"><img src="assets/merch-cap.webp" alt="헤뭉이 볼캡 컬러와 자수·착용 디테일 시안" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">FASHION · 02</span><strong>헤뭉이 모자</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+        <button type="button" class="goods-item" data-goods-kind="collectible" data-goods-name="헤뭉이 키링" data-goods-img="assets/merch-keyring.webp" data-goods-desc="나비·달·꽃·물음표와 함께하는 여섯 가지 헤뭉이 키링 콘셉트입니다."><span class="goods-thumb protected-media"><img src="assets/merch-keyring.webp" alt="여섯 가지 헤뭉이 키링 디자인과 고리 상세 시안" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">COLLECTIBLE · 03</span><strong>헤뭉이 키링</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+        <button type="button" class="goods-item" data-goods-kind="fashion" data-goods-name="헤뭉이 휴대전화 케이스" data-goods-img="assets/merch-phonecase.webp" data-goods-desc="아이보리·핑크·스카이블루·블랙 등 여섯 가지 헤뭉이 휴대전화 케이스 디자인입니다."><span class="goods-thumb protected-media"><img src="assets/merch-phonecase.webp" alt="여섯 가지 컬러의 헤뭉이 휴대전화 케이스와 측면 디테일 시안" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">FASHION · 04</span><strong>헤뭉이 휴대전화 케이스</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+        <button type="button" class="goods-item" data-goods-kind="living" data-goods-name="헤뭉이 머그컵" data-goods-img="assets/merch-mug.webp" data-goods-desc="햇살을 닮은 아이보리, 달빛 핑크, 스카이블루의 머그컵 디자인입니다."><span class="goods-thumb protected-media"><img src="assets/merch-mug.webp" alt="헤뭉이 머그컵 색상과 손잡이·인쇄 디테일 시안" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">LIVING · 05</span><strong>헤뭉이 머그컵</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+        <button type="button" class="goods-item" data-goods-kind="collectible" data-goods-name="헤뭉이 기념 코인" data-goods-img="assets/merch-coin.webp" data-goods-desc="헤뭉이 캐릭터를 양각으로 표현한 소장용 기념 코인 디자인입니다. 통화나 가상자산이 아닙니다."><span class="goods-thumb protected-media"><img src="assets/merch-coin.webp" alt="헤뭉이 기념 코인 앞뒷면과 패키지 상세 시안" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">COLLECTIBLE · 06</span><strong>헤뭉이 기념 코인</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+        <button type="button" class="goods-item" data-goods-kind="stationery" data-goods-name="헤뭉이 스티커 세트" data-goods-img="assets/merch-stickers.webp" data-goods-desc="일상·달빛 잠옷·꽃과 함께하는 헤뭉이의 다양한 표정을 담은 스티커 세트입니다."><span class="goods-thumb protected-media"><img src="assets/merch-stickers.webp" alt="헤뭉이 스티커 여섯 가지 라인업과 인쇄·활용 예시" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">STATIONERY · 07</span><strong>헤뭉이 스티커 세트</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+        <button type="button" class="goods-item" data-goods-kind="fashion" data-goods-name="헤뭉이 에코백" data-goods-img="assets/merch-totebag.webp" data-goods-desc="따뜻한 아이보리부터 핑크·스카이블루·블랙까지 헤뭉이 에코백 디자인입니다."><span class="goods-thumb protected-media"><img src="assets/merch-totebag.webp" alt="헤뭉이 에코백 여섯 가지 디자인과 캔버스·포켓·착용 예시" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">FASHION · 08</span><strong>헤뭉이 에코백</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+        <button type="button" class="goods-item" data-goods-kind="stationery" data-goods-name="헤뭉이 노트" data-goods-img="assets/merch-notebook.webp" data-goods-desc="컬러별 표지에 먼슬리·위클리·라인·도트 페이지를 담은 노트 디자인입니다."><span class="goods-thumb protected-media"><img src="assets/merch-notebook.webp" alt="헤뭉이 노트 표지 컬러와 내지 구성·활용 시안" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">STATIONERY · 09</span><strong>헤뭉이 노트</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+        <button type="button" class="goods-item" data-goods-kind="living" data-goods-name="헤뭉이 포근한 인형" data-goods-img="assets/merch-plush.webp" data-goods-desc="잠옷·베레모·꽃 장식 등 여섯 가지 헤뭉이 인형 콘셉트를 만날 수 있어요."><span class="goods-thumb protected-media"><img src="assets/merch-plush.webp" alt="헤뭉이 인형 여섯 가지 스타일과 얼굴·소재·패키지 상세 시안" loading="lazy" decoding="async"><span class="goods-badge">COMING SOON</span></span><span class="goods-category">LIVING · 10</span><strong>헤뭉이 포근한 인형</strong><span class="goods-bottom">상세 디자인 보기 <span>↗</span></span></button>
+      </div><p class="goods-no-results" id="goodsNoResults" hidden>찾으시는 굿즈가 없어요. 다른 이름으로 검색해 보세요.</p><div class="goods-disclaimer">※ 모든 굿즈는 원화 기반 디자인 시안입니다. 판매·결제·배송 기능과 가격 정보는 제공하지 않습니다.</div></section>
+    </div>
+
+    <div class="page" id="page-room" data-view="room" hidden>
+      <section class="sub-hero sub-room"><p class="eyebrow">WELCOME TO HAEMUNGI'S ROOM</p><h1>헤뭉이의<br><em>포근한 작은 방.</em></h1><p>창문 너머 햇살도, 작은 방울도<br>이 방에서는 모두 이야기가 됩니다.</p><span class="sub-decoration">⌂</span></section>
+      <section class="room-experience section-padding"><div class="room-head"><div><span class="eyebrow">A LIVING LITTLE ROOM</span><h2>살짝 눌러보세요.<br><em>이야기가 숨어 있어요.</em></h2></div><p>방 안의 반짝이는 점을 누르면 물건들의 이야기가 열립니다.<br>모바일에서는 방을 좌우로 밀어 둘러보세요.</p></div>
+        <div class="room-viewport" id="roomViewport" tabindex="0" aria-label="가로 스크롤로 탐험하는 헤뭉이의 방"><div class="room-world protected-media" id="roomWorld"><img src="assets/haemungi-room.webp" alt="햇살이 비치는 창, 포근한 침대에 누운 헤뭉이, 나무 책장과 사진 액자, 방울, 찻잔과 굿즈 진열장이 있는 헤뭉이의 방" loading="lazy" draggable="false">
+          <button type="button" class="room-hotspot" style="--x:20%;--y:40%" data-room-item="window" aria-label="햇살 드는 창문 살펴보기"><span>✦</span></button>
+          <button type="button" class="room-hotspot" style="--x:21%;--y:83%" data-room-item="bell" aria-label="작은 방울 살펴보기"><span>✦</span></button>
+          <button type="button" class="room-hotspot" style="--x:50%;--y:61%" data-room-item="haemungi" aria-label="침대에서 쉬는 헤뭉이 살펴보기"><span>✦</span></button>
+          <button type="button" class="room-hotspot" style="--x:60%;--y:28%" data-room-item="frame" aria-label="벽의 액자 살펴보기"><span>✦</span></button>
+          <button type="button" class="room-hotspot" style="--x:76%;--y:35%" data-room-item="books" aria-label="책장 살펴보기"><span>✦</span></button>
+          <button type="button" class="room-hotspot" style="--x:85%;--y:73%" data-room-item="mug" aria-label="찻잔 살펴보기"><span>✦</span></button>
+          <button type="button" class="room-hotspot" style="--x:96%;--y:37%" data-room-item="shelf" aria-label="굿즈 진열장 살펴보기"><span>✦</span></button>
+        <span class="room-watermark">© HAEMUNGI · 일현 조성훈</span></div></div>
+        <div class="room-discovery" id="roomDiscovery" aria-live="polite"><span class="room-discovery-icon" id="roomIcon">✿</span><div><span class="eyebrow" id="roomEyebrow">TAP TO DISCOVER</span><h3 id="roomTitle">헤뭉이의 방에 오신 걸 환영해요.</h3><p id="roomDescription">창문, 방울, 작은 친구, 액자, 책장, 찻잔, 진열장. 마음에 드는 물건을 골라보세요.</p></div><a href="#daily" data-page="daily" id="roomLink" class="room-discovery-link">이야기 만나기 ↗</a></div>
+        <div class="room-nav"><button type="button" id="roomReset">처음부터 둘러보기 ↺</button><span>✿ 7가지 작은 발견이 기다리고 있어요.</span><a href="#goods" data-page="goods">헤뭉이 굿즈 구경하기 ↗</a></div>
+      </section>
+    </div>
+
+    <div class="page" id="page-about" data-view="about" hidden>
+      <section class="sub-hero sub-about"><p class="eyebrow">HELLO, THIS IS HAEMUNGI</p><h1>세상에서 가장<br><em>동그란 우연.</em></h1><p>말보다 작은 몸짓이 먼저인 친구.<br>안녕, 헤뭉이를 소개할게요.</p><span class="sub-decoration">♡</span></section>
+      <section class="section-padding about-layout"><div class="sheet-frame"><img src="assets/haemungi-sheet.webp" alt="리뉴얼된 헤뭉이 공식 캐릭터 설정화. 머리 위에 한 가닥 솟은 둥근 머리카락과 새하얀 몸, 작은 점눈, 정면·측면·후면과 다양한 표정 및 동작이 표현되어 있습니다." loading="lazy" decoding="async"><span>RENEWED CHARACTER SHEET</span></div><div class="about-description"><p class="eyebrow">CHARACTER PROFILE</p><h2>안녕,<br><em>나는 헤뭉이야.</em></h2><p class="about-summary">어느 날, 바닥에 떨어진 머리카락 한 올이 눈을 떴어요. 이름도 없던 작은 생명은 첫걸음을 내딛고, 햇살을 만나고, 마침내 '헤뭉이'라는 이름을 얻었지요.</p><dl class="profile"><div><dt>이름</dt><dd>헤뭉이 <small>HAEMUNGI</small></dd></div><div><dt>태어난 곳</dt><dd>어느 날, 햇살이 들어온 방바닥</dd></div><div><dt>성격</dt><dd>조용하고 순진해요. 호기심은 아주 많아요.</dd></div><div><dt>좋아하는 것</dt><dd>따뜻한 바람, 햇살, 사람</dd></div><div><dt>불편한 것</dt><dd>큰 소리와 서두르는 걸음</dd></div><div><dt>특징</dt><dd>크림 화이트 몸, 작은 점눈, 머리 위로 솟은 한 가닥의 곡선</dd></div></dl><div class="about-message">헤뭉이는 아직 말을 배우는 중이에요. 그래서 가끔은 눈빛과 작은 움직임으로 마음을 전한답니다. ✿</div></div></section>
+      <section class="mbti-section section-padding"><div class="mbti-card"><div class="mbti-portrait"><img src="assets/haemungi-mbti-portrait.webp" alt="창가의 꽃과 햇살 속에서 세상을 바라보는 새 헤뭉이 캐릭터" loading="lazy" decoding="async"></div><div class="mbti-copy"><span class="eyebrow">HAEMUNGI'S IMAGINARY MBTI</span><h2>헤뭉이의 성격은<br><em>INFP와 닮았어요.</em></h2><p>공식 성격검사 결과가 아닌, 캐릭터 설정을 바탕으로 상상한 MBTI예요. 조용하지만 호기심 많고, 따뜻한 마음으로 세상을 관찰하는 헤뭉이에게 잘 어울려요.</p><div class="mbti-letters"><span><b>I</b><small>조용한<br>에너지</small></span><span><b>N</b><small>작은<br>상상력</small></span><span><b>F</b><small>다정한<br>마음</small></span><span><b>P</b><small>느긋한<br>하루</small></span></div><small class="mbti-note">※ MBTI® 유형에 대한 캐릭터 창작 해석이며, 실제 검사를 실시하거나 성격을 진단한 것이 아닙니다.</small></div></div></section>
+      <section class="about-last"><span>✳</span><h2>우연은 때때로<br><em>가장 다정한 선물</em>이 돼요.</h2><a href="#room" data-page="room" class="button-primary">헤뭉이 방에 놀러가기 ↗</a></section>
+    </div>
+  </main>
+  <footer class="footer"><span class="footer-brand">헤뭉이 ✿</span><p>세상에 숨어 있는 작은 우연에게 보내는 인사.</p><div><span>© 2026 HAEMUNGI · 일현 조성훈</span><span>MADE WITH TENDERNESS</span></div><details class="analytics-disclosure" id="analyticsDisclosure"><summary>방문 통계 안내</summary><p>방문자가 직접 허용한 경우에만 페이지·콘텐츠 열람·유입 채널 종류·화면 크기 분류와 30분 단위 임의 세션 번호를 기록합니다. 사이트 조회 통계에는 이름·이메일·검색어·IP 주소를 저장하지 않습니다. 동의는 언제든 철회할 수 있으며, 철회 전 이미 집계된 익명 기록은 남을 수 있습니다. 브라우저의 추적 차단 설정을 우선 적용합니다.</p><button type="button" id="analyticsSettings" class="analytics-settings">통계 수집 선택 변경</button></details></footer>
+  <button type="button" class="analytics-launcher" id="analyticsLauncher" aria-controls="analyticsConsent" hidden>방문 통계 설정</button>
+  <aside class="analytics-consent" id="analyticsConsent" aria-labelledby="analyticsConsentTitle" hidden>
+    <div class="analytics-consent-copy"><strong id="analyticsConsentTitle">작은 방문 기록을 남겨도 될까요?</strong><p id="analyticsConsentDescription">허용하면 헤뭉이의 어떤 이야기가 사랑받는지 익명으로 집계합니다. 거부해도 모든 콘텐츠를 똑같이 이용할 수 있어요.</p><span id="analyticsConsentStatus" role="status" aria-live="polite"></span></div>
+    <div class="analytics-consent-actions"><button type="button" id="analyticsDeny">거부</button><button type="button" id="analyticsAllow">허용</button></div>
+  </aside>
+  <p class="toast" role="status" aria-live="polite" id="toast"></p>
+  <dialog class="asset-dialog" id="assetDialog" aria-labelledby="dialogTitle"><div class="dialog-header"><div><span class="eyebrow">HAEMUNGI ARCHIVE</span><h2 id="dialogTitle">헤뭉이의 기록</h2></div><button id="dialogClose" type="button" aria-label="큰 이미지 닫기">×</button></div><div class="dialog-image protected-media"><img id="dialogImage" alt="선택한 헤뭉이 이미지 크게 보기" decoding="async" draggable="false"><span class="copyright-seal">© HAEMUNGI · 일현 조성훈</span></div><p id="dialogDescription"></p><span class="dialog-notice">이미지 및 캐릭터 디자인 © 2026 HAEMUNGI · 일현 조성훈. 무단 이용·재배포 금지.</span></dialog>
+</body>
+</html>

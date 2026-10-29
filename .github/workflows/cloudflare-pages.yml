@@ -1,0 +1,48 @@
+name: HAEMUNGI Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: haemungi-pages-production
+  cancel-in-progress: true
+
+jobs:
+  verify-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout public website source
+        uses: actions/checkout@v6
+
+      - name: Verify website, languages, and analytics privacy
+        run: |
+          node verify-haemungi.mjs
+          node verify-i18n.mjs
+          node verify-analytics.mjs
+
+      - name: Check optional Cloudflare deployment credentials
+        id: cloudflare
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [[ -n "$TOKEN" && -n "$ACCOUNT_ID" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Cloudflare secrets are not configured; source checks passed but deployment is skipped."
+          fi
+
+      - name: Deploy to existing Cloudflare Pages project
+        if: steps.cloudflare.outputs.ready == 'true'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=haemungi --branch=main

@@ -1,0 +1,10 @@
+# Never publish ChatGPT Sites hosting identity into the independent public repo.
+.openai/
+
+# Local credentials, caches, and build noise.
+.env
+.env.*
+!.env.example
+node_modules/
+*.log
+.DS_Store
