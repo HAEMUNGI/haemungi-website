@@ -9,7 +9,6 @@ const publicJS = file('dist/managed-content.js');
 const sql = file('admin-setup.sql');
 const site = file('dist/index.html');
 const main = file('dist/main.js');
-const redirects = file('dist/_redirects');
 
 for (const [name, script] of [['admin.js', admin], ['managed-content.js', publicJS], ['main.js', main]]) {
   assert.doesNotThrow(() => new Script(script, {filename: name}));
@@ -20,7 +19,8 @@ for (const [, name] of admin.matchAll(/\$\('([\w-]+)'\)/g)) {
 assert.match(html, /autocomplete="current-password"/);
 assert.match(html, /name="source" value="file"/);
 assert.match(html, /name="source" value="link"/);
-assert.match(redirects, /\/admin\s+\/admin\.html\s+200/);
+assert.match(html, /src="\/admin\.js"/);
+assert.match(html, /href="\/admin\.css"/);
 assert.match(site, /managed-content\.js/);
 assert.match(site, /managed-content\.css/);
 assert.match(main, /HM_MANAGED_SET_CARD/);
