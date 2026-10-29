@@ -121,6 +121,8 @@
       const card = document.createElement('article');
       card.className = 'video-tile hm-live-video'; card.dataset.hmVideo = row.slot;
       card.dataset.videoKind = 'short';
+      const activeFilter = document.querySelector('[data-filter].active')?.dataset.filter || 'all';
+      card.hidden = activeFilter !== 'all' && card.dataset.videoKind !== activeFilter;
       const media = document.createElement('div'); media.className = 'hm-video-frame';
       const id = youtubeId(uri);
       if (id) {
@@ -151,7 +153,11 @@
   function setupMusic(rows) {
     const row = rows.find(row => row.kind === 'audio' && row.slot === 'music-main');
     const uri = urlFor(row);
-    if (!uri) { window.HM_MANAGED_AUDIO_TOGGLE = null; return; }
+    if (!uri) {
+      if (audio) audio.pause();
+      window.HM_MANAGED_AUDIO_TOGGLE = null;
+      return;
+    }
     if (audioURL !== uri) {
       if (audio) audio.pause();
       audio = new Audio(uri); audio.loop = true; audio.volume = 0.35; audio.preload = 'none';

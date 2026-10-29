@@ -425,8 +425,14 @@
     }
   }
   async function toggleMusic() {
-    if (typeof window.HM_MANAGED_AUDIO_TOGGLE === 'function')
+    if (typeof window.HM_MANAGED_AUDIO_TOGGLE === 'function') {
+      if (playing && context) {
+        playing = false;
+        clearInterval(scheduler);
+        await context.suspend();
+      }
       return window.HM_MANAGED_AUDIO_TOGGLE();
+    }
     try {
       if (!context) {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
