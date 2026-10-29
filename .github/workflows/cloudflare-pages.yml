@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
@@ -25,6 +27,7 @@ jobs:
           node verify-haemungi.mjs
           node verify-i18n.mjs
           node verify-analytics.mjs
+          node verify-admin.mjs
 
       - name: Check optional Cloudflare deployment credentials
         id: cloudflare
@@ -40,7 +43,7 @@ jobs:
           fi
 
       - name: Deploy to existing Cloudflare Pages project
-        if: steps.cloudflare.outputs.ready == 'true'
+        if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
