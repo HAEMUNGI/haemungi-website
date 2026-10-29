@@ -424,38 +424,10 @@ h1 em,h2 em,blockquote em{font-style:normal;color:#bf7d70}
   .mbti-card{gap:32px}
   .goods-thumb{aspect-ratio:4/5}
 }
-/* PURE WHITE CANVAS — HAEMUNGI owner's requested #FFFFFF background.
-   Do not recolor original illustrations; keep pink/green accents as small details. */
+/* WHITE SURFACES ONLY — preserve approved peach, pink and sage artwork, aura and cards. */
 :root{--cream:#ffffff;--paper:#ffffff}
 html,body{background:#ffffff}
-.grain{display:none}
-.header.scrolled,.menu,.hero,.world,.interlude,.explore,
-.sub-hero,.sub-cards,.sub-daily,.sub-about,.sub-goods,.sub-room,
-.gallery-section,.story-section,.manga-section,.about-layout,.about-last,
-.goods-intro,.goods-shop,.room-experience,.mbti-section,.footer{background:#ffffff}
-.hero:before{background:transparent}
-.hero:after{border-color:rgba(180,153,140,.16)}
-.sun-aura{background:radial-gradient(circle,#ffffff 0%,rgba(255,255,255,0) 72%);box-shadow:none}
-.hero-floor{background:radial-gradient(ellipse,rgba(95,88,81,.08),transparent 70%)}
-.interlude:before,.interlude:after{border-color:#eeeeee}
-.world:before{color:#eaeaea}
-.world-item,.world-item:nth-child(2),.world-item:nth-child(3){
-  background:#ffffff;border-color:#f4f4f4;
-  box-shadow:0 8px 0 #f3f3f3,0 18px 32px rgba(55,49,44,.07),inset 0 0 0 2px #ffffff
-}
-.explore-card,.card-videos,.card-cards,.card-daily,.card-about,.explore-goods,.explore-room{
-  background:#ffffff;border-color:#ececec
-}
-.story-stage,.story-art,.diary-card,.diary-card:nth-child(2),.diary-card:nth-child(3),
-.face-1,.face-2,.face-3,.flip-back,.sheet-frame,.about-message,
-.mbti-card,.mbti-letters>span,.room-discovery,.asset-dialog,
-.archive-note,.goods-disclaimer,.status-chip,.manga-item{background:#ffffff}
-.mbti-portrait{background:#ffffff;border-color:#f4f4f4}
-.goods-thumb,.goods-badge,.copyright-seal,.manga-overlay,.analytics-consent,
-.analytics-launcher,.analytics-settings,.analytics-consent-actions button{background-color:#ffffff}
-.room-viewport{border-color:#f1f1f1}
-.footer{border-top:1px solid #eeeeee}
-.explore-photo img,.story-art img{filter:none}
-
-/* Room artwork container uses the same pure-white canvas. */
-.room-viewport{background:#ffffff}
+/* Remove ivory from the otherwise-white base; retain the existing peach radial glow. */
+.hero{background:radial-gradient(ellipse at 85% 50%,#fff0e3 0%,transparent 55%),#ffffff}
+/* The room illustration's fallback canvas is white; the illustration stays untouched. */
+.room-viewport{background-color:#ffffff}
