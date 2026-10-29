@@ -456,3 +456,6 @@ html,body{background:#ffffff}
 .room-viewport{border-color:#f1f1f1}
 .footer{border-top:1px solid #eeeeee}
 .explore-photo img,.story-art img{filter:none}
+
+/* Room artwork container uses the same pure-white canvas. */
+.room-viewport{background:#ffffff}
