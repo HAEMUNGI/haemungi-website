@@ -130,7 +130,8 @@
       chip.setAttribute('aria-pressed', String(active));
     });
     document.querySelectorAll('[data-video-kind]').forEach(card => {
-      card.hidden = chosen !== 'all' && card.dataset.videoKind !== chosen;
+      card.hidden = card.dataset.hmDefaultHidden === 'true' ||
+        (chosen !== 'all' && card.dataset.videoKind !== chosen);
     });
   }));
 
@@ -203,6 +204,15 @@
       dot.setAttribute('aria-current', active ? 'step' : 'false');
     });
   }
+  // Allow optional published CMS artwork to replace a card without losing the carousel.
+  window.HM_MANAGED_SET_CARD = (slug, art) => {
+    if (!/^card-\d{2}$/.test(slug) || !/^https:\/\//.test(art)) return;
+    const item = storyData.find(scene => scene.slug === slug);
+    if (!item) return;
+    item.art = art;
+    thumbs = buildStoryControls();
+    renderStory();
+  };
   const changeStory = (delta) => { storyPage = (storyPage + delta + storyData.length) % storyData.length; renderStory(); };
   document.getElementById('storyPrev').addEventListener('click', () => {
     changeStory(-1);
@@ -415,6 +425,14 @@
     }
   }
   async function toggleMusic() {
+    if (typeof window.HM_MANAGED_AUDIO_TOGGLE === 'function') {
+      if (playing && context) {
+        playing = false;
+        clearInterval(scheduler);
+        await context.suspend();
+      }
+      return window.HM_MANAGED_AUDIO_TOGGLE();
+    }
     try {
       if (!context) {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -572,6 +590,7 @@
       console.warn('헤뭉이 원본 콘텐츠를 유지합니다.', error.message);
     } finally {
       clearTimeout(timeout);
+      window.HM_MANAGED_APPLY?.();
     }
   }
   syncPublishedContent();
