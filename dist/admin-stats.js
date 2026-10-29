@@ -7,7 +7,7 @@
   const sources = {direct:'직접 방문',threads:'스레드',instagram:'인스타그램',youtube:'유튜브',naver:'네이버',google:'구글',facebook:'페이스북',kakao:'카카오',tiktok:'틱톡',other:'기타'};
   const deviceNames = {mobile:'모바일 화면',tablet:'태블릿 화면',desktop:'PC 화면'};
   const knownTypes = {artwork_open:'원화 확대',goods_filter:'굿즈 분류 변경',goods_search:'굿즈 검색',music_toggle:'음악 재생·중지',diary_view:'일상 이야기 노출'};
-  const views = ['hm_stats_dashboard','hm_stats_daily','hm_stats_pages','hm_stats_content','hm_stats_sources','hm_stats_devices','hm_stats_hours','hm_goods','hm_stories','hm_room_spots'];
+  const views = ['hm_stats_dashboard','hm_stats_daily','hm_stats_pages','hm_stats_content','hm_stats_sources','hm_stats_devices','hm_stats_hours','hm_goods','hm_stories','hm_room_spots','hm_media_public'];
   let cache = null;
   let fetching = null;
   let lastFetchAt = 0;
@@ -47,13 +47,14 @@
   function sumItems(rows, event) {
     return rows.filter(row => row.event_type === event).reduce((total,row) => total+n(row.views_or_actions), 0);
   }
-  function renderKPIs(overview) {
+  function renderKPIs(overview, content) {
     const mapping = {
       aToday:'today_page_views', aTotal:'total_page_views', aSessions:'total_sessions_estimate',
       aWeek:'last7_page_views', aMonth:'last30_page_views', aGoods:'goods_opens',
       aCards:'card_views', aRoom:'room_discoveries'
     };
     for (const [id,key] of Object.entries(mapping)) $(id).textContent = count(overview[key]);
+    $('aVideos').textContent = count(sumItems(content,'video_play'));
   }
   function datesForLastMonth() {
     const today = new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
@@ -107,10 +108,11 @@
       wrap.append(entry);
     }
   }
-  function renderContent(content, goods, stories, spots, daily) {
+  function renderContent(content, goods, stories, spots, daily, media) {
     const lookup=new Map();
     for(const row of content) lookup.set(row.event_type+':'+row.item_slug,n(row.views_or_actions));
     list('aGoodsRank',goods.map(row=>({label:row.name,views:lookup.get('goods_detail:'+row.slug)||0})),r=>r.label,'views',{limit:10});
+    list('aVideoRank',media.filter(row=>row.kind==='video'&&row.is_published).map(row=>({label:row.title||row.slot,views:lookup.get('video_play:'+row.slot)||0})),r=>r.label,'views',{limit:20,emptyMessage:'영상이 등록되면 재생·열기 기록을 여기에 표시합니다.'});
     list('aCardsRank',stories.filter(r=>r.kind==='cardnews').map(row=>({label:row.title,views:lookup.get('card_view:'+row.slug)||0})),r=>r.label,'views',{limit:9});
     list('aRoomRank',spots.map(row=>({label:row.label,views:lookup.get('room_spot:'+row.slug)||0})),r=>r.label,'views',{limit:7});
     list('aDiaryRank',stories.filter(r=>r.kind==='diary').map(row=>({label:row.title,views:lookup.get('diary_view:'+row.slug)||0})),r=>r.label,'views',{limit:3});
@@ -125,14 +127,14 @@
     ],r=>r.label,'views',{limit:6});
   }
   function renderAll(record) {
-    const [head,daily,pages,content,source,devices,hours,goods,stories,spots]=record;
-    renderKPIs(head[0]||{});
+    const [head,daily,pages,content,source,devices,hours,goods,stories,spots,media]=record;
+    renderKPIs(head[0]||{},content);
     renderDaily(daily);
     list('aPages',Object.keys(pageNames).map(page=>({label:pageNames[page],views:n(pages.find(row=>row.page===page)?.page_views)})),r=>r.label,'views',{limit:7});
     list('aSources',Object.keys(sources).map(kind=>({label:sources[kind],views:n(source.find(row=>row.source_kind===kind)?.page_views)})),r=>r.label,'views',{limit:10});
     list('aDevices',Object.keys(deviceNames).map(kind=>({label:deviceNames[kind],views:n(devices.find(row=>row.device_kind===kind)?.page_views)})),r=>r.label,'views',{limit:3});
     renderHours(hours);
-    renderContent(content,goods,stories,spots,daily);
+    renderContent(content,goods,stories,spots,daily,media);
   }
   async function refresh(force=false) {
     if (fetching) return fetching;
@@ -163,7 +165,7 @@
   }
   function exportCSV() {
     if(!cache){ $('analyticsStatus').textContent='통계를 먼저 불러와 주세요.';return; }
-    const [head,daily,pages,content,source,devices,hours,goods,stories,spots]=cache;
+    const [head,daily,pages,content,source,devices,hours,goods,stories,spots,media]=cache;
     const lines=[['구분','항목','조회/동작','세션 추정','설명']];
     const write=(group,label,views,sessions,desc='')=>lines.push([group,label,n(views),n(sessions),desc]);
     for(const [label,key] of [['오늘 조회','today_page_views'],['누적 조회','total_page_views'],['누적 세션','total_sessions_estimate'],['7일 조회','last7_page_views'],['30일 조회','last30_page_views']]) write('요약',label,head[0]?.[key],0);
@@ -175,7 +177,8 @@
     const labels=new Map([
       ...goods.map(r=>['goods_detail:'+r.slug,r.name]),
       ...stories.map(r=>[(r.kind==='cardnews'?'card_view:':'diary_view:')+r.slug,r.title]),
-      ...spots.map(r=>['room_spot:'+r.slug,r.label])
+      ...spots.map(r=>['room_spot:'+r.slug,r.label]),
+      ...media.filter(r=>r.kind==='video').map(r=>['video_play:'+r.slot,r.title||r.slot])
     ]);
     for(const row of content) write('콘텐츠',labels.get(row.event_type+':'+row.item_slug)||((knownTypes[row.event_type]||row.event_type)+' · '+row.item_slug),row.views_or_actions,row.sessions_estimate,row.page);
     const csv='\ufeff'+lines.map(row=>row.map(csvSafe).join(',')).join('\r\n');

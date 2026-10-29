@@ -129,6 +129,7 @@
         const button = document.createElement('button'); button.className = 'hm-video-play'; button.type = 'button';
         button.textContent = '▶ 동영상 재생';
         button.addEventListener('click', () => {
+          window.HM_STATS?.track('video_play', 'videos', row.slot);
           const frame = document.createElement('iframe');
           frame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
           frame.title = row.title || '헤뭉이 영상'; frame.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture';
@@ -139,9 +140,11 @@
       } else if (/\.(mp4|webm)(\?|#|$)/i.test(uri)) {
         const video = document.createElement('video');
         video.controls = true; video.preload = 'metadata'; video.playsInline = true; video.src = uri;
+        video.addEventListener('play', () => window.HM_STATS?.track('video_play', 'videos', row.slot));
         media.append(video);
       } else {
         const a = document.createElement('a'); a.href = uri; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = '영상 보기 ↗';
+        a.addEventListener('click', () => window.HM_STATS?.track('video_play', 'videos', row.slot));
         media.append(a);
       }
       const label = document.createElement('small'); label.textContent = 'HAEMUNGI FILM';
