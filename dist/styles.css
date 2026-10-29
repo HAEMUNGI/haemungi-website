@@ -431,3 +431,57 @@ html,body{background:#ffffff}
 .hero{background:radial-gradient(ellipse at 85% 50%,#fff0e3 0%,transparent 55%),#ffffff}
 /* The room illustration's fallback canvas is white; the illustration stays untouched. */
 .room-viewport{background-color:#ffffff}
+
+/* BRIGHT PASTEL TONE-UP — lift visual weight, preserve the white canvas and original artwork. */
+:root{
+  --ink:#6b574d;--ink-soft:#867268;
+  --peach:#ffe5da;--apricot:#fbd5c4;--rose:#df9995;--sage:#dcead5;
+  --gold:#cba46e;--line:rgba(120,89,71,.12)
+}
+.grain{opacity:.025}
+h1 em,h2 em,blockquote em{color:#c68178}
+.brand-mark{background:#dda48f;box-shadow:0 6px 15px rgba(147,91,73,.09)}
+.menu-toggle{background:#8b6c61;box-shadow:0 8px 18px rgba(102,70,57,.12)}
+.menu-toggle:hover{background:#9c756a}
+.button-primary{background:#8f685d;box-shadow:0 10px 22px rgba(120,83,68,.12)}
+.button-primary:hover{background:#9e7265;box-shadow:0 13px 25px rgba(120,83,68,.16)}
+.language-menu{background:#ffffff}
+.hero{background:radial-gradient(ellipse at 85% 50%,#fff3e9 0%,transparent 55%),#ffffff}
+.hero:before{background:#e8f3e2}
+.sun-aura{
+  background:radial-gradient(circle,#fffdfa 0 25%,#fff0df 68%,rgba(255,238,222,0) 72%);
+  box-shadow:0 0 105px #fff3e6
+}
+.world-item,.world-item:nth-child(2),.world-item:nth-child(3){
+  border-color:#fdf8f2;
+  background:radial-gradient(circle at 38% 27%,#ffffff 0%,#fff3e9 51%,#f7e3d5 100%);
+  box-shadow:0 9px 0 #f1e2d5,0 19px 30px rgba(110,83,63,.09),inset 0 0 0 2px #ffffffec,inset 0 0 28px #dfc5b71e
+}
+.world-item:nth-child(2){
+  background:radial-gradient(circle at 38% 27%,#ffffff 0%,#f4faef 55%,#e0eed9 100%);
+  box-shadow:0 9px 0 #e2ecdb,0 19px 30px rgba(89,111,78,.09),inset 0 0 0 2px #ffffffec
+}
+.world-item:nth-child(3){
+  background:radial-gradient(circle at 38% 27%,#ffffff 0%,#fff3f2 54%,#f9e2e3 100%);
+  box-shadow:0 9px 0 #f2e0e0,0 19px 30px rgba(133,83,89,.09),inset 0 0 0 2px #ffffffec
+}
+.world-icon{color:#e3b586}
+.world-item:nth-child(2) .world-icon{color:#9fba90}
+.world-item:nth-child(3) .world-icon{color:#dda2a0}
+.interlude{background:radial-gradient(circle at center,rgba(255,255,255,.72),transparent 60%),#fff4ee}
+.card-videos{background:#fff4ec}
+.card-cards{background:#f4fbf1}
+.card-daily{background:#fff3f5}
+.card-about{background:#fff6ef}
+.explore-goods{background:#fff4ed}
+.explore-room{background:#f5fbf2}
+.sub-hero{background:radial-gradient(ellipse at 82% 20%,rgba(255,255,255,.8),transparent 35%),#fff5ef}
+.sub-cards{background:#f5fbf1}
+.sub-daily{background:#fff4f5}
+.sub-about{background:#fff5ee}
+.sub-goods{background:#fff4ef}
+.sub-room{background:#f5fcf2}
+.story-section,.mbti-section{background:#fff8f5}
+.about-last{background:#fff5f0}
+.footer{background:#fff7f3}
+.mbti-portrait{background:#fff1eb;border-color:#fff8f3}
