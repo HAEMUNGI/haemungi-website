@@ -3,7 +3,7 @@
   const $ = id => document.getElementById(id);
   const n = value => Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0;
   const count = value => n(value).toLocaleString('ko-KR');
-  const pageNames = {home:'첫 화면',videos:'영상관',cards:'카드뉴스',daily:'일상다반사',goods:'굿즈 전시관',room:'헤뭉이의 방',about:'소개'};
+  const pageNames = {home:'첫 화면',videos:'영상관',cards:'카드뉴스',daily:'일상다반사',goods:'굿즈 전시관',room:'헤뭉이의 방',about:'소개',today:'헤뭉이의 오늘',creator:'제작자 소개',emoticons:'이모티콘'};
   const sources = {direct:'직접 방문',threads:'스레드',instagram:'인스타그램',youtube:'유튜브',naver:'네이버',google:'구글',facebook:'페이스북',kakao:'카카오',tiktok:'틱톡',other:'기타'};
   const deviceNames = {mobile:'모바일 화면',tablet:'태블릿 화면',desktop:'PC 화면'};
   const knownTypes = {artwork_open:'원화 확대',goods_filter:'굿즈 분류 변경',goods_search:'굿즈 검색',music_toggle:'음악 재생·중지',diary_view:'일상 이야기 노출'};
@@ -128,7 +128,7 @@
     const [head,daily,pages,content,source,devices,hours,goods,stories,spots]=record;
     renderKPIs(head[0]||{});
     renderDaily(daily);
-    list('aPages',Object.keys(pageNames).map(page=>({label:pageNames[page],views:n(pages.find(row=>row.page===page)?.page_views)})),r=>r.label,'views',{limit:7});
+    list('aPages',Object.keys(pageNames).map(page=>({label:pageNames[page],views:n(pages.find(row=>row.page===page)?.page_views)})),r=>r.label,'views',{limit:10});
     list('aSources',Object.keys(sources).map(kind=>({label:sources[kind],views:n(source.find(row=>row.source_kind===kind)?.page_views)})),r=>r.label,'views',{limit:10});
     list('aDevices',Object.keys(deviceNames).map(kind=>({label:deviceNames[kind],views:n(devices.find(row=>row.device_kind===kind)?.page_views)})),r=>r.label,'views',{limit:3});
     renderHours(hours);

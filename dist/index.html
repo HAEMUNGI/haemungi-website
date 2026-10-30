@@ -3,11 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#fff8ed">
+  <meta name="theme-color" content="#ffffff">
   <meta name="robots" content="noai, noimageai">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="우연히 태어난 머리카락 친구 헤뭉이의 공식 홈페이지. 작은 방, 영상, 카드뉴스, 일상다반사, 굿즈와 세계관을 만나보세요.">
   <meta property="og:title" content="헤뭉이의 작은 세계">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://haemungi.pages.dev/">
+  <meta property="og:image" content="https://haemungi.pages.dev/assets/haemungi-hero.webp">
+  <meta property="og:image:alt" content="헤뭉이 캐릭터 공식 원화">
+  <meta name="twitter:card" content="summary_large_image">
   <meta property="og:description" content="사소한 우연이 포근한 친구가 되는 곳.">
   <title>헤뭉이의 작은 세계 | HAEMUNGI</title>
   <link rel="preload" as="image" href="assets/haemungi-hero.webp" fetchpriority="high">
@@ -16,12 +21,14 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Gowun+Dodum&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="managed-content.css">
+  <link rel="stylesheet" href="social-sections.css">
   <script src="content-config.js" defer></script>
   <script src="analytics.js" defer></script>
   <script src="main.js" defer></script>
   <script src="managed-content.js" defer></script>
   <script src="translations.js" defer></script>
   <script src="i18n.js" defer></script>
+  <script src="share.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 이동</a>
@@ -58,6 +65,9 @@
       <li><a href="#goods" data-page="goods"><small>05</small> 헤뭉이 굿즈 <span>↗</span></a></li>
       <li><a href="#room" data-page="room"><small>06</small> 헤뭉이의 방 <span>↗</span></a></li>
       <li><a href="#about" data-page="about"><small>07</small> 헤뭉이 소개 <span>↗</span></a></li>
+      <li><a href="#today" data-page="today"><small>08</small> 헤뭉이의 오늘 <span>↗</span></a></li>
+      <li><a href="#creator" data-page="creator"><small>09</small> 캐릭터 제작자소개 <span>↗</span></a></li>
+      <li><a href="#emoticons" data-page="emoticons"><small>10</small> 헤뭉이 이모티콘 <span>↗</span></a></li>
     </ul>
     <p class="menu-footer">하루에 하나쯤, 작고 따뜻한 우연을.</p>
   </nav>
@@ -189,8 +199,30 @@
       <section class="mbti-section section-padding"><div class="mbti-card"><div class="mbti-portrait"><img src="assets/haemungi-mbti-portrait.webp" alt="창가의 꽃과 햇살 속에서 세상을 바라보는 새 헤뭉이 캐릭터" loading="lazy" decoding="async"></div><div class="mbti-copy"><span class="eyebrow">HAEMUNGI'S IMAGINARY MBTI</span><h2>헤뭉이의 성격은<br><em>INFP와 닮았어요.</em></h2><p>공식 성격검사 결과가 아닌, 캐릭터 설정을 바탕으로 상상한 MBTI예요. 조용하지만 호기심 많고, 따뜻한 마음으로 세상을 관찰하는 헤뭉이에게 잘 어울려요.</p><div class="mbti-letters"><span><b>I</b><small>조용한<br>에너지</small></span><span><b>N</b><small>작은<br>상상력</small></span><span><b>F</b><small>다정한<br>마음</small></span><span><b>P</b><small>느긋한<br>하루</small></span></div><small class="mbti-note">※ MBTI® 유형에 대한 캐릭터 창작 해석이며, 실제 검사를 실시하거나 성격을 진단한 것이 아닙니다.</small></div></div></section>
       <section class="about-last"><span>✳</span><h2>우연은 때때로<br><em>가장 다정한 선물</em>이 돼요.</h2><a href="#room" data-page="room" class="button-primary">헤뭉이 방에 놀러가기 ↗</a></section>
     </div>
+
+    <div class="page" id="page-today" data-view="today" hidden>
+      <section class="sub-hero hm-special-hero hm-today-hero"><p class="eyebrow">HAEMUNGI · LITTLE TODAY</p><h1>헤뭉이의<br><em>오늘.</em></h1><p>오늘의 작은 발견을 모아두는 곳이에요.</p><span class="sub-decoration" aria-hidden="true">☀</span></section>
+      <section class="section-padding hm-special-section"><div class="hm-special-heading"><span class="eyebrow">A MOMENT TO KEEP</span><h2>헤뭉이의 오늘</h2><p>작고 사랑스러운 하루의 그림과 이야기를 전합니다.</p></div>
+        <div class="hm-special-grid" id="hmTodayGrid" aria-live="polite"></div><p class="hm-special-empty" id="hmTodayEmpty">아직 공개된 오늘의 그림이 없어요.</p><div class="hm-page-share"><button type="button" data-hm-share>이 페이지 공유</button><button type="button" data-hm-copy>링크 복사</button></div>
+      </section>
+    </div>
+    <div class="page" id="page-creator" data-view="creator" hidden>
+      <section class="sub-hero hm-special-hero hm-creator-hero"><p class="eyebrow">BEHIND THE CHARACTER</p><h1>캐릭터<br><em>제작자 소개.</em></h1><p>헤뭉이를 만든 사람의 이야기.</p><span class="sub-decoration" aria-hidden="true">✿</span></section>
+      <section class="section-padding hm-special-section"><div class="hm-creator-layout"><div class="hm-creator-image protected-media"><img src="assets/haemungi-sheet.webp" alt="헤뭉이 공식 캐릭터 설정화" loading="lazy" decoding="async"></div>
+        <div class="hm-creator-copy"><span class="eyebrow">CREATED BY</span><h2>일현 조성훈</h2><p>작가 일현 조성훈이 만든 작은 친구, 헤뭉이.</p><p>바닥에 떨어진 머리카락 한 올에서 이야기가 시작됐습니다. 평범한 일상에서 만난 우연을 캐릭터와 이야기로 이어갑니다.</p>
+          <h3>공식 연락처</h3><div class="hm-official-links"><a href="https://www.instagram.com/iam_haemungi?srtk=dm5ueXpvcHpibHU2" target="_blank" rel="noopener noreferrer">인스타그램 ↗</a><a href="https://www.threads.com/@iam_haemungi" target="_blank" rel="noopener noreferrer">스레드 ↗</a><a href="mailto:say3589@naver.com">이메일 문의 ↗</a></div>
+          <p class="hm-contact-note">캐릭터 및 협업 문의는 이메일로 보내주세요.</p><div class="hm-page-share"><button type="button" data-hm-share>이 페이지 공유</button><button type="button" data-hm-copy>링크 복사</button></div>
+        </div></div></section>
+    </div>
+    <div class="page" id="page-emoticons" data-view="emoticons" hidden>
+      <section class="sub-hero hm-special-hero hm-emoticon-hero"><p class="eyebrow">LITTLE EXPRESSIONS</p><h1>헤뭉이<br><em>이모티콘.</em></h1><p>작은 표정에도 이야기가 있어요.</p><span class="sub-decoration" aria-hidden="true">♡</span></section>
+      <section class="section-padding hm-special-section"><div class="hm-special-heading"><span class="eyebrow">HAEMUNGI EMOTICON GALLERY</span><h2>헤뭉이 이모티콘</h2><p>헤뭉이의 표정과 움직임을 하나씩 모아볼게요.</p></div>
+        <div class="hm-special-grid hm-emoticon-grid" id="hmEmoticonGrid" aria-live="polite"></div><p class="hm-special-empty" id="hmEmoticonEmpty">아직 공개된 이모티콘이 없어요.</p>
+        <p class="hm-contact-note hm-center">전시 공간입니다. 다운로드나 판매가 확정된 상품은 아닙니다.</p><div class="hm-page-share"><button type="button" data-hm-share>이 페이지 공유</button><button type="button" data-hm-copy>링크 복사</button></div>
+      </section>
+    </div>
   </main>
-  <footer class="footer"><span class="footer-brand">헤뭉이 ✿</span><p>세상에 숨어 있는 작은 우연에게 보내는 인사.</p><div><span>© 2026 HAEMUNGI · 일현 조성훈</span><span>MADE WITH TENDERNESS</span></div><details class="analytics-disclosure" id="analyticsDisclosure"><summary>방문 통계 안내</summary><p>방문자가 직접 허용한 경우에만 페이지·콘텐츠 열람·유입 채널 종류·화면 크기 분류와 30분 단위 임의 세션 번호를 기록합니다. 사이트 조회 통계에는 이름·이메일·검색어·IP 주소를 저장하지 않습니다. 동의는 언제든 철회할 수 있으며, 철회 전 이미 집계된 익명 기록은 남을 수 있습니다. 브라우저의 추적 차단 설정을 우선 적용합니다.</p><button type="button" id="analyticsSettings" class="analytics-settings">통계 수집 선택 변경</button></details></footer>
+  <footer class="footer"><span class="footer-brand">헤뭉이 ✿</span><p>세상에 숨어 있는 작은 우연에게 보내는 인사.</p><section class="hm-social-footer" aria-label="공식 채널과 공유"><h2>헤뭉이와 연결되기</h2><div class="hm-official-links"><a href="https://www.instagram.com/iam_haemungi?srtk=dm5ueXpvcHpibHU2" target="_blank" rel="noopener noreferrer">인스타그램 ↗</a><a href="https://www.threads.com/@iam_haemungi" target="_blank" rel="noopener noreferrer">스레드 ↗</a><a href="mailto:say3589@naver.com">이메일 문의 ↗</a></div><div class="hm-share-actions"><button type="button" data-hm-share>공유하기</button><button type="button" data-hm-threads>스레드 공유</button><button type="button" data-hm-copy>링크 복사</button></div></section><div><span>© 2026 HAEMUNGI · 일현 조성훈</span><span>MADE WITH TENDERNESS</span></div><details class="analytics-disclosure" id="analyticsDisclosure"><summary>방문 통계 안내</summary><p>방문자가 직접 허용한 경우에만 페이지·콘텐츠 열람·유입 채널 종류·화면 크기 분류와 30분 단위 임의 세션 번호를 기록합니다. 사이트 조회 통계에는 이름·이메일·검색어·IP 주소를 저장하지 않습니다. 동의는 언제든 철회할 수 있으며, 철회 전 이미 집계된 익명 기록은 남을 수 있습니다. 브라우저의 추적 차단 설정을 우선 적용합니다.</p><button type="button" id="analyticsSettings" class="analytics-settings">통계 수집 선택 변경</button></details></footer>
   <button type="button" class="analytics-launcher" id="analyticsLauncher" aria-controls="analyticsConsent" hidden>방문 통계 설정</button>
   <aside class="analytics-consent" id="analyticsConsent" aria-labelledby="analyticsConsentTitle" hidden>
     <div class="analytics-consent-copy"><strong id="analyticsConsentTitle">작은 방문 기록을 남겨도 될까요?</strong><p id="analyticsConsentDescription">허용하면 헤뭉이의 어떤 이야기가 사랑받는지 익명으로 집계합니다. 거부해도 모든 콘텐츠를 똑같이 이용할 수 있어요.</p><span id="analyticsConsentStatus" role="status" aria-live="polite"></span></div>

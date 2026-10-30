@@ -10,7 +10,7 @@
     navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true ||
     /bot|crawler|spider|lighthouse|headless/i.test(navigator.userAgent || '');
 
-  const pages = new Set(['home', 'videos', 'cards', 'daily', 'goods', 'room', 'about']);
+  const pages = new Set(['home', 'videos', 'cards', 'daily', 'goods', 'room', 'about', 'today', 'creator', 'emoticons']);
   const kinds = new Set([
     'page_view', 'goods_detail', 'card_view', 'room_spot', 'diary_view',
     'artwork_open', 'goods_filter', 'goods_search', 'music_toggle'

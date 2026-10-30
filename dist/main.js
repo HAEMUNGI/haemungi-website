@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const pages = new Set(['home', 'videos', 'cards', 'daily', 'goods', 'room', 'about']);
+  const pages = new Set(['home', 'videos', 'cards', 'daily', 'goods', 'room', 'about', 'today', 'creator', 'emoticons']);
   const menu = document.getElementById('menu');
   const menuButton = document.getElementById('menuToggle');
   const musicButton = document.getElementById('musicButton');
@@ -89,7 +89,8 @@
         daily: '헤뭉이 일상다반사',
         goods: '헤뭉이 굿즈',
         room: '헤뭉이의 방',
-        about: '헤뭉이 소개'
+        about: '헤뭉이 소개',
+        today: '헤뭉이의 오늘', creator: '캐릭터 제작자소개', emoticons: '헤뭉이 이모티콘'
       }[target]) + ' | 헤뭉이의 작은 세계';
     window.scrollTo({ top: 0, behavior: 'instant' });
     if (focusContent) main.focus({ preventScroll: true });
