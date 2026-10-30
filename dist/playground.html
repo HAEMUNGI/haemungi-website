@@ -72,32 +72,58 @@
 <section id="pg-game-pet" class="pg-game pg-pet" hidden aria-labelledby="pet-title">
 <div class="pg-game-heading"><button type="button" class="pg-back" data-back>← 놀이터</button><span>MY LITTLE HAEMUNGI</span></div>
 <p class="pg-kicker">♡ A FRIEND TO COME BACK TO ♡</p><h1 id="pet-title">나만의 <em>헤뭉이 키우기</em></h1>
-<p class="pg-game-lead">서두르지 않아도 괜찮아요. 오늘도 헤뭉이와 함께해요.</p>
-<div class="pg-pet-stage">
+<p class="pg-game-lead">하루의 작은 기억이 쌓여, 우리만의 이야기가 돼요.</p>
+<div class="pg-pet-stage" id="pet-scene">
 <img src="assets/haemungi-room.webp" id="pet-room-img" alt="햇살 가득한 헤뭉이의 방과 작은 친구 헤뭉이" width="900" height="600">
-<div class="pg-pet-spark" id="pet-spark" aria-hidden="true">♡ ✦ ♡</div>
+<div class="pg-pet-daylight" aria-hidden="true"></div>
+<div class="pg-pet-time" id="pet-time-label">햇살 드는 오후</div>
+<div class="pg-pet-decoration" id="pet-decoration" aria-hidden="true"></div>
+<div class="pg-pet-spark" id="pet-spark" aria-hidden="true">♡ ✧ ♡</div>
+<button type="button" id="pet-touch" class="pg-pet-touch" aria-label="헤뭉이 쓰다듬기">♡ <span>쓰다듬기</span></button>
+<button type="button" id="pet-butterfly" class="pg-pet-butterfly" aria-label="날아다니는 나비 잡기" hidden>🦋</button>
 <div class="pg-pet-bubble" id="pet-says" aria-live="polite">오늘도 만나서 반갑몽!</div>
 </div>
 <div class="pg-pet-dashboard">
 <div class="pg-pet-title-row"><div><span class="pg-eyebrow">MY FRIEND</span><h2>헤뭉이 <small id="pet-stage">솜털 친구</small></h2></div><div class="pg-level">LV <strong id="pet-level">1</strong><small id="pet-xp">0 XP</small></div></div>
+<div class="pg-pet-affection"><span>우리의 친밀도</span><strong id="pet-bond">처음 만난 사이</strong><div class="pg-bond-track"><span id="pet-bond-bar"></span></div><small id="pet-visit-days">함께한 날 1일</small></div>
 <div class="pg-meter-grid">
-<div><label for="pet-full">포만감</label><progress id="pet-full" max="100" value="75">75%</progress><span id="pet-full-text">75</span></div>
-<div><label for="pet-happy">기분</label><progress id="pet-happy" max="100" value="75">75%</progress><span id="pet-happy-text">75</span></div>
-<div><label for="pet-energy">휴식</label><progress id="pet-energy" max="100" value="75">75%</progress><span id="pet-energy-text">75</span></div>
+<div><label for="pet-full">포만감</label><progress id="pet-full" max="100" value="80">80%</progress><span id="pet-full-text">80</span></div>
+<div><label for="pet-happy">기분</label><progress id="pet-happy" max="100" value="80">80%</progress><span id="pet-happy-text">80</span></div>
+<div><label for="pet-energy">휴식</label><progress id="pet-energy" max="100" value="80">80%</progress><span id="pet-energy-text">80</span></div>
 </div>
 <div class="pg-pet-actions">
-<button type="button" data-care="feed"><span>🍪</span><strong>간식 주기</strong><small>포만감 +18</small></button>
-<button type="button" data-care="play"><span>🦋</span><strong>함께 놀기</strong><small>기분 +18</small></button>
-<button type="button" data-care="rest"><span>🌙</span><strong>쉬어가기</strong><small>휴식 +18</small></button>
+<button type="button" data-care="feed"><span aria-hidden="true">🍪</span><strong>간식 주기</strong><small>맛있는 시간</small></button>
+<button type="button" data-care="play"><span aria-hidden="true">🦋</span><strong>함께 놀기</strong><small>신나는 시간</small></button>
+<button type="button" data-care="rest"><span aria-hidden="true">🌙</span><strong>쉬어가기</strong><small>포근한 시간</small></button>
 </div>
-<p class="pg-pet-note">오랫동안 오지 않아도 헤뭉이가 사라지거나 다치지 않아요. 돌봄 기록은 이 기기에만 저장됩니다.</p>
+<p class="pg-pet-progress-note" id="pet-progress-note">오늘은 세 번의 돌봄으로 성장 경험치를 모을 수 있어요.</p>
+<div class="pg-pet-mission">
+<div><span class="pg-eyebrow">TODAY'S LITTLE ADVENTURE</span><h3>오늘의 작은 모험</h3><p id="pet-mission-text">방 안에 찾아온 나비를 만나볼까요?</p></div>
+<button type="button" id="pet-quest" class="pg-pet-quest">나비 찾기 <span aria-hidden="true">↗</span></button>
+<div id="pet-quest-status" class="pg-pet-quest-status" aria-live="polite">오늘 처음 만나는 나비를 찾아보세요.</div>
+</div>
+<div class="pg-pet-cupboard">
+<div><span class="pg-eyebrow">MY LITTLE ROOM</span><h3>방 꾸미기</h3><p>성장하면서 작은 장식을 하나씩 만나보세요.</p></div>
+<div class="pg-pet-decor-buttons" role="group" aria-label="방 장식 선택">
+<button type="button" data-decor="petals" aria-pressed="true">✿ 꽃잎</button>
+<button type="button" data-decor="stars" aria-pressed="false">✧ 별빛 <small>LV 2</small></button>
+<button type="button" data-decor="butterflies" aria-pressed="false">♡ 나비 <small>LV 3</small></button>
+</div>
+</div>
+<div class="pg-pet-memories"><span class="pg-eyebrow">OUR LITTLE DIARY</span><h3>헤뭉이의 추억 서랍</h3><ul id="pet-memory-list" aria-label="최근 추억"></ul></div>
+<p class="pg-pet-note">오랫동안 찾아오지 않아도 헤뭉이는 사라지거나 다치지 않아요. 기록은 이 기기에만 저장됩니다.</p>
 </div>
 </section>
 
 <section id="pg-game-rps" class="pg-game pg-rps" hidden aria-labelledby="rps-title">
 <div class="pg-game-heading"><button type="button" class="pg-back" data-back>← 놀이터</button><span>LITTLE MATCH</span></div>
-<p class="pg-kicker">✿ ONE HAPPY ROUND ✿</p><h1 id="rps-title">헤뭉이 <em>가위바위보</em></h1><p class="pg-game-lead">헤뭉이랑 한 판! 무엇을 낼지 골라주세요.</p>
-<div class="pg-rps-stage">
+<p class="pg-kicker">✿ LET'S PLAY TOGETHER ✿</p><h1 id="rps-title">헤뭉이 <em>가위바위보</em></h1>
+<p class="pg-game-lead">먼저 두 번 이기면 승리! 헤뭉이의 반응도 놓치지 마세요.</p>
+<div class="pg-rps-stage" id="rps-stage">
+<div class="pg-rps-matchtop">
+<div class="pg-rps-character" id="rps-character"><img src="assets/haemungi-mbti-portrait.webp" alt="헤뭉이 공식 캐릭터 원화" width="400" height="400"><span id="rps-character-says">오늘은 내가 이길 거몽!</span></div>
+<div class="pg-rps-matchcard"><span class="pg-eyebrow">BEST OF THREE</span><p>먼저 2승 · 작은 승부</p><div class="pg-rps-matchscore"><strong id="rps-match-you">0</strong><span>:</span><strong id="rps-match-them">0</strong></div><div class="pg-rps-rounds" id="rps-rounds">첫 번째 승부를 시작해요</div></div>
+</div>
 <div class="pg-rps-arena"><div class="pg-rps-player"><small>당신</small><div id="rps-you" class="pg-rps-gesture">?</div></div><div class="pg-rps-vs">VS</div><div class="pg-rps-player"><small>헤뭉이</small><div id="rps-them" class="pg-rps-gesture">?</div></div></div>
 <p id="rps-result" aria-live="polite">헤뭉이가 기다리고 있몽!</p>
 <div class="pg-rps-buttons">
@@ -105,7 +131,9 @@
 <button type="button" data-rps="paper" aria-label="보 선택"><span>✋</span><strong>보</strong></button>
 <button type="button" data-rps="scissors" aria-label="가위 선택"><span>✌️</span><strong>가위</strong></button>
 </div>
-<div class="pg-rps-score"><span>승리 <b id="rps-wins">0</b></span><span>무승부 <b id="rps-draws">0</b></span><span>패배 <b id="rps-losses">0</b></span></div>
+<div class="pg-rps-controls"><button id="rps-again" class="pg-rps-again" type="button" hidden>새 대결 시작 ↻</button><button id="rps-sound" class="pg-rps-sound" type="button" aria-pressed="false">♪ 효과음 켜기</button></div>
+<div class="pg-rps-score"><span>승리 <b id="rps-wins">0</b></span><span>무승부 <b id="rps-draws">0</b></span><span>패배 <b id="rps-losses">0</b></span><span>최장 연승 <b id="rps-best">0</b></span></div>
+<div class="pg-rps-caption">기록은 이 기기에 저장됩니다. 횟수 제한이나 결제는 없습니다.</div>
 </div>
 </section>
 </main>
