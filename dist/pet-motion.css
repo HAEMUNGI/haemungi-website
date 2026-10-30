@@ -1,0 +1,70 @@
+/* HAEMUNGI live pet world: sprite animation engine, separate from the original room artwork. */
+.pg-pet-stage.hm-live{background:#fff7eb}
+.pg-pet-stage.hm-live>img{opacity:0;pointer-events:none}
+.pg-pet-stage.hm-live.touched>img{animation:none!important}
+.pg-pet-stage.hm-live .pg-pet-daylight{display:none}
+.pg-pet-stage.hm-live .pg-pet-decoration{z-index:5;pointer-events:none}
+.pg-pet-stage.hm-live .pg-pet-spark{z-index:9}
+.pg-pet-stage.hm-live .pg-pet-time{z-index:8}
+.pg-pet-stage.hm-live .pg-pet-touch{z-index:9;bottom:17%;left:50%;box-shadow:0 7px 22px #7b615444}
+.pg-pet-stage.hm-live .pg-pet-bubble{z-index:10;bottom:5px}
+.pg-pet-stage.hm-live .pg-pet-butterfly{z-index:11}
+.hm-pet-world{position:absolute;inset:0;z-index:1;overflow:hidden;isolation:isolate;cursor:pointer;touch-action:pan-y;background:linear-gradient(#fdf6e9 0%,#fdf1de 64%,#f4dfc2 64%,#eed6b3 100%)}
+.hm-world-sky{position:absolute;inset:0 0 31%;background:radial-gradient(circle at 28% 16%,#fffefa 0%,#fff1d8 52%,#efcfb4 100%);overflow:hidden}
+.hm-world-sky .hm-cloud{position:absolute;width:22%;height:12%;border-radius:90px;background:#fffefa88;filter:blur(7px);animation:hmCloud 22s linear infinite alternate}
+.hm-cloud-a{top:13%;left:14%}.hm-cloud-b{top:31%;left:64%;animation-delay:-8s!important}
+.hm-sun{position:absolute;top:8%;right:23%;width:10%;aspect-ratio:1;border-radius:50%;background:#fff5c5;box-shadow:0 0 45px 26px #ffeed366}
+.hm-world-window{position:absolute;top:9%;left:10%;width:34%;height:46%;border:9px solid #d5ad83;border-radius:48% 48% 6px 6px;background:linear-gradient(#a8d3df 0%,#daebd5 57%,#d8caaa 58%,#b5d2a2 100%);box-shadow:inset 0 0 30px #ffffffaa,0 4px 0 #a8886a;opacity:.88}
+.hm-window-cross{position:absolute;inset:0;pointer-events:none}
+.hm-window-cross:before,.hm-window-cross:after{content:"";position:absolute;background:#c89a70;box-shadow:1px 1px 2px #967c6199}
+.hm-window-cross:before{left:48%;top:0;bottom:0;width:5%}
+.hm-window-cross:after{left:0;right:0;top:53%;height:6%}
+.hm-world-curtain{position:absolute;top:7%;width:11%;height:51%;background:repeating-linear-gradient(90deg,#fff6e7bd 0 10px,#e6d0b48c 10px 14px);filter:drop-shadow(0 10px 12px #ae8c7233);opacity:.86;z-index:1}
+.hm-curtain-left{left:8%;border-radius:20px 8px 45% 20px;transform:skew(6deg)}
+.hm-curtain-right{left:41%;border-radius:8px 20px 20px 45%;transform:skew(-6deg)}
+.hm-world-shelf{position:absolute;right:6%;top:13%;width:24%;height:35%;border-bottom:8px solid #b18d67;background:linear-gradient(to bottom,transparent 45%,#b38d61 45%,#b38d61 50%,transparent 50%);z-index:2}
+.hm-world-shelf>span{position:absolute;bottom:8px;width:13%;height:36%;background:#bca18e;border-radius:2px;box-shadow:8px 0 0 #a5b8ac,16px 0 0 #e4ba9c}
+.hm-world-shelf>span:nth-child(1){left:13%;height:47%;background:#be9680}
+.hm-world-shelf>span:nth-child(2){left:51%;height:31%;background:#9daaa5}
+.hm-world-shelf>span:nth-child(3){left:77%;height:42%;background:#e1b5ad}
+.hm-world-floor{position:absolute;inset:64% 0 0;background:repeating-linear-gradient(164deg,#e5c69d00 0 35px,#bd95734d 36px 38px,#e5c69d00 39px 64px),linear-gradient(#ead1ae,#e6be92);border-top:8px solid #d3b08e}
+.hm-world-rug{position:absolute;left:19%;right:13%;bottom:7%;height:19%;border-radius:50%;background:radial-gradient(ellipse,#fff7e8 0%,#f3e0cd 54%,#d9ae90 55%,#d9ae90 60%,transparent 61%);opacity:.95}
+.hm-world-flower{position:absolute;bottom:17%;font-size:clamp(22px,5vw,58px);color:#fff9ed;text-shadow:0 0 5px #d9ae97,0 2px 2px #b8987c;z-index:3;pointer-events:none}
+.hm-flower-left{left:6%}.hm-flower-right{right:7%;color:#fae2d5}
+.hm-world-shadow{position:absolute;z-index:3;bottom:20%;left:50%;width:17%;height:3.7%;border-radius:50%;background:#9d735644;filter:blur(5px);pointer-events:none}
+.hm-pet-actor{position:absolute;z-index:4;left:50%;bottom:19%;width:115px;height:130px;background-repeat:no-repeat;background-position:center;background-size:100% 100%;will-change:left,transform;pointer-events:none;transform-origin:50% 85%;filter:drop-shadow(0 8px 3px #9f795a38)}
+.hm-world-cookie,.hm-world-butterfly,.hm-world-zz{position:absolute;z-index:5;opacity:0;pointer-events:none;transition:opacity .15s;user-select:none}
+.hm-world-cookie{bottom:33%;left:40%;font-size:clamp(18px,3vw,35px)}
+.hm-world-butterfly{bottom:52%;left:56%;font-size:clamp(22px,4vw,38px)}
+.hm-world-zz{bottom:50%;left:70%;font:700 clamp(17px,3vw,32px) Georgia,serif;color:#9374aa;letter-spacing:7px}
+.hm-world-cookie.show,.hm-world-butterfly.show,.hm-world-zz.show{opacity:1}
+.hm-world-cookie.show{animation:hmCookie 1s ease-in-out infinite alternate}
+.hm-world-butterfly.show{animation:hmButterfly 1.4s ease-in-out infinite alternate}
+.hm-world-zz.show{animation:hmSleep 1.7s ease-out infinite}
+.hm-world-hint{position:absolute;z-index:6;left:50%;bottom:2%;transform:translateX(-50%);width:max-content;max-width:80%;padding:5px 13px;border-radius:40px;font-size:clamp(9px,1.3vw,13px);color:#745743;background:#fffaf1d9;border:1px solid #e0c7a8;box-shadow:0 4px 15px #755c4533;pointer-events:none;white-space:nowrap}
+.pg-pet-stage.hm-live.pg-night .hm-pet-world{filter:brightness(.78)}
+.pg-pet-stage.hm-live.pg-night .hm-world-sky{background:radial-gradient(circle at 74% 14%,#e1dbe6 0%,#b6b9d3 32%,#8792b0 100%)}
+.pg-pet-stage.hm-live.pg-night .hm-sun{background:#fff7ed;box-shadow:0 0 28px 15px #f5eddf66}
+.pg-pet-stage.hm-live.pg-night .hm-world-hint{filter:brightness(1.24)}
+.pg-pet-stage.hm-live.pg-morning .hm-world-sky{background:linear-gradient(#f4d9b8,#f7ecd2)}
+.pg-pet-stage.hm-live .hm-pet-actor{mix-blend-mode:normal}
+.hm-pet-world.hm-petted:after{content:"♡ ♡ ♡";position:absolute;z-index:9;left:48%;bottom:45%;color:#e9a59d;font-size:34px;animation:hmHearts 1.2s ease-out forwards;pointer-events:none}
+@keyframes hmCloud{from{transform:translateX(-11%)}to{transform:translateX(13%)}}
+@keyframes hmButterfly{0%{transform:translate(0,0) rotate(-11deg)}100%{transform:translate(18px,-23px) rotate(12deg)}}
+@keyframes hmCookie{from{transform:translateY(0) rotate(-10deg)}to{transform:translateY(-16px) rotate(10deg)}}
+@keyframes hmSleep{0%{opacity:0;transform:translateY(15px)}30%{opacity:1}100%{opacity:0;transform:translateY(-26px)}}
+@keyframes hmHearts{from{opacity:0;transform:translate(-50%,0) scale(.6)}40%{opacity:1}to{opacity:0;transform:translate(-50%,-60px) scale(1.4)}}
+@media(max-width:560px){
+ .hm-world-window{border-width:5px}
+ .hm-world-shelf{border-bottom-width:5px}
+ .hm-world-hint{max-width:90%;padding:4px 9px;font-size:9px}
+ .hm-world-rug{bottom:8%}
+ .pg-pet-stage.hm-live .pg-pet-touch{bottom:14%;left:50%}
+ .pg-pet-stage.hm-live .pg-pet-bubble{font-size:10px;bottom:2px}
+ .hm-world-cookie{bottom:45%}
+ .hm-world-butterfly{bottom:56%}
+ .hm-world-zz{bottom:55%}
+}
+@media(prefers-reduced-motion:reduce){
+ .hm-cloud,.hm-world-cookie,.hm-world-butterfly,.hm-world-zz,.hm-pet-world.hm-petted:after{animation:none!important}
+}

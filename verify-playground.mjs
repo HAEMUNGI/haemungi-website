@@ -41,4 +41,14 @@ for(const selector of ['.pg-pet-affection','.pg-pet-mission','.pg-rps-matchtop',
 assert.equal((html.match(/data-rps="(?:rock|paper|scissors)"/g)||[]).length,3);
 assert.equal((html.match(/data-care="(?:feed|play|rest)"/g)||[]).length,3);
 assert.ok(!html.includes('id="pet-stage" id='),'Invalid pet stage');
-console.log('HAEMUNGI playground source and five original card arts and v2 minigames: PASS');
+const motion=readFileSync('dist/pet-motion.js','utf8');
+const motionCss=readFileSync('dist/pet-motion.css','utf8');
+assert.match(html,/pet-motion\.js/);
+assert.match(html,/pet-motion\.css/);
+new Function(motion);
+for(const marker of ['requestAnimationFrame','extractPose','walkTo','react("touch")','hm-pet-actor','haemungi-sheet.webp'])assert.ok(motion.includes(marker),marker);
+assert.match(motionCss,/\.hm-pet-actor/);
+assert.match(motionCss,/prefers-reduced-motion/);
+const sheet=readFileSync('dist/assets/haemungi-sheet.webp');
+assert.ok(sheet.length>100000,'Character sheet missing');
+console.log('HAEMUNGI playground source and five original card arts and live sprite-based pet: PASS');
