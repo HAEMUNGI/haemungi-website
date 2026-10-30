@@ -11,7 +11,7 @@
 .analytics-actions button{min-height:42px}
 .analytics-status{font-size:12px;color:#8b7787;margin:0 0 18px}
 .analytics-status.error{color:#b33c5c;background:#fff2f5;padding:12px;border-radius:12px}
-.analytics-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-bottom:20px}
+.analytics-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:20px}
 .analytics-kpi{border:1px solid #f0e2ec;background:#fff;border-radius:19px;padding:18px 20px;min-width:0;box-shadow:0 9px 25px #c78dac10}
 .analytics-kpi:nth-child(4n+2){background:#f6fbff}.analytics-kpi:nth-child(4n+3){background:#fff6fa}.analytics-kpi:nth-child(4n+4){background:#f8fff9}
 .analytics-kpi span,.analytics-kpi small{display:block;color:#8c788b}.analytics-kpi span{font-size:12px;font-weight:750}.analytics-kpi strong{font-size:clamp(24px,3vw,38px);color:#3f3844;display:block;margin:9px 0 5px;font-variant-numeric:tabular-nums}.analytics-kpi small{font-size:11px}

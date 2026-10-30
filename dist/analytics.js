@@ -13,7 +13,7 @@
   const pages = new Set(['home', 'videos', 'cards', 'daily', 'goods', 'room', 'about']);
   const kinds = new Set([
     'page_view', 'goods_detail', 'card_view', 'room_spot', 'diary_view',
-    'artwork_open', 'goods_filter', 'goods_search', 'music_toggle', 'video_play'
+    'artwork_open', 'goods_filter', 'goods_search', 'music_toggle'
   ]);
   const recent = new Map();
   const SESSION_KEY = 'hm_anonymous_session_v1';

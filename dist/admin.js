@@ -84,7 +84,7 @@
     return response.status === 204 ? null : response.json().catch(() => null);
   }
   const rest = (table, query = '') => `/rest/v1/${table}${query}`;
-  const reportTables = new Set(['hm_stats_dashboard','hm_stats_daily','hm_stats_pages','hm_stats_content','hm_stats_sources','hm_stats_devices','hm_stats_hours','hm_goods','hm_stories','hm_room_spots','hm_media_public']);
+  const reportTables = new Set(['hm_stats_dashboard','hm_stats_daily','hm_stats_pages','hm_stats_content','hm_stats_sources','hm_stats_devices','hm_stats_hours','hm_goods','hm_stories','hm_room_spots']);
   window.HM_ADMIN_REPORT_QUERY = (table, query = '?select=*') => {
     if (!reportTables.has(table) || !/^\?select=\*$/.test(query)) throw new Error('통계 접근 요청이 올바르지 않습니다.');
     return request(rest(table, query));
