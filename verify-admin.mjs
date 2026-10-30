@@ -51,6 +51,17 @@ assert.match(reportGrants, /grant select on[\s\S]*public\.hm_stats_dashboard/);
 assert.doesNotMatch(reportGrants, /\bto\s+anon\b/i);
 assert.match(admin, /HM_ADMIN_REPORT_QUERY/);
 assert.match(publicJS, /is_published=eq.true/);
+// A new webtoon must create a separate slot, not overwrite daily-moments.
+assert.match(html, /id="addWebtoon"/);
+assert.match(html, /id="webtoonReplaceHint"/);
+assert.match(admin, /createSlot\('webtoon'\)/);
+assert.match(admin, /webtoon:'webtoon'/);
+assert.match(admin, /kind === 'webtoon'[\s\S]+?Date\.now\(\)\.toString\(36\)/);
+assert.match(admin, /current === 'daily-moments'[\s\S]+?current\.startsWith\('webtoon-'\)/);
+assert.match(publicJS, /row\.slot\.startsWith\('gallery-'\) \|\| row\.slot\.startsWith\('webtoon-'\)/);
+assert.match(publicJS, /'daily-moments': 'assets\/daily-little-moments\.webp'/);
+assert.match(site, /data-lightbox="assets\/daily-first-encounter\.webp"/);
+assert.match(site, /data-lightbox="assets\/daily-little-moments\.webp"/);
 assert.match(publicJS, /if \(!response\.ok\) return;/);
 assert.match(publicJS, /Keep the approved built-in original assets/);
 console.log('PASS: content & analytics admin markup, JS syntax, owner-only RLS reports, safe original artwork fallback.');

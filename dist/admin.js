@@ -8,7 +8,7 @@
     ['goods-collection', '굿즈 전체 모음'],
     ...['shirt', 'cap', 'keyring', 'phonecase', 'mug', 'coin', 'stickers', 'totebag', 'notebook', 'plush'].map((name, i) =>
       [`goods-${name}`, `${i + 1}번 굿즈 · ${name}`]),
-    ['daily-first', '첫 만남 웹툰'], ['daily-moments', '일상다반사 웹툰'],
+    ['daily-first', '첫 만남 웹툰'], ['daily-moments', '일상다반사 웹툰 · 기존 회차 수정'],
     ...Array.from({length: 9}, (_, i) => [`card-${String(i + 1).padStart(2, '0')}`, `카드뉴스 ${i + 1}장`]),
     ['music-main', '배경음악']
   ];
@@ -173,6 +173,7 @@
     $('file').value = '';
     $('filename').textContent = '파일을 선택하세요 · 이미지 10MB / 영상 40MB / 음악 15MB';
     current = slot;
+    $('webtoonReplaceHint').hidden = slot !== 'daily-moments';
     renderSelector(); renderList();
     const old = live.find(x => x.slot === slot);
     const pending = drafts.find(x => x.slot === slot);
@@ -293,6 +294,13 @@
   }
   async function publishClicked() {
     if (!current) return;
+    const published = live.find(row => row.slot === current && row.is_published);
+    const pending = drafts.find(row => row.slot === current);
+    const changedDraftImage = pending && published &&
+      (pending.source_path !== published.source_path || pending.source_url !== published.source_url);
+    const replacingPublishedWebtoon = (current === 'daily-moments' || current.startsWith('webtoon-')) &&
+      published && ($('file').files.length > 0 || changedDraftImage);
+    if (replacingPublishedWebtoon && !confirm('기존 웹툰 이미지가 교체됩니다. 새 회차는 ‘＋ 새 일상다반사 웹툰’으로 추가하세요. 이 회차의 이미지를 교체하시겠습니까?')) return;
     setBusy(true);
     try {
       const row = await saveDraft();
@@ -348,10 +356,12 @@
     $('password').value = ''; notice('로그아웃했습니다.');
   }
   function createSlot(kind) {
-    const prefix = {video:'video',image:'gallery',today:'today',emoticon:'emoticon'}[kind];
+    const prefix = {video:'video',image:'gallery',today:'today',emoticon:'emoticon',webtoon:'webtoon'}[kind];
     if (!prefix) return;
-    const slug = `${prefix}-${crypto.randomUUID().slice(0, 12)}`;
-    labels.set(slug, {video:'새 영상',image:'새 갤러리 이미지',today:'헤뭉이의 오늘',emoticon:'새 이모티콘'}[kind]);
+    const slug = kind === 'webtoon'
+      ? `webtoon-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`
+      : `${prefix}-${crypto.randomUUID().slice(0, 12)}`;
+    labels.set(slug, {video:'새 영상',image:'새 갤러리 이미지',today:'헤뭉이의 오늘',emoticon:'새 이모티콘',webtoon:'새 일상다반사 웹툰'}[kind]);
     renderSelector(); selectSlot(slug);
   }
 
@@ -364,6 +374,7 @@
   $('addImage').addEventListener('click', () => createSlot('image'));
   $('addVideo').addEventListener('click', () => createSlot('video'));
   $('addToday').addEventListener('click', () => createSlot('today'));
+  $('addWebtoon').addEventListener('click', () => createSlot('webtoon'));
   $('addEmoticon').addEventListener('click', () => createSlot('emoticon'));
   document.querySelectorAll('input[name="source"]').forEach(radio => radio.addEventListener('change', toggleSource));
   $('file').addEventListener('change', () => {
