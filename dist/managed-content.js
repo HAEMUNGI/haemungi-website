@@ -118,10 +118,17 @@
       count++;
       const article = document.createElement('article'); article.className = 'hm-special-card protected-media';
       const img = document.createElement('img'); img.src = uri; img.loading = 'lazy'; img.decoding = 'async'; img.alt = row.alt_text || row.title || '헤뭉이';
+      const imageLink = document.createElement('a');
+      imageLink.className = 'hm-special-image-link';
+      imageLink.href = uri;
+      imageLink.target = '_blank';
+      imageLink.rel = 'noopener noreferrer';
+      imageLink.setAttribute('aria-label', `${row.title || '헤뭉이'} 원본 크게 보기`);
+      imageLink.append(img);
       const copy = document.createElement('div'); copy.className = 'hm-special-card-copy';
       const title = document.createElement('h3'); title.textContent = row.title || '헤뭉이';
       const description = document.createElement('p'); description.textContent = row.description || '';
-      copy.append(title, description); article.append(img, copy); grid.append(article);
+      copy.append(title, description); article.append(imageLink, copy); grid.append(article);
     });
     empty.hidden = count > 0;
   }

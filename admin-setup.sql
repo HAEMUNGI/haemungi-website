@@ -65,7 +65,11 @@ create policy hm_admins_self on public.hm_admins for select to authenticated
 
 drop policy if exists hm_media_public_read on public.hm_media_public;
 create policy hm_media_public_read on public.hm_media_public for select to anon, authenticated
-  using (is_published or exists (
+  using (is_published);
+-- Separate authenticated-owner policy: anonymous reads never require access to hm_admins.
+drop policy if exists hm_media_public_read_admin on public.hm_media_public;
+create policy hm_media_public_read_admin on public.hm_media_public for select to authenticated
+  using (exists (
     select 1 from public.hm_admins a where a.user_id = (select auth.uid())
   ));
 drop policy if exists hm_media_public_insert on public.hm_media_public;
