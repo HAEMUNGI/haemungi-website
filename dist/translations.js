@@ -360,4 +360,5 @@ window.HAEMUNGI_TRANSLATIONS = Object.freeze([
   ,["스레드 공유","Share to Threads","Threadsで共有","分享到 Threads"]
   ,["작고 따뜻한 헤뭉이의 세계를 만나보세요.","Discover HAEMUNGI's little warm world.","ヘムンギの小さく温かな世界へようこそ。","欢迎探索 HAEMUNGI 温暖的小世界。"]
   ,["헤뭉이 캐릭터 공식 원화","Official HAEMUNGI character illustration","ヘムンギ公式イラスト","HAEMUNGI 官方角色插画"]
+  ,["헤뭉이 놀이터","HAEMUNGI Playground","ヘムンギの遊び場","HAEMUNGI 游乐场"]
 ]);
