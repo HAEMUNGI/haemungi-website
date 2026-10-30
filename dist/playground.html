@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff8ed">
+<meta name="robots" content="noai,noimageai">
+<meta name="description" content="헤뭉이 놀이터: 오늘의 타로, 헤뭉이 다마고치, 가위바위보를 즐겨요.">
+<meta property="og:title" content="헤뭉이 놀이터 | HAEMUNGI">
+<meta property="og:image" content="https://haemungi.pages.dev/assets/playground-main.jpg">
+<title>헤뭉이 놀이터 | HAEMUNGI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="playground.css">
+<script src="playground.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#pg-main">본문으로 이동</a>
+<header class="pg-header">
+<a href="index.html#home" class="pg-logo" aria-label="헤뭉이 공식 홈페이지로 돌아가기"><span class="pg-mark">✿</span><span><b>헤뭉이</b><small>HAEMUNGI'S LITTLE WORLD</small></span></a>
+<a href="index.html#home" class="pg-escape">공식 홈페이지 <span aria-hidden="true">↗</span></a>
+</header>
+<main id="pg-main" tabindex="-1">
+<section id="pg-plaza" class="pg-plaza" aria-labelledby="pg-title">
+<div class="pg-overline">HAEMUNGI PLAYGROUND</div>
+<h1 id="pg-title">헤뭉이 <em>놀이터</em></h1>
+<p class="pg-intro">작은 하루가 특별한 이야기가 되는 곳.<br>마음이 끌리는 놀이를 골라 보세요.</p>
+<div class="pg-scene">
+<img src="assets/playground-main.jpg" alt="햇살과 꽃이 가득한 헤뭉이 놀이터. 타로, 다마고치, 가위바위보 세 가지 놀이가 그려져 있습니다." width="864" height="1536" fetchpriority="high">
+<button class="pg-scene-pick pg-scene-pick-tarot" type="button" data-enter="tarot" aria-label="헤뭉이 타로 입장"><span class="sr">타로카드 뽑기</span></button>
+<button class="pg-scene-pick pg-scene-pick-pet" type="button" data-enter="pet" aria-label="헤뭉이 다마고치 입장"><span class="sr">헤뭉이 키우기</span></button>
+<button class="pg-scene-pick pg-scene-pick-rps" type="button" data-enter="rps" aria-label="헤뭉이 가위바위보 입장"><span class="sr">가위바위보 한 판</span></button>
+</div>
+<div class="pg-choice-tiles" aria-label="놀이 선택">
+<button type="button" data-enter="tarot"><span>✦</span><strong>오늘의 타로</strong><small>작은 운세 만나기</small></button>
+<button type="button" data-enter="pet"><span>♡</span><strong>헤뭉이 키우기</strong><small>오늘도 돌봐주기</small></button>
+<button type="button" data-enter="rps"><span>✌</span><strong>가위바위보</strong><small>가볍게 한 판</small></button>
+</div>
+<p class="pg-privacy">게임 진행 기록은 이 기기에 저장됩니다. 계정 연동이나 유료 결제는 없습니다.</p>
+</section>
+
+<section id="pg-game-tarot" class="pg-game pg-tarot" hidden aria-labelledby="tarot-title">
+<div class="pg-game-heading"><button type="button" class="pg-back" data-back>← 놀이터</button><span>THE LITTLE TAROT</span></div>
+<p class="pg-kicker">✦ A LITTLE MAGIC IN YOUR DAY ✦</p><h1 id="tarot-title">헤뭉이 <em>오늘의 타로</em></h1>
+<p class="pg-game-lead">오늘 당신에게 필요한 작은 이야기를 한 장 골라보세요.</p>
+<div class="pg-tarot-layout">
+<div class="pg-tarot-board">
+<p class="pg-state" id="tarot-state">마음에 드는 카드를 골라 보세요.</p>
+<div class="pg-tarot-picker" id="tarot-picker" aria-label="카드 뽑기">
+<button type="button" data-pick="0" aria-label="첫 번째 카드 선택"><span class="tarot-mini-back">✧</span></button>
+<button type="button" data-pick="1" aria-label="두 번째 카드 선택"><span class="tarot-mini-back">✧</span></button>
+<button type="button" data-pick="2" aria-label="세 번째 카드 선택"><span class="tarot-mini-back">✧</span></button>
+</div>
+<div class="pg-tarot-card" id="tarot-card" hidden>
+<div class="pg-tarot-card-inner" id="tarot-card-inner">
+<div class="pg-face pg-face-back" aria-hidden="true"><span class="pg-back-crest">✧</span><span class="pg-back-letter">H</span><span>HAEMUNGI TAROT</span><span class="pg-back-crest">✧</span></div>
+<div class="pg-face pg-face-front"><img id="tarot-art" alt="" width="1024" height="1536"><div class="pg-card-caption"><small id="tarot-num">00</small><b id="tarot-name">첫 번째 눈뜸</b></div></div>
+</div>
+</div>
+</div>
+<div class="pg-tarot-reading" id="tarot-reading" aria-live="polite">
+<span class="pg-reading-emblem">✧</span><p class="pg-reading-hint">카드를 뒤집으면 헤뭉이의 이야기가 펼쳐져요.</p>
+<h2 id="tarot-meaning" hidden></h2><p id="tarot-message"></p>
+<p class="pg-tarot-disclaimer">재미와 마음의 환기를 위한 창작 운세입니다. 중요한 결정을 대신하지 않습니다.</p>
+<div class="pg-action-row"><button type="button" class="pg-button" id="tarot-share" hidden>오늘의 카드 공유 ↗</button></div>
+</div>
+</div>
+<div class="pg-bottom-note">매일 자정(한국시간)에 새로운 카드를 뽑을 수 있어요.</div>
+</section>
+
+<section id="pg-game-pet" class="pg-game pg-pet" hidden aria-labelledby="pet-title">
+<div class="pg-game-heading"><button type="button" class="pg-back" data-back>← 놀이터</button><span>MY LITTLE HAEMUNGI</span></div>
+<p class="pg-kicker">♡ A FRIEND TO COME BACK TO ♡</p><h1 id="pet-title">나만의 <em>헤뭉이 키우기</em></h1>
+<p class="pg-game-lead">서두르지 않아도 괜찮아요. 오늘도 헤뭉이와 함께해요.</p>
+<div class="pg-pet-stage">
+<img src="assets/haemungi-room.webp" id="pet-room-img" alt="햇살 가득한 헤뭉이의 방과 작은 친구 헤뭉이" width="900" height="600">
+<div class="pg-pet-spark" id="pet-spark" aria-hidden="true">♡ ✦ ♡</div>
+<div class="pg-pet-bubble" id="pet-says" aria-live="polite">오늘도 만나서 반갑몽!</div>
+</div>
+<div class="pg-pet-dashboard">
+<div class="pg-pet-title-row"><div><span class="pg-eyebrow">MY FRIEND</span><h2>헤뭉이 <small id="pet-stage">솜털 친구</small></h2></div><div class="pg-level">LV <strong id="pet-level">1</strong><small id="pet-xp">0 XP</small></div></div>
+<div class="pg-meter-grid">
+<div><label for="pet-full">포만감</label><progress id="pet-full" max="100" value="75">75%</progress><span id="pet-full-text">75</span></div>
+<div><label for="pet-happy">기분</label><progress id="pet-happy" max="100" value="75">75%</progress><span id="pet-happy-text">75</span></div>
+<div><label for="pet-energy">휴식</label><progress id="pet-energy" max="100" value="75">75%</progress><span id="pet-energy-text">75</span></div>
+</div>
+<div class="pg-pet-actions">
+<button type="button" data-care="feed"><span>🍪</span><strong>간식 주기</strong><small>포만감 +18</small></button>
+<button type="button" data-care="play"><span>🦋</span><strong>함께 놀기</strong><small>기분 +18</small></button>
+<button type="button" data-care="rest"><span>🌙</span><strong>쉬어가기</strong><small>휴식 +18</small></button>
+</div>
+<p class="pg-pet-note">오랫동안 오지 않아도 헤뭉이가 사라지거나 다치지 않아요. 돌봄 기록은 이 기기에만 저장됩니다.</p>
+</div>
+</section>
+
+<section id="pg-game-rps" class="pg-game pg-rps" hidden aria-labelledby="rps-title">
+<div class="pg-game-heading"><button type="button" class="pg-back" data-back>← 놀이터</button><span>LITTLE MATCH</span></div>
+<p class="pg-kicker">✿ ONE HAPPY ROUND ✿</p><h1 id="rps-title">헤뭉이 <em>가위바위보</em></h1><p class="pg-game-lead">헤뭉이랑 한 판! 무엇을 낼지 골라주세요.</p>
+<div class="pg-rps-stage">
+<div class="pg-rps-arena"><div class="pg-rps-player"><small>당신</small><div id="rps-you" class="pg-rps-gesture">?</div></div><div class="pg-rps-vs">VS</div><div class="pg-rps-player"><small>헤뭉이</small><div id="rps-them" class="pg-rps-gesture">?</div></div></div>
+<p id="rps-result" aria-live="polite">헤뭉이가 기다리고 있몽!</p>
+<div class="pg-rps-buttons">
+<button type="button" data-rps="rock" aria-label="바위 선택"><span>✊</span><strong>바위</strong></button>
+<button type="button" data-rps="paper" aria-label="보 선택"><span>✋</span><strong>보</strong></button>
+<button type="button" data-rps="scissors" aria-label="가위 선택"><span>✌️</span><strong>가위</strong></button>
+</div>
+<div class="pg-rps-score"><span>승리 <b id="rps-wins">0</b></span><span>무승부 <b id="rps-draws">0</b></span><span>패배 <b id="rps-losses">0</b></span></div>
+</div>
+</section>
+</main>
+<footer class="pg-footer"><p>오늘도 헤뭉이와 좋은 하루 되세요 ♡</p><small>HAEMUNGI © 2026 일현 조성훈</small></footer>
+<div id="pg-toast" class="pg-toast" role="status" aria-live="polite"></div>
+</body>
+</html>
