@@ -73,8 +73,9 @@ for(const marker of ['hm-living-pet-target','pointerdown','pointermove','pointer
   assert.ok(living.includes(marker),'Missing pet interaction: '+marker);
 }
 for(const marker of ['.hm-living-pet-target','touch-action:none','hm3dCuddle',
-  '.hm-living-call','clip-path:polygon','prefers-reduced-motion']){
+  '.hm-living-call','prefers-reduced-motion']){
   assert.ok(livingCss.includes(marker),'Missing accessible interaction style: '+marker);
 }
+assert.doesNotMatch(livingCss.match(/\.hm-living-actor\[data-pose=petted\] img\{[^}]*\}/)?.[0]||'',/clip-path/, 'Cuddle sprite must never crop the character');
 assert.ok(!living.includes('localStorage.removeItem'),'Pet upgrades may not clear any saves');
 console.log('HAEMUNGI playground preservation, pet strokes, autonomous routines and affinity responses: PASS');
