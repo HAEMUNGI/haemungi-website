@@ -67,7 +67,7 @@
     button.className="hm-living-hotspot hm-hotspot-"+key;
     button.type="button";
     button.dataset.hotspot=key;
-    button.setAttribute("aria-label",label+"로 이동");
+    button.setAttribute("aria-label",label+(["밥그릇","물그릇","장난감"].includes(label)?"으로":"로")+" 이동");
     button.style.left=Number(left)*100+"%";
     button.style.top=Number(top)*100+"%";
     button.style.width=Number(width)*100+"%";
@@ -119,7 +119,7 @@
   const now=()=>performance.now();
   const random=(a,b)=>a+Math.random()*(b-a);
   const bond=()=>clamp(Number.parseFloat(document.getElementById("pet-bond-bar")?.style.width)||0,0,100);
-  const meter=id=>{const value=Number(document.getElementById(id)?.value);return Number.isFinite(value)?value:80;};
+  const meter=id=>{const raw=document.getElementById(id)?.getAttribute("value");const value=Number(raw);return raw!==null&&raw!==undefined&&Number.isFinite(value)?value:80;};
   function markUser(){state.lastUserAt=now();state.nextAutoAt=state.lastUserAt+random(28000,45000);}
   function say(message){if(speak)speak.textContent=message;}
   function pose(name){
