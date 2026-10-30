@@ -3,11 +3,11 @@
 const $ = id => document.getElementById(id);
 const games = ["tarot", "pet", "rps"];
 const tarot = [
- {no:"00",name:"첫 번째 눈뜸",art:"assets/tarot-00.png",meaning:"가능성의 시작",message:"아직 작아 보여도 괜찮몽. 오늘의 작은 발견이 내일의 큰 이야기가 될 수 있몽!"},
- {no:"01",name:"새로운 여정",art:"assets/tarot-01.png",meaning:"낯선 길에 첫발을",message:"오늘은 평소와 다른 길을 걸어보몽. 낯선 풍경 속에서 소중한 것을 찾게 될지 모르몽!"},
- {no:"02",name:"선택의 갈림길",art:"assets/tarot-02.png",meaning:"마음이 향하는 쪽",message:"정답은 하나만 있는 게 아니몽. 천천히 생각하고 마음이 편안해지는 쪽을 골라보몽!"},
- {no:"03",name:"성장의 시간",art:"assets/tarot-03.png",meaning:"작은 것을 돌보는 힘",message:"오늘 심은 씨앗이 당장 꽃피지 않아도 괜찮몽. 매일의 작은 정성이 모여 자라난다몽!"},
- {no:"04",name:"작은 용기",art:"assets/tarot-04.png",meaning:"한 걸음의 용기",message:"겁이 나는 건 당연하몽. 그래도 한 걸음 내딛는 당신을 헤뭉이가 응원하몽!"}
+ {no:"00",name:"첫 번째 눈뜸",art:"assets/tarot-00.webp",meaning:"가능성의 시작",message:"아직 작아 보여도 괜찮몽. 오늘의 작은 발견이 내일의 큰 이야기가 될 수 있몽!"},
+ {no:"01",name:"새로운 여정",art:"assets/tarot-01.webp",meaning:"낯선 길에 첫발을",message:"오늘은 평소와 다른 길을 걸어보몽. 낯선 풍경 속에서 소중한 것을 찾게 될지 모르몽!"},
+ {no:"02",name:"선택의 갈림길",art:"assets/tarot-02.webp",meaning:"마음이 향하는 쪽",message:"정답은 하나만 있는 게 아니몽. 천천히 생각하고 마음이 편안해지는 쪽을 골라보몽!"},
+ {no:"03",name:"성장의 시간",art:"assets/tarot-03.webp",meaning:"작은 것을 돌보는 힘",message:"오늘 심은 씨앗이 당장 꽃피지 않아도 괜찮몽. 매일의 작은 정성이 모여 자라난다몽!"},
+ {no:"04",name:"작은 용기",art:"assets/tarot-04.webp",meaning:"한 걸음의 용기",message:"겁이 나는 건 당연하몽. 그래도 한 걸음 내딛는 당신을 헤뭉이가 응원하몽!"}
 ];
 const DEFAULT_PET = () => ({xp:0,full:80,happy:80,energy:80,lastSeen:Date.now(),interactions:0});
 const STORE = {tarot:"hm_playground_tarot_v1",pet:"hm_playground_pet_v1",rps:"hm_playground_rps_v1"};

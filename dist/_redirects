@@ -1,0 +1,11 @@
+# Keep older shared image links working while serving lossless WebP assets.
+/assets/tarot-00.png /assets/tarot-00.webp 302
+/assets/tarot-01.png /assets/tarot-01.webp 302
+/assets/tarot-02.png /assets/tarot-02.webp 302
+/assets/tarot-03.png /assets/tarot-03.webp 302
+/assets/tarot-04.png /assets/tarot-04.webp 302
+/assets/haemungi-3d-idle.png /assets/haemungi-3d-idle.webp 302
+/assets/haemungi-3d-walk.png /assets/haemungi-3d-walk.webp 302
+/assets/haemungi-3d-feed.png /assets/haemungi-3d-feed.webp 302
+/assets/haemungi-3d-play.png /assets/haemungi-3d-play.webp 302
+/assets/haemungi-3d-sleep.png /assets/haemungi-3d-sleep.webp 302

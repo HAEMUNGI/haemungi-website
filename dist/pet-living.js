@@ -7,12 +7,12 @@
 
   const art={
     room:"assets/haemungi-living-room.jpg",
-    idle:"assets/haemungi-3d-idle.png",
-    walk:"assets/haemungi-3d-walk.png",
-    feed:"assets/haemungi-3d-feed.png",
-    play:"assets/haemungi-3d-play.png",
-    sleep:"assets/haemungi-3d-sleep.png",
-    petted:"assets/haemungi-3d-play.png"
+    idle:"assets/haemungi-3d-idle.webp",
+    walk:"assets/haemungi-3d-walk.webp",
+    feed:"assets/haemungi-3d-feed.webp",
+    play:"assets/haemungi-3d-play.webp",
+    sleep:"assets/haemungi-3d-sleep.webp",
+    petted:"assets/haemungi-3d-play.webp"
   };
   const spots={
     rug:{x:.50,y:.82},
