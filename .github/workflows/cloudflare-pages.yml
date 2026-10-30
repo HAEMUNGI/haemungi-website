@@ -58,3 +58,21 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=haemungi --branch=living-room-preview
+
+      - name: Install browser for mobile QA
+        if: github.event_name == 'pull_request'
+        run: |
+          npm install --no-save --ignore-scripts playwright
+          npx playwright install chromium
+
+      - name: Exercise real mobile and desktop living room
+        if: github.event_name == 'pull_request'
+        run: node qa-living-room.cjs
+
+      - name: Upload visual QA screenshots
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: haemungi-3d-mobile-desktop-qa
+          path: smoke-shots/*.png
+          if-no-files-found: warn
