@@ -174,7 +174,7 @@ for(const button of document.querySelectorAll("[data-care]"))button.addEventList
  setPetSpeech(petLines[type][randomInt(petLines[type].length)]);
  if(pet.careDay.count<3){
   pet.careDay.count++;pet.xp+=5;pet.bond=Math.min(100,pet.bond+5);
-  if(pet.careDay.count===3){remember("간식도 먹고, 놀고, 푹 쉬었던 날");notify("오늘의 돌봄 추억을 간직했몽!");}
+  if(pet.careDay.count===3){remember("오늘도 헤뭉이를 정성껏 돌본 날");notify("오늘의 돌봄 추억을 간직했몽!");}
  }
  pet.interactions=Math.max(0,Number(pet.interactions)||0)+1;
  pet.lastSeen=Date.now();save(STORE.pet,pet);renderPet();
