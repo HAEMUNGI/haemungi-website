@@ -66,4 +66,15 @@ for(const pose of ['idle','walk','feed','play','sleep']){
  assert.equal(data.subarray(1,4).toString(),'PNG',name+' not PNG');
  assert.equal(data[25],6,name+' must be RGBA; no opaque JPEG fallback');
 }
-console.log('HAEMUNGI playground original saves/tarot/rps, premium 3D living room assets and responsive controls: PASS');
+// Fourth-generation pet interactions must preserve daily tarot and the original pet storage.
+for(const marker of ['hm-living-pet-target','pointerdown','pointermove','pointerup','pointercancel',
+  'completePet','chooseAutonomy','greetVisitor','hm_living_visit_v1','pet-bond-bar',
+  'hm-living-call','requestAnimationFrame']){
+  assert.ok(living.includes(marker),'Missing pet interaction: '+marker);
+}
+for(const marker of ['.hm-living-pet-target','touch-action:none','hm3dCuddle',
+  '.hm-living-call','prefers-reduced-motion']){
+  assert.ok(livingCss.includes(marker),'Missing accessible interaction style: '+marker);
+}
+assert.ok(!living.includes('localStorage.removeItem'),'Pet upgrades may not clear any saves');
+console.log('HAEMUNGI playground preservation, pet strokes, autonomous routines and affinity responses: PASS');
