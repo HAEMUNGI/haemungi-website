@@ -60,6 +60,31 @@ const fs = require('node:fs');
         mode:document.querySelector('.hm-living-actor').dataset.pose
       }));
       assert.notEqual(afterPlay.actorLeft,afterRest.x,config.name+' resting navigates to the bed');
+      const petTarget=page.locator('.hm-living-pet-target');
+      await petTarget.waitFor({state:'visible'});
+      const prior=await page.evaluate(()=>({
+        happy:Number(document.querySelector('#pet-happy').value),
+        xp:document.querySelector('#pet-xp').textContent
+      }));
+      const touchBox=await petTarget.boundingBox();
+      assert.ok(touchBox && touchBox.width>25,config.name+' touch zone is reachable');
+      await page.mouse.move(touchBox.x+touchBox.width*.48,touchBox.y+touchBox.height*.45);
+      await page.mouse.down();
+      await page.mouse.move(touchBox.x+touchBox.width*.67,touchBox.y+touchBox.height*.45,{steps:5});
+      await page.mouse.move(touchBox.x+touchBox.width*.32,touchBox.y+touchBox.height*.48,{steps:5});
+      await page.mouse.up();
+      const afterPet=await page.evaluate(()=>({
+        pose:document.querySelector('.hm-living-actor').dataset.pose,
+        speech:document.querySelector('#pet-says').textContent,
+        happy:Number(document.querySelector('#pet-happy').value),
+        xp:document.querySelector('#pet-xp').textContent
+      }));
+      assert.equal(afterPet.pose,'petted',config.name+' strokes make the pet smile');
+      assert.ok(afterPet.happy>=prior.happy,config.name+' petting remains positive');
+      assert.equal(afterPet.xp,prior.xp,config.name+' petting cannot farm daily XP');
+      await page.locator('.hm-living-call').click();
+      const callSpeech=await page.locator('#pet-says').textContent();
+      assert.match(callSpeech,/몽/,config.name+' calling receives a character response');
       assert.deepEqual(errors,[],config.name+' browser errors');
       console.log(JSON.stringify({device:config.name,report,afterPlay,afterRest,qa:'PASS'}));
       await context.close();

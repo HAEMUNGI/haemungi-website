@@ -90,6 +90,29 @@
   will-change:left,top,transform;
   filter:drop-shadow(0 5px 5px #7c573b2d);
 }
+.pg-pet-stage.hm-living .hm-living-pet-target{
+  position:absolute;
+  z-index:12;
+  width:15.5%;
+  height:23%;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  cursor:grab;
+  appearance:none;
+  padding:0;
+  touch-action:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.pg-pet-stage.hm-living .hm-living-pet-target:active{cursor:grabbing}
+.pg-pet-stage.hm-living .hm-living-pet-target:focus-visible{
+  outline:2px dashed #fff7dc;
+  outline-offset:2px;
+  background:#fff9d112;
+}
+.pg-pet-stage.hm-living .hm-living-pet-target.is-stroking{
+  background:radial-gradient(ellipse at center,#fff9e72b,transparent 70%);
+}
 .pg-pet-stage.hm-living .hm-living-actor img{
   width:100%;
   height:100%;
@@ -103,6 +126,11 @@
 .pg-pet-stage.hm-living .hm-living-actor[data-pose=feed] img{
   animation:hm3dNibble .45s ease-in-out infinite alternate!important;
   transform-origin:70% 85%;
+}
+.pg-pet-stage.hm-living .hm-living-actor[data-pose=petted] img{
+  clip-path:inset(0 22% 0 0);
+  animation:hm3dCuddle .62s ease-in-out infinite alternate!important;
+  transform-origin:65% 77%;
 }
 .pg-pet-stage.hm-living .hm-living-actor[data-pose=play] img{animation:hm3dPlayHop .55s cubic-bezier(.37,.07,.41,1) infinite alternate!important}
 .pg-pet-stage.hm-living .hm-living-actor[data-pose=sleep] img{animation:hm3dBreathe 3.2s ease-in-out infinite!important}
@@ -173,6 +201,20 @@
 }
 .hm-living-caption.hm-living-ready{display:flex}
 .hm-living-caption-copy{display:grid;gap:4px;text-align:left;min-width:0}
+.hm-living-caption-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.hm-living-call{
+  flex:0 0 auto;
+  border:1px solid #e7c9b2;
+  color:#8e624f;
+  background:#fff0e5;
+  padding:9px 14px;
+  border-radius:40px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  min-height:36px;
+}
+.hm-living-call:hover,.hm-living-call:focus-visible{background:#f9e2d5;outline:2px solid #d6ae8c}
 .hm-living-caption .hm-living-speech{
   position:static!important;
   display:block;
@@ -255,6 +297,10 @@
   touch-action:none;
 }
 .pg-pet-stage.hm-living:fullscreen .pg-pet-time{display:none}
+@keyframes hm3dCuddle{
+  from{transform:translateY(0) rotate(-1.3deg) scale(.985)}
+  to{transform:translateY(-3px) rotate(1.3deg) scale(1.015)}
+}
 @keyframes hm3dPlayHop{from{transform:translateY(3px) rotate(-2deg)}to{transform:translateY(-8px) rotate(2deg)}}
 @keyframes hm3dNibble{from{transform:translateY(0)}to{transform:translateY(2px)}}
 @keyframes hm3dBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.012,.993)}}
@@ -267,7 +313,9 @@
   .pg-pet-stage.hm-living .hm-living-shadow{filter:blur(3px)}
   .hm-living-caption{padding:9px 11px;gap:10px;border-radius:13px}
   .hm-living-caption-copy p{font-size:10px}
-  .hm-living-fullscreen{font-size:10px;padding:6px 9px;min-height:36px}
+  .hm-living-fullscreen,.hm-living-call{font-size:10px;padding:6px 9px;min-height:36px}
+  .hm-living-caption-actions{gap:5px}
+  .pg-pet-stage.hm-living .hm-living-pet-target{width:18%;height:26%}
   .pg-pet.hm-living .pg-pet-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .pg-pet.hm-living .pg-pet-actions button{min-height:80px}
   .pg-pet.hm-living .pg-pet-actions .hm-pet-touch-tile{min-height:80px;padding:11px 4px;border-radius:13px}
@@ -275,6 +323,8 @@
 }
 @media(max-width:380px){
   .hm-living-caption-copy p{display:none}
+  .hm-living-caption{flex-wrap:wrap}
+  .hm-living-caption-actions{width:100%;justify-content:flex-start}
   .hm-living-caption .hm-living-speech{font-size:12px}
   .pg-pet-stage.hm-living .pg-pet-time{font-size:8px}
 }
