@@ -128,8 +128,6 @@
   transform-origin:70% 85%;
 }
 .pg-pet-stage.hm-living .hm-living-actor[data-pose=petted] img{
-  /* Keep the smiling face; mask only the lower-right yarn-ball area of the play pose. */
-  clip-path:polygon(0 0,100% 0,100% 52%,77% 52%,77% 100%,0 100%);
   animation:hm3dCuddle .62s ease-in-out infinite alternate!important;
   transform-origin:65% 77%;
 }
