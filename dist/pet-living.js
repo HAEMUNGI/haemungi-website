@@ -11,7 +11,8 @@
     walk:"assets/haemungi-3d-walk.png",
     feed:"assets/haemungi-3d-feed.png",
     play:"assets/haemungi-3d-play.png",
-    sleep:"assets/haemungi-3d-sleep.png"
+    sleep:"assets/haemungi-3d-sleep.png",
+    petted:"assets/haemungi-3d-play.png"
   };
   const spots={
     rug:{x:.50,y:.82},
@@ -45,6 +46,11 @@
   frame.src=art.idle;frame.alt="";frame.draggable=false;
   frame.setAttribute("aria-hidden","true");
   actor.append(frame);
+  const petTarget=document.createElement("button");
+  petTarget.type="button";
+  petTarget.className="hm-living-pet-target";
+  petTarget.setAttribute("aria-label","헤뭉이 머리 쓰다듬기");
+  petTarget.title="헤뭉이 머리를 살살 문질러 주세요";
   const reaction=document.createElement("div");
   reaction.className="hm-living-reaction";
   reaction.setAttribute("aria-hidden","true");
@@ -55,7 +61,7 @@
     ["potty","배변패드",".78",".55",".21",".20"],
     ["play","장난감",".70",".77",".11",".16"]
   ];
-  world.append(room,lights,shadow,actor,reaction);
+  world.append(room,lights,shadow,actor,petTarget,reaction);
   for(const [key,label,left,top,width,height] of hints){
     const button=document.createElement("button");
     button.className="hm-living-hotspot hm-hotspot-"+key;
@@ -80,14 +86,22 @@
   captionCopy.className="hm-living-caption-copy";
   if(speak){speak.classList.add("hm-living-speech");captionCopy.append(speak);}
   const instruct=document.createElement("p");
-  instruct.textContent="카펫을 터치하면 산책하고, 방 안의 생활용품을 누르면 헤뭉이가 찾아가요.";
+  instruct.textContent="카펫을 누르면 산책해요. 헤뭉이 머리를 손가락으로 살살 쓰다듬어 보세요.";
   captionCopy.append(instruct);
   const fullscreen=document.createElement("button");
   fullscreen.type="button";
   fullscreen.className="hm-living-fullscreen";
   fullscreen.textContent="⛶ 크게 보기";
   fullscreen.setAttribute("aria-label","헤뭉이 방 전체화면으로 보기");
-  caption.append(captionCopy,fullscreen);
+  const call=document.createElement("button");
+  call.type="button";
+  call.className="hm-living-call";
+  call.textContent="♡ 헤뭉아, 이리 와!";
+  call.setAttribute("aria-label","헤뭉이 부르기");
+  const captionActions=document.createElement("div");
+  captionActions.className="hm-living-caption-actions";
+  captionActions.append(call,fullscreen);
+  caption.append(captionCopy,captionActions);
   stage.insertAdjacentElement("afterend",caption);
   fullscreen.addEventListener("click",async()=>{
     try{
@@ -99,18 +113,21 @@
     fullscreen.textContent=document.fullscreenElement===stage?"⤢ 돌아가기":"⛶ 크게 보기";
   });
 
-  const state={x:.50,y:.80,tx:.50,ty:.80,face:1,mode:"idle",arrival:"idle",until:0,lastTime:0,pose:"",idleUntil:0,ready:false,pressedAt:0};
+  const state={x:.50,y:.80,tx:.50,ty:.80,face:1,mode:"idle",arrival:"idle",until:0,lastTime:0,pose:"",idleUntil:0,ready:false,pressedAt:0,lastUserAt:0,nextAutoAt:0,welcomed:false};
   const reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
   const now=()=>performance.now();
   const random=(a,b)=>a+Math.random()*(b-a);
+  const bond=()=>clamp(Number.parseFloat(document.getElementById("pet-bond-bar")?.style.width)||0,0,100);
+  const meter=id=>{const value=Number(document.getElementById(id)?.value);return Number.isFinite(value)?value:80;};
+  function markUser(){state.lastUserAt=now();state.nextAutoAt=state.lastUserAt+random(28000,45000);}
   function say(message){if(speak)speak.textContent=message;}
   function pose(name){
     if(state.pose===name)return;
     const path=art[name]||art.idle;
     frame.src=path;
     state.pose=name;
-    const labels={idle:"쉬고 있어요",walk:"걸어가는 중이에요",feed:"냠냠 먹는 중이에요",play:"장난감과 놀고 있어요",sleep:"잠들었어요"};
+    const labels={idle:"쉬고 있어요",walk:"걸어가는 중이에요",feed:"냠냠 먹는 중이에요",play:"장난감과 놀고 있어요",sleep:"잠들었어요",petted:"쓰다듬는 손길에 웃고 있어요"};
     actor.setAttribute("aria-label","헤뭉이: "+(labels[name]||"놀고 있어요"));
     actor.dataset.pose=name;
   }
@@ -124,16 +141,20 @@
     reaction.textContent="";
     reaction.className="hm-living-reaction";
   }
-  function react(kind){
+  function react(kind,autonomous=false){
     if(!state.ready)return;
+    if(!autonomous)markUser();
     if(kind==="feed"){go(spots.bowl,"feed");}
     else if(kind==="water"){go(spots.water,"water");say("물 한 모금 마시고 올게몽!");}
     else if(kind==="rest"){go(spots.bed,"sleep");}
     else if(kind==="potty"){go(spots.pad,"potty");say("패드에 다녀올게몽!");}
     else if(kind==="play"){go(spots.toy,"play");}
     else if(kind==="touch"){
-      state.mode="petted";state.until=now()+1700;
-      pose("idle");reaction.textContent="♡  ♡  ♡";reaction.className="hm-living-reaction hm-reaction-hearts";
+      const asleep=state.mode==="sleep";
+      if(!asleep){state.mode="petted";state.until=now()+2100;pose("petted");}
+      reaction.textContent=asleep?"♡":bond()>=45?"♡  ♡  ♡":"♡  ♡";
+      reaction.className="hm-living-reaction hm-reaction-hearts";
+      if(asleep)say("꿈속에서도 반갑몽... ♡");
     }
   }
   function arrival(at){
@@ -151,6 +172,8 @@
       pose("play");reaction.textContent="✦ ♡ ✦";reaction.className="hm-living-reaction hm-reaction-play";
     }else if(state.mode==="potty"){
       pose("idle");reaction.textContent="✦";reaction.className="hm-living-reaction hm-reaction-food";
+    }else if(state.mode==="greet"){
+      pose("petted");reaction.textContent="♡";reaction.className="hm-living-reaction hm-reaction-hearts";
     }else{
       pose("idle");state.idleUntil=at+random(7500,14500);
     }
@@ -170,6 +193,38 @@
     shadow.style.transform="translate(-50%,-50%) scale("+(1-phase*.017)+")";
     reaction.style.left=(state.x*100)+"%";
     reaction.style.top=(state.y*100-23)+"%";
+    petTarget.style.left=((state.x+state.face*.058)*100)+"%";
+    petTarget.style.top=((state.y-.132)*100)+"%";
+    petTarget.style.transform="translate(-50%,-50%) scale("+scale+")";
+  }
+  function chooseAutonomy(at){
+    if(at<state.nextAutoAt||at-state.lastUserAt<12000)return false;
+    state.nextAutoAt=at+random(47000,79000);
+    const energy=meter("pet-energy"),full=meter("pet-full"),happy=meter("pet-happy");
+    const roll=Math.random();
+    let action="water",message="목이 말라서 물 마시고 올게몽!";
+    if(energy<35||roll<.19){action="rest";message="슬슬 졸리몽... 내 침대에 다녀올게몽.";}
+    else if(full<35||roll<.34){action="feed";message="밥그릇에 뭐가 있나 살펴볼게몽!";}
+    else if(happy<65||roll<.72){action="play";message="혼자서도 장난감을 갖고 놀 수 있몽!";}
+    react(action,true);
+    say(message);
+    return true;
+  }
+  function greetVisitor(){
+    if(!state.ready||section.hidden||state.welcomed)return;
+    state.welcomed=true;
+    let previous=0;
+    try{
+      const saved=JSON.parse(localStorage.getItem("hm_living_visit_v1")||"{}");
+      previous=Number(saved.lastAt)||0;
+      if(!previous||Date.now()-previous>600000)
+        localStorage.setItem("hm_living_visit_v1",JSON.stringify({lastAt:Date.now()}));
+    }catch(_){/* Private browsing may disallow storage; gameplay still works. */}
+    if(previous&&Date.now()-previous>1800000){
+      say(bond()>=75?"보고 싶었몽! 오늘도 나랑 같이 있자몽!":bond()>=35?"다시 왔몽? 기다리고 있었몽!":"어서 와몽! 다시 만나서 좋몽!");
+      state.mode="greet";state.until=now()+1800;
+      pose("petted");reaction.textContent="♡";reaction.className="hm-living-reaction hm-reaction-hearts";
+    }
   }
   function tick(at){
     if(!state.ready)return;
@@ -196,7 +251,8 @@
       if(state.mode==="sleep")pose("sleep");
       if(state.mode==="idle"){
         pose("idle");
-        if(at>state.idleUntil){
+        if(chooseAutonomy(at)){/* A quiet routine, without rewards or changes to saved care. */}
+        else if(at>state.idleUntil){
           state.idleUntil=at+random(10500,19000);
           if(Math.random()<.65)go({x:random(.34,.62),y:random(.75,.85)},"idle");
         }
@@ -212,6 +268,55 @@
     btn.addEventListener("click",()=>react(btn.dataset.care));
   }
   touch?.addEventListener("click",()=>react("touch"));
+  let activeStroke=null,lastPetAt=0;
+  function completePet(){
+    if(!state.ready||now()-lastPetAt<1250)return;
+    lastPetAt=now();
+    if(touch)touch.click();else react("touch");
+    if(state.mode==="sleep")return;
+    if(bond()>=75)say("네 손길은 언제나 알아보겠몽! ♡");
+    else if(bond()>=40)say("그렇게 쓰다듬어 주면 너무 좋몽!");
+    else say("헤헤, 기분이 몽글몽글해졌몽!");
+  }
+  petTarget.addEventListener("pointerdown",event=>{
+    if(!event.isPrimary||!state.ready)return;
+    event.preventDefault();event.stopPropagation();
+    activeStroke={id:event.pointerId,x:event.clientX,y:event.clientY,length:0,started:now()};
+    try{petTarget.setPointerCapture(event.pointerId);}catch(_){}
+  });
+  petTarget.addEventListener("pointermove",event=>{
+    if(!activeStroke||event.pointerId!==activeStroke.id)return;
+    const delta=Math.hypot(event.clientX-activeStroke.x,event.clientY-activeStroke.y);
+    activeStroke.length+=delta;
+    activeStroke.x=event.clientX;activeStroke.y=event.clientY;
+    if(activeStroke.length>12&&!petTarget.classList.contains("is-stroking")){
+      petTarget.classList.add("is-stroking");
+      if(state.mode!=="sleep"){state.mode="petted";state.until=now()+2300;pose("petted");}
+      reaction.textContent="♡";reaction.className="hm-living-reaction hm-reaction-hearts";
+    }
+    event.preventDefault();
+  });
+  function finishStroke(event){
+    if(!activeStroke||event.pointerId!==activeStroke.id)return;
+    event.stopPropagation();
+    const completed=event.type==="pointerup";
+    activeStroke=null;petTarget.classList.remove("is-stroking");
+    if(completed)completePet();
+  }
+  petTarget.addEventListener("pointerup",finishStroke);
+  petTarget.addEventListener("pointercancel",finishStroke);
+  petTarget.addEventListener("click",event=>{
+    event.stopPropagation();
+    if(event.detail===0)completePet();
+  });
+  call.addEventListener("click",()=>{
+    markUser();
+    go(spots.rug,"greet");
+    say(bond()>=45?"부르면 언제든 달려갈게몽!":"불렀몽? 지금 갈게몽!");
+  });
+  window.addEventListener("hashchange",()=>{
+    if(location.hash==="#pet"){state.welcomed=false;setTimeout(greetVisitor,0);}
+  });
   document.getElementById("pet-butterfly")?.addEventListener("click",()=>react("play"));
   document.querySelectorAll("[data-decor]").forEach(button=>button.addEventListener("click",()=>{
     reaction.textContent="✦ ✧ ✦";reaction.className="hm-living-reaction hm-reaction-play";
@@ -260,8 +365,8 @@
     stage.classList.add("hm-living");
     section.classList.add("hm-living");
     caption.classList.add("hm-living-ready");
-    state.lastTime=now();state.idleUntil=now()+8000;
-    pose("idle");draw(now());
+    state.lastTime=now();state.lastUserAt=now();state.nextAutoAt=now()+random(28000,40000);state.idleUntil=now()+8000;
+    pose("idle");draw(now());greetVisitor();
     requestAnimationFrame(tick);
   }).catch(error=>{
     console.error("HAEMUNGI living room did not initialize; preserving original room:",error);
