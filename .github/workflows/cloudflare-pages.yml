@@ -12,7 +12,9 @@ permissions:
   deployments: write
 
 concurrency:
-  group: haemungi-pages-production
+  # A PR verification must never cancel the running main-branch deployment.
+  # Cancel only outdated runs of the same PR or branch.
+  group: haemungi-pages-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
