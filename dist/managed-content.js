@@ -82,7 +82,12 @@
     const grid = document.querySelector('#page-daily .manga-grid');
     if (!grid) return;
     grid.querySelectorAll('[data-hm-gallery]').forEach(el => el.remove());
-    rows.filter(row => row.kind === 'image' && row.slot.startsWith('gallery-')).forEach((row, index) => {
+    rows.filter(row => row.kind === 'image' && (row.slot.startsWith('gallery-') || row.slot.startsWith('webtoon-')))
+      .sort((a, b) => {
+        const aWebtoon = a.slot.startsWith('webtoon-');
+        const bWebtoon = b.slot.startsWith('webtoon-');
+        return aWebtoon === bWebtoon ? a.slot.localeCompare(b.slot) : aWebtoon ? 1 : -1;
+      }).forEach((row, index) => {
       const uri = urlFor(row);
       if (!uri) return;
       const button = document.createElement('button');
