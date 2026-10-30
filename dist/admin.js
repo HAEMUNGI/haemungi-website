@@ -348,8 +348,10 @@
     $('password').value = ''; notice('로그아웃했습니다.');
   }
   function createSlot(kind) {
-    const slug = `${kind === 'video' ? 'video' : 'gallery'}-${crypto.randomUUID().slice(0, 12)}`;
-    labels.set(slug, kind === 'video' ? '새 영상' : '새 갤러리 이미지');
+    const prefix = {video:'video',image:'gallery',today:'today',emoticon:'emoticon'}[kind];
+    if (!prefix) return;
+    const slug = `${prefix}-${crypto.randomUUID().slice(0, 12)}`;
+    labels.set(slug, {video:'새 영상',image:'새 갤러리 이미지',today:'헤뭉이의 오늘',emoticon:'새 이모티콘'}[kind]);
     renderSelector(); selectSlot(slug);
   }
 
@@ -361,6 +363,8 @@
   $('slot').addEventListener('change', event => selectSlot(event.target.value));
   $('addImage').addEventListener('click', () => createSlot('image'));
   $('addVideo').addEventListener('click', () => createSlot('video'));
+  $('addToday').addEventListener('click', () => createSlot('today'));
+  $('addEmoticon').addEventListener('click', () => createSlot('emoticon'));
   document.querySelectorAll('input[name="source"]').forEach(radio => radio.addEventListener('change', toggleSource));
   $('file').addEventListener('change', () => {
     releasePreview();

@@ -106,6 +106,25 @@
       grid.append(button);
     });
   }
+  function showNewGallery(rows, prefix, gridId, emptyId) {
+    const grid = document.getElementById(gridId);
+    const empty = document.getElementById(emptyId);
+    if (!grid || !empty) return;
+    grid.replaceChildren();
+    let count = 0;
+    rows.filter(r => r.kind === 'image' && r.slot.startsWith(prefix)).forEach(row => {
+      const uri = urlFor(row);
+      if (!uri) return;
+      count++;
+      const article = document.createElement('article'); article.className = 'hm-special-card protected-media';
+      const img = document.createElement('img'); img.src = uri; img.loading = 'lazy'; img.decoding = 'async'; img.alt = row.alt_text || row.title || '헤뭉이';
+      const copy = document.createElement('div'); copy.className = 'hm-special-card-copy';
+      const title = document.createElement('h3'); title.textContent = row.title || '헤뭉이';
+      const description = document.createElement('p'); description.textContent = row.description || '';
+      copy.append(title, description); article.append(img, copy); grid.append(article);
+    });
+    empty.hidden = count > 0;
+  }
   function addVideos(rows) {
     const grid = document.querySelector('#page-videos .videos-grid');
     if (!grid) return;
@@ -181,6 +200,8 @@
     if (publishedRows.length === 0) return;
     applyImages(publishedRows);
     appendGallery(publishedRows);
+    showNewGallery(publishedRows, 'today-', 'hmTodayGrid', 'hmTodayEmpty');
+    showNewGallery(publishedRows, 'emoticon-', 'hmEmoticonGrid', 'hmEmoticonEmpty');
     addVideos(publishedRows);
     setupMusic(publishedRows);
   };
