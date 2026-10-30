@@ -43,6 +43,14 @@ jobs:
             echo "::notice::Cloudflare secrets are not configured; source checks passed but deployment is skipped."
           fi
 
+      - name: Deploy playground PR to Cloudflare preview branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && steps.cloudflare.outputs.ready == 'true'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=haemungi --branch=playground-preview
+
       - name: Deploy to existing Cloudflare Pages project
         if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v4
