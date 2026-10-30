@@ -104,6 +104,7 @@
   animation:hm3dNibble .45s ease-in-out infinite alternate!important;
   transform-origin:70% 85%;
 }
+.pg-pet-stage.hm-living .hm-living-actor[data-pose=play] img{animation:hm3dPlayHop .55s cubic-bezier(.37,.07,.41,1) infinite alternate!important}
 .pg-pet-stage.hm-living .hm-living-actor[data-pose=sleep] img{animation:hm3dBreathe 3.2s ease-in-out infinite!important}
 .pg-pet-stage.hm-living .hm-living-reaction{
   position:absolute;
@@ -254,6 +255,7 @@
   touch-action:none;
 }
 .pg-pet-stage.hm-living:fullscreen .pg-pet-time{display:none}
+@keyframes hm3dPlayHop{from{transform:translateY(3px) rotate(-2deg)}to{transform:translateY(-8px) rotate(2deg)}}
 @keyframes hm3dNibble{from{transform:translateY(0)}to{transform:translateY(2px)}}
 @keyframes hm3dBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.012,.993)}}
 @keyframes hm3dHearts{0%{opacity:0;transform:translate(-50%,2px) scale(.85)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-34px) scale(1.18)}}

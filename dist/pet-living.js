@@ -10,6 +10,7 @@
     idle:"assets/haemungi-3d-idle.png",
     walk:"assets/haemungi-3d-walk.png",
     feed:"assets/haemungi-3d-feed.png",
+    play:"assets/haemungi-3d-play.png",
     sleep:"assets/haemungi-3d-sleep.png"
   };
   const spots={
@@ -91,7 +92,7 @@
   fullscreen.addEventListener("click",async()=>{
     try{
       if(document.fullscreenElement===stage)await document.exitFullscreen();
-      else if(stage.requestFullscreen)await stage.requestFullscreen();
+      else if(stage.requestFullscreen){await stage.requestFullscreen();try{await screen.orientation?.lock?.("landscape");}catch(_){}}
     }catch(_){if(speak)speak.textContent="이 브라우저에서는 전체화면을 사용할 수 없어요.";}
   });
   document.addEventListener("fullscreenchange",()=>{
@@ -109,7 +110,7 @@
     const path=art[name]||art.idle;
     frame.src=path;
     state.pose=name;
-    const labels={idle:"쉬고 있어요",walk:"걸어가는 중이에요",feed:"냠냠 먹는 중이에요",sleep:"잠들었어요"};
+    const labels={idle:"쉬고 있어요",walk:"걸어가는 중이에요",feed:"냠냠 먹는 중이에요",play:"장난감과 놀고 있어요",sleep:"잠들었어요"};
     actor.setAttribute("aria-label","헤뭉이: "+(labels[name]||"놀고 있어요"));
     actor.dataset.pose=name;
   }
@@ -147,9 +148,9 @@
     }else if(state.mode==="sleep"){
       pose("sleep");reaction.textContent="z Z z";reaction.className="hm-living-reaction hm-reaction-sleep";
     }else if(state.mode==="play"){
-      pose("walk");reaction.textContent="✦ ♡ ✦";reaction.className="hm-living-reaction hm-reaction-play";
+      pose("play");reaction.textContent="✦ ♡ ✦";reaction.className="hm-living-reaction hm-reaction-play";
     }else if(state.mode==="potty"){
-      pose("feed");reaction.textContent="✦";reaction.className="hm-living-reaction hm-reaction-food";
+      pose("idle");reaction.textContent="✦";reaction.className="hm-living-reaction hm-reaction-food";
     }else{
       pose("idle");state.idleUntil=at+random(7500,14500);
     }
@@ -191,7 +192,7 @@
         state.x=state.tx;state.y=state.ty;arrival(at);
       }
     }else{
-      if(state.mode==="play")pose(Math.floor(at/350)%2?"walk":"idle");
+      if(state.mode==="play")pose("play");
       if(state.mode==="sleep")pose("sleep");
       if(state.mode==="idle"){
         pose("idle");
@@ -254,6 +255,7 @@
   }
   Promise.all([readyAsset(art.room),readyAsset(art.idle)]).then(()=>{
     state.ready=true;
+    for(const kind of ["walk","feed","play","sleep"]){const next=new Image();next.src=art[kind];}
     world.hidden=false;
     stage.classList.add("hm-living");
     section.classList.add("hm-living");

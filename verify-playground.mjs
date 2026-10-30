@@ -48,7 +48,7 @@ assert.match(html,/pet-living\.js/);
 assert.match(html,/pet-living\.css/);
 assert.doesNotMatch(html,/pet-motion\.js/,'Old shaking engine must not be loaded');
 new Function(living);
-for(const marker of ['requestAnimationFrame','hm-living-world','hm-living-actor','haemungi-living-room.jpg','haemungi-3d-idle.png','hm_playground_pet_v1']){
+for(const marker of ['requestAnimationFrame','hm-living-world','hm-living-actor','haemungi-living-room.jpg','haemungi-3d-idle.png','haemungi-3d-play.png','hm_playground_pet_v1']){
  assert.ok(living.includes(marker)||script.includes(marker),'Missing living room integration: '+marker);
 }
 for(const marker of ['.hm-living-actor','.hm-living-caption','@media(max-width:700px)','prefers-reduced-motion']){
@@ -59,7 +59,7 @@ for(const name of ['haemungi-living-room.jpg','haemungi-3d-reference.jpg']){
  assert.ok(data.length>100000,name+' missing');
  assert.equal(data.subarray(0,3).toString('hex'),'ffd8ff',name+' must be JPEG');
 }
-for(const pose of ['idle','walk','feed','sleep']){
+for(const pose of ['idle','walk','feed','play','sleep']){
  const name='dist/assets/haemungi-3d-'+pose+'.png';
  const data=readFileSync(name);
  assert.ok(data.length>400000,name+' must be high-resolution');
