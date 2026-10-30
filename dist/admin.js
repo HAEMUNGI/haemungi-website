@@ -84,6 +84,11 @@
     return response.status === 204 ? null : response.json().catch(() => null);
   }
   const rest = (table, query = '') => `/rest/v1/${table}${query}`;
+  const reportTables = new Set(['hm_stats_dashboard','hm_stats_daily','hm_stats_pages','hm_stats_content','hm_stats_sources','hm_stats_devices','hm_stats_hours','hm_goods','hm_stories','hm_room_spots']);
+  window.HM_ADMIN_REPORT_QUERY = (table, query = '?select=*') => {
+    if (!reportTables.has(table) || !/^\?select=\*$/.test(query)) throw new Error('통계 접근 요청이 올바르지 않습니다.');
+    return request(rest(table, query));
+  };
   const publicUrl = path => path && /^(image|video|audio)\/[a-z0-9-]+\.[a-z0-9]+$/.test(path)
     ? `${config.projectUrl}/storage/v1/object/public/hm-media/${path}` : '';
   function sourceUrl(row) {
@@ -334,12 +339,12 @@
   }
   async function enterStudio() {
     await loadAll();
-    $('loginView').hidden = true; $('studioView').hidden = false; $('logout').hidden = false;
+    $('loginView').hidden = true; $('studioView').hidden = false; $('analyticsView').hidden = true; $('logout').hidden = false;
   }
   async function logout() {
     try { if (session) await request('/auth/v1/logout', {method: 'POST'}); } catch (_) { /* Revoke locally even if network is down. */ }
     session = null; persist(); live = []; drafts = [];
-    $('studioView').hidden = true; $('loginView').hidden = false; $('logout').hidden = true;
+    $('studioView').hidden = true; $('analyticsView').hidden = true; $('loginView').hidden = false; $('logout').hidden = true;
     $('password').value = ''; notice('로그아웃했습니다.');
   }
   function createSlot(kind) {

@@ -9,17 +9,25 @@ const publicJS = file('dist/managed-content.js');
 const sql = file('admin-setup.sql');
 const site = file('dist/index.html');
 const main = file('dist/main.js');
+const stats = file('dist/admin-stats.js');
+const reportGrants = file('005_haemungi_owner_analytics.sql');
 
-for (const [name, script] of [['admin.js', admin], ['managed-content.js', publicJS], ['main.js', main]]) {
+for (const [name, script] of [['admin.js', admin], ['managed-content.js', publicJS], ['main.js', main], ['admin-stats.js', stats]]) {
   assert.doesNotThrow(() => new Script(script, {filename: name}));
 }
 for (const [, name] of admin.matchAll(/\$\('([\w-]+)'\)/g)) {
   assert.match(html, new RegExp(`id="${name}"`), `Missing administrator UI element #${name}`);
 }
+for (const [, name] of stats.matchAll(/\$\('([\w-]+)'\)/g)) {
+  assert.match(html, new RegExp(`id="${name}"`), `Missing analytics UI element #${name}`);
+}
 assert.match(html, /autocomplete="current-password"/);
 assert.match(html, /name="source" value="file"/);
 assert.match(html, /name="source" value="link"/);
 assert.match(html, /src="\/admin\.js"/);
+assert.match(html, /src="\/admin-stats\.js"/);
+assert.match(html, /id="analyticsView"/);
+assert.match(html, /id="openAnalytics"/);
 assert.match(html, /href="\/admin\.css"/);
 assert.match(site, /managed-content\.js/);
 assert.match(site, /managed-content\.css/);
@@ -35,7 +43,12 @@ assert.match(sql, /hm_media_storage_insert[\s\S]+?bucket_id = 'hm-media' and exi
 assert.match(sql, /create policy hm_admins_self/);
 assert.doesNotMatch(sql + admin + publicJS + html, /service_role|sb_secret_[\w-]+/i,
   'Never expose privileged API credentials.');
+assert.match(reportGrants, /create policy hm_events_owner_read/);
+assert.match(reportGrants, /select 1 from public\.hm_admins/);
+assert.match(reportGrants, /grant select on[\s\S]*public\.hm_stats_dashboard/);
+assert.doesNotMatch(reportGrants, /\bto\s+anon\b/i);
+assert.match(admin, /HM_ADMIN_REPORT_QUERY/);
 assert.match(publicJS, /is_published=eq.true/);
 assert.match(publicJS, /if \(!response\.ok\) return;/);
 assert.match(publicJS, /Keep the approved built-in original assets/);
-console.log('PASS: admin markup bindings, JS syntax, site hooks, owner RLS policies, storage permissions and original artwork fallback.');
+console.log('PASS: content & analytics admin markup, JS syntax, owner-only RLS reports, safe original artwork fallback.');

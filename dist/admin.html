@@ -5,7 +5,7 @@
  <meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#ffffff">
  <title>헤뭉이 관리자 · HAEMUNGI</title>
  <link rel="stylesheet" href="/admin.css">
- <script src="/content-config.js" defer></script><script src="/admin.js" defer></script>
+ <script src="/content-config.js" defer></script><script src="/admin.js" defer></script><script src="/admin-stats.js" defer></script>
 </head>
 <body>
  <header class="topbar"><a class="brand" href="/">♡ <span>HAEMUNGI<small>CONTENT STUDIO</small></span></a><div><a href="/" target="_blank" rel="noopener">홈페이지 ↗</a> <button class="outline" id="logout" hidden>로그아웃</button></div></header>
@@ -17,6 +17,7 @@
    <p class="hint">헤뭉이 전용 관리자 계정만 접근할 수 있습니다.</p>
   </section>
   <section id="studioView" hidden>
+   <nav class="admin-navigation" aria-label="관리자 메뉴"><span class="admin-nav-current" aria-current="page">✿ 콘텐츠 관리</span><button type="button" id="openAnalytics" class="admin-nav-link">▥ 방문·콘텐츠 통계</button></nav>
    <div class="heading"><div><p class="eyebrow">HAEMUNGI · CONTROL ROOM</p><h1>콘텐츠 관리</h1><p>임시 저장은 방문자에게 보이지 않습니다. <b>공개 반영</b> 시 즉시 변경됩니다.</p></div><button class="outline" id="reload">↻ 새로고침</button></div>
    <div class="stats"><div>공개 중 <strong id="countLive">0</strong></div><div>작업 중 <strong id="countDraft">0</strong></div><div>관리 항목 <strong id="countAll">0</strong></div></div>
    <div class="layout">
@@ -30,6 +31,37 @@
      </form><p class="hint">원본 파일은 유지됩니다. 새 콘텐츠를 숨기면 원래 홈페이지 이미지로 돌아갑니다.</p>
     </section>
    </div>
+  </section>
+
+  <section id="analyticsView" class="analytics-view" hidden>
+   <div class="heading">
+    <div><p class="eyebrow">HAEMUNGI · VISITOR INSIGHTS</p><h1>헤뭉이 통계실</h1><p>방문자가 수집에 동의한 기록만 집계합니다. 모든 시간은 한국 시간 기준입니다.</p></div>
+    <div class="analytics-actions"><button id="backContent" class="outline" type="button">← 콘텐츠 관리</button><button id="refreshAnalytics" class="outline" type="button">↻ 갱신</button><button id="downloadAnalytics" class="soft" type="button">CSV 내려받기</button></div>
+   </div>
+   <p id="analyticsStatus" class="analytics-status" role="status" aria-live="polite">통계를 불러올 준비가 됐습니다.</p>
+   <div class="analytics-kpis" aria-label="핵심 방문 및 콘텐츠 통계">
+    <div class="analytics-kpi"><span>오늘 페이지 조회</span><strong id="aToday">—</strong><small>한국 시간 0시부터</small></div>
+    <div class="analytics-kpi"><span>누적 페이지 조회</span><strong id="aTotal">—</strong><small>동의한 방문만</small></div>
+    <div class="analytics-kpi"><span>누적 세션 추정</span><strong id="aSessions">—</strong><small>고유 방문자 수 아님</small></div>
+    <div class="analytics-kpi"><span>최근 7일 조회</span><strong id="aWeek">—</strong><small>이동 7일</small></div>
+    <div class="analytics-kpi"><span>최근 30일 조회</span><strong id="aMonth">—</strong><small>이동 30일</small></div>
+    <div class="analytics-kpi"><span>굿즈 상세 열람</span><strong id="aGoods">—</strong><small>누적 열람 동작</small></div>
+    <div class="analytics-kpi"><span>카드뉴스 열람</span><strong id="aCards">—</strong><small>누적 장면 열람</small></div>
+    <div class="analytics-kpi"><span>방 안의 발견</span><strong id="aRoom">—</strong><small>오브젝트 터치</small></div>
+   </div>
+   <div class="analytics-section-grid">
+    <section class="card analytics-panel analytics-wide"><div class="analytics-panel-title"><div><h2>최근 30일 방문 추이</h2><p>일별 페이지 조회 · 한국 시간</p></div></div><div id="aDailyChart" class="analytics-daily-chart"></div><div id="aDailyTable" class="analytics-data-table"></div></section>
+    <section class="card analytics-panel"><h2>페이지별 조회</h2><p>홈 · 영상 · 카드뉴스 · 일상 · 굿즈 · 방 · 소개</p><div id="aPages"></div></section>
+    <section class="card analytics-panel"><h2>방문 유입 채널</h2><p>스레드 · 인스타 · 검색 · 직접 방문 등</p><div id="aSources"></div></section>
+    <section class="card analytics-panel"><h2>기기 화면 분류</h2><p>모바일 · 태블릿 · PC 화면 폭 기준</p><div id="aDevices"></div></section>
+    <section class="card analytics-panel"><h2>방문 시간대</h2><p>한국 시간 · 시간별 페이지 조회</p><div id="aHours" class="analytics-hour-chart"></div></section>
+    <section class="card analytics-panel"><h2>굿즈 인기 순위</h2><p>10종 상품 상세 열람 · 구매량 아님</p><div id="aGoodsRank"></div></section>
+    <section class="card analytics-panel"><h2>카드뉴스 순위</h2><p>9개 장면별 열람 횟수</p><div id="aCardsRank"></div></section>
+    <section class="card analytics-panel"><h2>헤뭉이의 방 발견</h2><p>7개 상호작용 오브젝트</p><div id="aRoomRank"></div></section>
+    <section class="card analytics-panel"><h2>일상다반사 열람</h2><p>3개 일상 이야기 노출 기록</p><div id="aDiaryRank"></div></section>
+    <section class="card analytics-panel analytics-wide"><h2>이용자 반응</h2><p>그림 확대 · 검색 · 분류 · 음악 재생/중지 · 기타 콘텐츠 동작</p><div id="aEngagement"></div></section>
+   </div>
+   <section class="analytics-meaning card"><h2>통계 기준과 한계</h2><ul><li>방문자가 <b>방문 통계를 허용한 경우에만</b> 기록됩니다. 거부·추적 차단 방문은 포함되지 않습니다.</li><li>세션은 익명 30분 단위의 <b>추정 세션</b>입니다. 서로 다른 사람 수나 순방문자 수로 해석할 수 없습니다.</li><li>조회수는 페이지·콘텐츠가 실제로 열린 기록이며, 굿즈 상세 열람은 판매·구매 실적이 아닙니다.</li><li>수집 시작 이전 기록은 복원할 수 없습니다. 테스트나 자동화 트래픽 일부가 섞일 수 있습니다.</li><li>개별 방문자의 이름·이메일·검색어·IP 주소는 이 통계에 저장하지 않습니다.</li></ul></section>
   </section>
  </main>
  <div id="notice" role="status" aria-live="polite" hidden></div><footer>© HAEMUNGI · 일현 조성훈</footer>
