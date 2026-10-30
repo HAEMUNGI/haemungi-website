@@ -298,9 +298,11 @@
     const pending = drafts.find(row => row.slot === current);
     const changedDraftImage = pending && published &&
       (pending.source_path !== published.source_path || pending.source_url !== published.source_url);
-    const replacingPublishedWebtoon = (current === 'daily-moments' || current.startsWith('webtoon-')) &&
+    if (current === 'daily-moments' &&
+      !confirm('이 위치는 기존 웹툰 고정 전시칸입니다. 새 회차는 반드시 ‘＋ 새 일상다반사 웹툰’으로 추가하세요. 그래도 이 고정 전시칸을 수정하시겠습니까?')) return;
+    const replacingPublishedWebtoon = current.startsWith('webtoon-') &&
       published && ($('file').files.length > 0 || changedDraftImage);
-    if (replacingPublishedWebtoon && !confirm('기존 웹툰 이미지가 교체됩니다. 새 회차는 ‘＋ 새 일상다반사 웹툰’으로 추가하세요. 이 회차의 이미지를 교체하시겠습니까?')) return;
+    if (replacingPublishedWebtoon && !confirm('이 회차의 공개 이미지를 교체하시겠습니까? 새 회차는 ‘＋ 새 일상다반사 웹툰’으로 추가하세요.')) return;
     setBusy(true);
     try {
       const row = await saveDraft();
