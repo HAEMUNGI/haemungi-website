@@ -29,16 +29,16 @@
   const butterfly=screen.querySelector("#hm-world-butterfly");
   const zz=screen.querySelector("#hm-world-zz");
   const poses={
-    idle:[20,795,115,130],
-    smile:[139,795,115,130],
-    surprised:[260,795,115,130],
-    walk:[20,995,115,128],
-    jump:[137,994,120,130],
-    sit:[255,997,118,126],
-    crouch:[367,1008,123,116],
-    look:[490,995,119,129],
-    butterfly:[602,995,115,129],
-    sleep:[712,1014,127,110]
+    idle:[18,813,115,135],
+    smile:[138,813,115,135],
+    surprised:[260,813,124,135],
+    walk:[20,1017,115,118],
+    jump:[135,1017,122,118],
+    sit:[255,1017,118,118],
+    crouch:[374,1031,116,104],
+    look:[491,1018,118,118],
+    butterfly:[604,1010,125,125],
+    sleep:[743,1040,112,96]
   };
   const poseURLs=Object.create(null);
   const sheet=new Image();
