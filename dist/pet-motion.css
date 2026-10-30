@@ -6,7 +6,7 @@
 .pg-pet-stage.hm-live .pg-pet-decoration{z-index:5;pointer-events:none}
 .pg-pet-stage.hm-live .pg-pet-spark{z-index:9}
 .pg-pet-stage.hm-live .pg-pet-time{z-index:8}
-.pg-pet-stage.hm-live .pg-pet-touch{z-index:9;bottom:17%;left:50%;box-shadow:0 7px 22px #7b615444}
+.pg-pet-stage.hm-live .pg-pet-touch{z-index:9;bottom:7%;left:16%;box-shadow:0 7px 22px #7b615444}
 .pg-pet-stage.hm-live .pg-pet-bubble{z-index:10;bottom:5px}
 .pg-pet-stage.hm-live .pg-pet-butterfly{z-index:11}
 .hm-pet-world{position:absolute;inset:0;z-index:1;overflow:hidden;isolation:isolate;cursor:pointer;touch-action:pan-y;background:linear-gradient(#fdf6e9 0%,#fdf1de 64%,#f4dfc2 64%,#eed6b3 100%)}
@@ -59,7 +59,7 @@
  .hm-world-shelf{border-bottom-width:5px}
  .hm-world-hint{max-width:90%;padding:4px 9px;font-size:9px}
  .hm-world-rug{bottom:8%}
- .pg-pet-stage.hm-live .pg-pet-touch{bottom:14%;left:50%}
+ .pg-pet-stage.hm-live .pg-pet-touch{bottom:8%;left:19%}
  .pg-pet-stage.hm-live .pg-pet-bubble{font-size:10px;bottom:2px}
  .hm-world-cookie{bottom:45%}
  .hm-world-butterfly{bottom:56%}
