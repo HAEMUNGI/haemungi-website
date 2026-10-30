@@ -46,7 +46,7 @@ assert.doesNotMatch(sql + admin + publicJS + html, /service_role|sb_secret_[\w-]
 assert.match(reportGrants, /create policy hm_events_owner_read/);
 assert.match(reportGrants, /select 1 from public\.hm_admins/);
 assert.match(reportGrants, /grant select on[\s\S]*public\.hm_stats_dashboard/);
-assert.match(reportGrants, /from anon/);
+assert.doesNotMatch(reportGrants, /\bto\s+anon\b/i);
 assert.match(admin, /HM_ADMIN_REPORT_QUERY/);
 assert.match(publicJS, /is_published=eq.true/);
 assert.match(publicJS, /if \(!response\.ok\) return;/);
