@@ -28,4 +28,17 @@ for(let n=0;n<5;n++){
 }
 const ids=[...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]);
 assert.equal(new Set(ids).size,ids.length,'Duplicate HTML IDs');
-console.log('HAEMUNGI playground source and five original card arts: PASS');
+// Second-generation minigame regression guards: original save keys and tarot remain.
+for(const id of ['pet-touch','pet-bond','pet-quest','pet-butterfly','pet-memory-list','pet-decoration','rps-character','rps-match-you','rps-again','rps-best','rps-sound']){
+ assert.match(html,new RegExp('id="'+id+'"'), 'Missing v2 control: '+id);
+}
+for(const marker of ['hm_playground_tarot_v1','hm_playground_pet_v1','hm_playground_rps_v1','pet.careDay.count<3','questDate','rpsMatch.done','is-revealing']){
+ assert.ok(script.includes(marker),'Missing preservation/gameplay marker: '+marker);
+}
+for(const selector of ['.pg-pet-affection','.pg-pet-mission','.pg-rps-matchtop','.pg-rps-character.is-cheering']){
+ assert.ok(css.includes(selector),'Missing game presentation: '+selector);
+}
+assert.equal((html.match(/data-rps="(?:rock|paper|scissors)"/g)||[]).length,3);
+assert.equal((html.match(/data-care="(?:feed|play|rest)"/g)||[]).length,3);
+assert.ok(!html.includes('id="pet-stage" id='),'Invalid pet stage');
+console.log('HAEMUNGI playground source and five original card arts and v2 minigames: PASS');
