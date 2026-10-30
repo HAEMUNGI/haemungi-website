@@ -37,7 +37,9 @@ assert.match(main, /HM_MANAGED_AUDIO_TOGGLE/);
 for (const table of ['hm_admins', 'hm_media_public', 'hm_media_drafts']) {
   assert.match(sql, new RegExp(`alter table public\\.${table} enable row level security;`));
 }
-assert.match(sql, /hm_media_public_read[\s\S]+?is_published or exists/);
+assert.match(sql, /create policy hm_media_public_read on public\.hm_media_public for select to anon, authenticated\s+using \(is_published\);/);
+assert.match(sql, /create policy hm_media_public_read_admin[\s\S]+?for select to authenticated[\s\S]+?hm_admins/);
+assert.doesNotMatch(sql, /hm_media_public_read on[\s\S]*?using \(is_published or exists/);
 assert.match(sql, /hm_media_drafts_select[\s\S]+?hm_admins/);
 assert.match(sql, /hm_media_storage_insert[\s\S]+?bucket_id = 'hm-media' and exists/);
 assert.match(sql, /create policy hm_admins_self/);
