@@ -73,7 +73,7 @@ for(const marker of ['hm-living-pet-target','pointerdown','pointermove','pointer
   assert.ok(living.includes(marker),'Missing pet interaction: '+marker);
 }
 for(const marker of ['.hm-living-pet-target','touch-action:none','hm3dCuddle',
-  '.hm-living-call','prefers-reduced-motion']){
+  '.hm-living-call','clip-path:polygon','prefers-reduced-motion']){
   assert.ok(livingCss.includes(marker),'Missing accessible interaction style: '+marker);
 }
 assert.ok(!living.includes('localStorage.removeItem'),'Pet upgrades may not clear any saves');
