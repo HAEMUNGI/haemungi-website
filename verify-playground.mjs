@@ -41,14 +41,29 @@ for(const selector of ['.pg-pet-affection','.pg-pet-mission','.pg-rps-matchtop',
 assert.equal((html.match(/data-rps="(?:rock|paper|scissors)"/g)||[]).length,3);
 assert.equal((html.match(/data-care="(?:feed|play|rest)"/g)||[]).length,3);
 assert.ok(!html.includes('id="pet-stage" id='),'Invalid pet stage');
-const motion=readFileSync('dist/pet-motion.js','utf8');
-const motionCss=readFileSync('dist/pet-motion.css','utf8');
-assert.match(html,/pet-motion\.js/);
-assert.match(html,/pet-motion\.css/);
-new Function(motion);
-for(const marker of ['requestAnimationFrame','extractPose','walkTo','react("touch")','hm-pet-actor','haemungi-sheet.webp'])assert.ok(motion.includes(marker),marker);
-assert.match(motionCss,/\.hm-pet-actor/);
-assert.match(motionCss,/prefers-reduced-motion/);
-const sheet=readFileSync('dist/assets/haemungi-sheet.webp');
-assert.ok(sheet.length>100000,'Character sheet missing');
-console.log('HAEMUNGI playground source and five original card arts and live sprite-based pet: PASS');
+// Third-generation living-room regression: original arts and saves stay intact.
+const living=readFileSync('dist/pet-living.js','utf8');
+const livingCss=readFileSync('dist/pet-living.css','utf8');
+assert.match(html,/pet-living\.js/);
+assert.match(html,/pet-living\.css/);
+assert.doesNotMatch(html,/pet-motion\.js/,'Old shaking engine must not be loaded');
+new Function(living);
+for(const marker of ['requestAnimationFrame','hm-living-world','hm-living-actor','haemungi-living-room.jpg','haemungi-3d-idle.png','hm_playground_pet_v1']){
+ assert.ok(living.includes(marker)||script.includes(marker),'Missing living room integration: '+marker);
+}
+for(const marker of ['.hm-living-actor','.hm-living-caption','@media(max-width:700px)','prefers-reduced-motion']){
+ assert.ok(livingCss.includes(marker),'Missing responsive living room CSS: '+marker);
+}
+for(const name of ['haemungi-living-room.jpg','haemungi-3d-reference.jpg']){
+ const data=readFileSync('dist/assets/'+name);
+ assert.ok(data.length>100000,name+' missing');
+ assert.equal(data.subarray(0,3).toString('hex'),'ffd8ff',name+' must be JPEG');
+}
+for(const pose of ['idle','walk','feed','sleep']){
+ const name='dist/assets/haemungi-3d-'+pose+'.png';
+ const data=readFileSync(name);
+ assert.ok(data.length>400000,name+' must be high-resolution');
+ assert.equal(data.subarray(1,4).toString(),'PNG',name+' not PNG');
+ assert.equal(data[25],6,name+' must be RGBA; no opaque JPEG fallback');
+}
+console.log('HAEMUNGI playground original saves/tarot/rps, premium 3D living room assets and responsive controls: PASS');
