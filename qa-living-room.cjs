@@ -16,7 +16,7 @@ const fs = require('node:fs');
       const page=await context.newPage();
       const errors=[];
       page.on('pageerror',error=>errors.push(error.message));
-      const response=await page.goto('https://living-room-preview.haemungi.pages.dev/playground#pet',
+      const response=await page.goto((process.env.HAEMUNGI_PLAYGROUND_URL || 'https://haemungi.pages.dev/playground#pet'),
         {waitUntil:'networkidle',timeout:45000});
       assert.equal(response.status(),200,config.name+' http status');
       await page.locator('.hm-living-world:not([hidden])').waitFor({timeout:20000});
@@ -42,12 +42,6 @@ const fs = require('node:fs');
       assert.equal(report.buttonCount,4,config.name+' four care controls');
       assert.ok(Number(report.originalRoomHidden)<.1,config.name+' only supplied room visible');
       await page.screenshot({path:'smoke-shots/'+config.name+'.png',fullPage:true});
-      if(config.mobile){
-        const picture=await page.screenshot({type:'jpeg',quality:62,fullPage:true});
-        console.log('HM_IMAGE_BEGIN_mobile-390');
-        for(const piece of picture.toString('base64').match(/.{1,500}/g))console.log('HM_IMAGE_PART:'+piece);
-        console.log('HM_IMAGE_END_mobile-390');
-      }
       await page.locator('[data-care="play"]').click();
       await page.waitForTimeout(1900);
       const afterPlay=await page.evaluate(()=>({
