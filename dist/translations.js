@@ -92,7 +92,7 @@ window.HAEMUNGI_TRANSLATIONS = Object.freeze([
   ["바람이 불면 머리카락도 춤을 춰요.", "When the wind blows, even a strand of hair can dance.", "風が吹けば、髪の毛だって踊ります。", "风吹起来，头发也会跳舞。"],
   ["헤뭉이의 영상이 모이는 작은 극장입니다.", "A tiny theater for HAEMUNGI's videos.", "ヘムンギの動画が集まる小さな映画館です。", "这里是收藏 HAEMUNGI 视频的小剧场。"],
   ["작은 극장", "Little Theater", "小さな映画館", "小剧场"],
-  ["준비 중", "Coming soon", "準備中", "即将上线"],
+  ["상영 중", "Now showing", "上映中", "放映中"],
   ["전체", "All", "すべて", "全部"],
   ["짧은 영상", "Short clips", "ショート動画", "短视频"],
   ["이야기", "Stories", "物語", "故事"],
@@ -271,7 +271,7 @@ window.HAEMUNGI_TRANSLATIONS = Object.freeze([
   ["음악을 재생할 수 없어요. 다시 눌러 주세요.", "Could not play music. Please try again.", "音楽を再生できません。もう一度試してください。", "无法播放音乐，请重试。"]
   ,["한국어", "한국어", "한국어", "한국어"]
   ,["헤뭉이 ✿", "HAEMUNGI ✿", "ヘムンギ ✿", "HAEMUNGI ✿"]
-  ,["✿ 현재는 영상 아카이브의 시안입니다. 실제 영상이 등록되면 재생 화면과 상세 정보가 이 자리에 연결됩니다.", "✿ This video archive is a preview. Playable videos and details will appear here when released.", "✿ こちらは動画アーカイブのプレビューです。公開後に再生画面と詳細を表示します。", "✿ 目前为视频档案预览。正式发布后将在这里播放视频并展示详情。"]
+  ,["✿ 헤뭉이의 움직이는 일상이 하나씩 모이고 있어요. 보고 싶은 영상을 눌러 함께 감상해 주세요.", "✿ Haemungi’s little moments in motion are gathering here. Choose a video and enjoy.", "✿ ヘムンギの動く日常が少しずつ集まっています。気になる動画を選んでお楽しみください。", "✿ 海萌奇的日常影像正一点点汇集于此。选择喜欢的视频，一起欣赏吧。"]
   ,["방문자가 직접 허용한 경우에만 페이지·콘텐츠 열람·유입 채널 종류·화면 크기 분류와 30분 단위 임의 세션 번호를 기록합니다. 사이트 조회 통계에는 이름·이메일·검색어·IP 주소를 저장하지 않습니다. 동의는 언제든 철회할 수 있으며, 철회 전 이미 집계된 익명 기록은 남을 수 있습니다. 브라우저의 추적 차단 설정을 우선 적용합니다.", "Only with your permission, we record page/content views, broad referral and device categories, and a random 30-minute session ID. Our statistics do not store names, emails, search terms, or IP addresses. You may withdraw consent anytime; previously aggregated anonymous counts may remain. Browser privacy settings always take priority.", "同意した場合のみ、ページやコンテンツの閲覧、流入元と端末の種類、30分単位のランダムなセッションIDを記録します。氏名・メール・検索語・IPアドレスは統計に保存しません。同意はいつでも撤回できますが、すでに集計された匿名の数値は残る場合があります。ブラウザーのプライバシー設定を優先します。", "仅在您同意后，我们才会记录页面/内容浏览、来源和设备类别，以及每 30 分钟的随机会话编号。统计中不保存姓名、邮箱、搜索词或 IP 地址。您可随时撤回同意，但此前汇总的匿名数据可能保留。浏览器隐私设置始终优先。"]
   ,["아이보리·블랙·핑크에 헤뭉이의 낮과 밤을 담은 티셔츠 디자인입니다.", "T-shirt designs in ivory, black, and pink show HAEMUNGI's days and nights.", "アイボリー・黒・ピンクでヘムンギの昼と夜を描いたTシャツです。", "象牙白、黑色和粉色 T 恤，展现 HAEMUNGI 的白昼与夜晚。"]
   ,["아이보리·핑크·블랙·베이지 컬러에 헤뭉이를 자수로 표현한 모자 디자인입니다.", "Caps embroidered with HAEMUNGI in ivory, pink, black, and beige.", "アイボリー・ピンク・黒・ベージュにヘムンギを刺繍したキャップです。", "象牙白、粉色、黑色和米色的 HAEMUNGI 刺绣帽。"]
