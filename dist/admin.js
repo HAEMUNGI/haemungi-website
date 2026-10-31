@@ -13,6 +13,7 @@
     ['music-main', '배경음악']
   ];
   const labels = new Map(slots);
+  const originalSlots = new Set(slots.map(([slot]) => slot));
   const icon = {image: '▧', video: '▶', audio: '♫'};
   const safeSlot = value => /^[a-z0-9][a-z0-9-]{0,79}$/.test(value || '');
   const mediaType = slot => slot === 'music-main' ? 'audio' : slot.startsWith('video-') ? 'video' : 'image';
@@ -30,6 +31,28 @@
   let current = '';
   let filePreviewUrl = null;
   let noticeTimer = null;
+  let batchFiles = [];
+  let batchSeries = '';
+  let batchLocked = false;
+  const batchPaths = new Map();
+  const batchCaptions = new Map();
+  const batchObjectUrls = new Map();
+  const groupTitles = {cardnews:'카드뉴스', webtoon:'일상다반사 웹툰', today:'헤뭉이의 오늘', goods:'굿즈', emoticon:'이모티콘', gallery:'원화 갤러리', video:'영상', base:'기본 화면·음악'};
+  function category(slot) {
+    if (slot.startsWith('cardnews-') || /^card-\d{2}$/.test(slot)) return 'cardnews';
+    if (slot.startsWith('webtoon-') || slot.startsWith('daily-')) return 'webtoon';
+    if (slot.startsWith('today-')) return 'today';
+    if (slot.startsWith('goods-')) return 'goods';
+    if (slot.startsWith('emoticon-')) return 'emoticon';
+    if (slot.startsWith('gallery-')) return 'gallery';
+    if (slot.startsWith('video-')) return 'video';
+    return 'base';
+  }
+  const cardSeriesId = slot => /^cardnews-([a-z0-9]+)-\d{2}$/.exec(slot)?.[1] || '';
+  function contentName(slot) {
+    const row = drafts.find(item => item.slot === slot) || live.find(item => item.slot === slot);
+    return row?.title || labels.get(slot) || slot;
+  }
 
   function notice(message, isError = false) {
     const el = $('notice');
@@ -139,33 +162,90 @@
   }
   function renderSelector() {
     const select = $('slot');
-    select.replaceChildren(new Option('위치를 선택하세요', ''));
-    allSlots().forEach(slot => select.add(new Option(labels.get(slot) || slot, slot)));
+    // Selection belongs to the searchable library. Never show the huge native mobile menu.
+    select.replaceChildren(new Option('보관함에서 콘텐츠를 골라 주세요', ''));
+    if (current) select.add(new Option(`${groupTitles[category(current)]} · ${contentName(current)}`, current));
     select.value = current;
+  }
+  function contentItem(slot) {
+    const old = live.find(row => row.slot === slot);
+    const pending = drafts.find(row => row.slot === slot);
+    const row = document.createElement('button'); row.type = 'button'; row.className = 'item';
+    row.classList.toggle('active', current === slot);
+    const sign = document.createElement('span'); sign.className = 'item-icon';
+    const media = pending || old;
+    const preview = sourceUrl(media);
+    if (media?.kind === 'image' && preview) {
+      const img = document.createElement('img'); img.src = preview; img.alt = ''; img.loading = 'lazy'; sign.append(img);
+    } else sign.textContent = icon[mediaType(slot)];
+    const info = document.createElement('span'); info.className = 'item-text';
+    const title = document.createElement('strong'); title.textContent = contentName(slot);
+    const detail = document.createElement('small'); detail.textContent = slot;
+    info.append(title, detail);
+    const state = document.createElement('span');
+    state.className = 'item-pill' + (pending ? ' draft' : old?.is_published ? ' live' : '');
+    state.textContent = pending ? '작업 중' : old?.is_published ? '공개 중' : '기본 원화';
+    row.append(sign, info, state); row.addEventListener('click', () => { closeBatch(); selectSlot(slot); });
+    return row;
   }
   function renderList() {
     const term = $('search').value.trim().toLowerCase();
     const filter = $('filter').value;
     $('list').replaceChildren();
-    allSlots().filter(slot => (filter === 'all' || mediaType(slot) === filter) &&
-      `${slot} ${labels.get(slot) || ''}`.toLowerCase().includes(term)).forEach(slot => {
-      const old = live.find(row => row.slot === slot);
-      const pending = drafts.find(row => row.slot === slot);
-      const row = document.createElement('button'); row.type = 'button'; row.className = 'item';
-      row.classList.toggle('active', current === slot);
-      const sign = document.createElement('span'); sign.className = 'item-icon'; sign.textContent = icon[mediaType(slot)];
-      const info = document.createElement('span'); info.className = 'item-text';
-      const title = document.createElement('strong'); title.textContent = labels.get(slot) || pending?.title || old?.title || slot;
-      const detail = document.createElement('small'); detail.textContent = slot;
-      info.append(title, detail);
-      const state = document.createElement('span');
-      state.className = 'item-pill' + (pending ? ' draft' : old?.is_published ? ' live' : '');
-      state.textContent = pending ? '작업 중' : old?.is_published ? '공개 중' : '기본 원화';
-      row.append(sign, info, state); row.addEventListener('click', () => selectSlot(slot)); $('list').append(row);
+    const visible = allSlots().filter(slot => {
+      if (filter !== 'all' && category(slot) !== filter) return false;
+      if (originalSlots.has(slot) && !$('showBase').checked && filter !== 'base' &&
+          !live.some(row => row.slot === slot) && !drafts.some(row => row.slot === slot)) return false;
+      return `${slot} ${contentName(slot)} ${groupTitles[category(slot)]}`.toLowerCase().includes(term);
     });
+    const grouped = new Map();
+    for (const slot of visible) {
+      const series = cardSeriesId(slot);
+      const legacyGoods = originalSlots.has(slot) && slot.startsWith('goods-') && slot !== 'goods-collection';
+      const key = series ? `cardnews-${series}` : /^card-\d{2}$/.test(slot) ? 'legacy-cards'
+        : legacyGoods ? 'legacy-goods' : `single-${slot}`;
+      if (!grouped.has(key)) grouped.set(key, []);
+      grouped.get(key).push(slot);
+    }
+    const ordered = [...grouped.entries()].sort((a, b) => {
+      const aBase = originalSlots.has(a[1][0]); const bBase = originalSlots.has(b[1][0]);
+      const latest = members => Math.max(0, ...members.map(slot => Date.parse(
+        (drafts.find(row => row.slot === slot) || live.find(row => row.slot === slot))?.updated_at || '') || 0));
+      return Number(aBase) - Number(bBase) || latest(b[1]) - latest(a[1]) || b[0].localeCompare(a[0], 'ko');
+    });
+    for (const [key, members] of ordered) {
+      if (members.length === 1 && !cardSeriesId(members[0])) { $('list').append(contentItem(members[0])); continue; }
+      const details = document.createElement('details'); details.className = 'series-group';
+      details.open = members.includes(current) || !!term;
+      const summary = document.createElement('summary');
+      const sample = key === 'legacy-cards' ? '첫 카드뉴스 · 기본 9장'
+        : key === 'legacy-goods' ? '기존 굿즈 디자인'
+          : contentName(members[0]).split(' · ')[0];
+      const published = members.filter(slot => live.some(row => row.slot === slot && row.is_published)).length;
+      const pending = members.filter(slot => drafts.some(row => row.slot === slot)).length;
+      summary.textContent = `▧ ${sample} · ${members.length}장 (공개 ${published} / 작업 ${pending})`;
+      details.append(summary);
+      const seriesActions = document.createElement('div'); seriesActions.className = 'series-actions';
+      if (pending) {
+        const publish = document.createElement('button'); publish.type = 'button'; publish.textContent = '묶음 공개';
+        publish.addEventListener('click', () => publishSeries(members)); seriesActions.append(publish);
+      }
+      if (published) {
+        const hide = document.createElement('button'); hide.type = 'button'; hide.textContent = '묶음 숨기기';
+        hide.addEventListener('click', () => hideSeries(members)); seriesActions.append(hide);
+      }
+      details.append(seriesActions);
+      members.sort().forEach(slot => details.append(contentItem(slot)));
+      $('list').append(details);
+    }
+    if (!visible.length) {
+      const empty = document.createElement('p'); empty.className = 'catalog-empty';
+      empty.textContent = '등록된 콘텐츠가 없습니다. 위에서 새 이야기를 추가하거나 기본 원화 보기를 켜세요.';
+      $('list').append(empty);
+    }
     $('countLive').textContent = String(live.filter(row => row.is_published).length);
     $('countDraft').textContent = String(drafts.length);
-    $('countAll').textContent = String(allSlots().length);
+    $('countAll').textContent = String(new Set([...live.map(row => row.slot), ...drafts.map(row => row.slot)]).size);
   }
   function selectSlot(slot) {
     if (slot && !safeSlot(slot)) return;
@@ -328,6 +408,131 @@
     } catch (error) { notice(error.message, true); }
     finally { setBusy(false); }
   }
+  async function publishSeries(members) {
+    const rows = drafts.filter(row => members.includes(row.slot));
+    if (!rows.length) return notice('공개할 작업본이 없습니다.', true);
+    if (!confirm(`${rows.length}장의 작업본을 공개하시겠습니까? 기존 공개본은 삭제하지 않습니다.`)) return;
+    try {
+      await request(rest('hm_media_public', '?on_conflict=slot'), {
+        method: 'POST', headers: {Prefer: 'resolution=merge-duplicates,return=representation'},
+        body: JSON.stringify(rows.map(row => ({
+          slot: row.slot, kind: row.kind, title: row.title, description: row.description,
+          alt_text: row.alt_text, source_path: row.source_path, source_url: row.source_url,
+          is_published: true, updated_at: new Date().toISOString()
+        })))
+      });
+      await request(rest('hm_media_drafts', `?slot=in.(${rows.map(row => row.slot).join(',')})`), {method:'DELETE'});
+      await loadAll(); notice(`${rows.length}장을 한 번에 공개했습니다.`);
+    } catch (error) { notice(`묶음 공개 확인이 필요합니다: ${error.message}`, true); await loadAll().catch(() => {}); }
+  }
+  async function hideSeries(members) {
+    const slotsToHide = members.filter(slot => live.some(row => row.slot === slot && row.is_published));
+    if (!slotsToHide.length || !confirm(`${slotsToHide.length}장을 모두 숨기시겠습니까? 파일과 임시 저장본은 남습니다.`)) return;
+    try {
+      await request(rest('hm_media_public', `?slot=in.(${slotsToHide.join(',')})`), {
+        method: 'PATCH', body: JSON.stringify({is_published:false, updated_at:new Date().toISOString()})
+      });
+      await loadAll(); notice('시리즈 공개를 숨겼습니다. 원본은 보존됩니다.');
+    } catch (error) { notice(error.message, true); }
+  }
+  function openBatch() {
+    $('batchView').hidden = false;
+    $('editorLayout').hidden = true;
+    $('batchTitle').focus();
+  }
+  function closeBatch() {
+    $('batchView').hidden = true;
+    $('editorLayout').hidden = false;
+  }
+  function resetBatch() {
+    for (const url of batchObjectUrls.values()) URL.revokeObjectURL(url);
+    batchObjectUrls.clear(); batchPaths.clear(); batchCaptions.clear();
+    batchFiles = []; batchSeries = ''; batchLocked = false;
+    $('batchFiles').disabled = false; $('batchFiles').value = '';
+    $('batchTitle').value = ''; $('batchDescription').value = '';
+    $('batchStatus').textContent = ''; renderBatchPages();
+  }
+  function renderBatchPages() {
+    $('batchPages').replaceChildren();
+    batchFiles.forEach((file, index) => {
+      if (!batchObjectUrls.has(file)) batchObjectUrls.set(file, URL.createObjectURL(file));
+      const row = document.createElement('div'); row.className = 'batch-page';
+      const img = document.createElement('img'); img.src = batchObjectUrls.get(file); img.alt = `카드 ${index + 1} 미리보기`;
+      const info = document.createElement('div'); info.className = 'batch-page-info';
+      const title = document.createElement('strong'); title.textContent = `${index + 1}장 · ${file.name}`;
+      const caption = document.createElement('input'); caption.type = 'text'; caption.maxLength = 40;
+      caption.placeholder = `${index + 1}장 제목 (선택)`; caption.value = batchCaptions.get(file) || '';
+      caption.disabled = batchLocked;
+      caption.addEventListener('input', () => batchCaptions.set(file, caption.value));
+      const actions = document.createElement('div'); actions.className = 'batch-page-actions';
+      for (const [symbol, next] of [['↑', index - 1], ['↓', index + 1]]) {
+        const button = document.createElement('button'); button.type = 'button'; button.textContent = symbol;
+        button.setAttribute('aria-label', `${index + 1}장을 ${symbol === '↑' ? '앞으로' : '뒤로'} 이동`);
+        button.disabled = batchLocked || next < 0 || next >= batchFiles.length;
+        button.addEventListener('click', () => {
+          [batchFiles[index], batchFiles[next]] = [batchFiles[next], batchFiles[index]];
+          renderBatchPages();
+        });
+        actions.append(button);
+      }
+      info.append(title, caption); row.append(img, info, actions); $('batchPages').append(row);
+    });
+    $('batchDraft').disabled = $('batchPublish').disabled = !batchFiles.length;
+  }
+  async function saveBatch(publish) {
+    const title = $('batchTitle').value.trim();
+    const desc = $('batchDescription').value.trim();
+    if (!title) return notice('시리즈 제목을 입력해 주세요.', true);
+    if (!batchFiles.length) return notice('카드 이미지부터 선택해 주세요.', true);
+    if (batchFiles.length > 20) return notice('한 시리즈에 최대 20장까지 등록할 수 있습니다.', true);
+    try { batchFiles.forEach(file => validateFile(file, 'image')); }
+    catch (error) { return notice(error.message, true); }
+    // Once upload starts, fix ordering so an interrupted upload can resume safely.
+    batchLocked = true;
+    batchSeries ||= `${Date.now().toString(36)}${crypto.randomUUID().slice(0, 6)}`.replace(/-/g, '');
+    $('batchFiles').disabled = $('batchDraft').disabled = $('batchPublish').disabled = true;
+    renderBatchPages();
+    $('batchDraft').disabled = $('batchPublish').disabled = true;
+    const entries = [];
+    try {
+      for (const [index, file] of batchFiles.entries()) {
+        $('batchStatus').textContent = `${index + 1} / ${batchFiles.length}장 업로드 중…`;
+        let path = batchPaths.get(file);
+        if (!path) { path = await upload(file, 'image'); batchPaths.set(file, path); }
+        const number = String(index + 1).padStart(2, '0');
+        const pageTitle = batchCaptions.get(file)?.trim() || `${index + 1}장`;
+        entries.push({slot:`cardnews-${batchSeries}-${number}`, kind:'image',
+          title:`${title} · ${pageTitle}`, description:desc, alt_text:`${title} ${index + 1}장`,
+          source_path:path, source_url:null, updated_at:new Date().toISOString()});
+      }
+      await request(rest('hm_media_drafts', '?on_conflict=slot'), {
+        method:'POST', headers:{Prefer:'resolution=merge-duplicates,return=representation'}, body:JSON.stringify(entries)
+      });
+      if (publish) {
+        $('batchStatus').textContent = '전체 공개 반영 중…';
+        await request(rest('hm_media_public', '?on_conflict=slot'), {
+          method:'POST', headers:{Prefer:'resolution=merge-duplicates,return=representation'},
+          body:JSON.stringify(entries.map(row => ({...row, is_published:true})))
+        });
+        await request(rest('hm_media_drafts', `?slot=in.(${entries.map(row => row.slot).join(',')})`), {method:'DELETE'});
+      }
+      const first = entries[0].slot;
+      await loadAll();
+      if (publish) {
+        resetBatch(); closeBatch(); selectSlot(first);
+        notice(`${entries.length}장의 새 카드뉴스를 공개했습니다. 기존 시리즈는 그대로입니다.`);
+      } else {
+        $('batchStatus').textContent = `${entries.length}장 임시 저장 완료. ‘전체 공개 반영’으로 한 번에 게시할 수 있습니다.`;
+        notice('카드뉴스 전체를 임시 저장했습니다. 아직 방문자에게 보이지 않습니다.');
+      }
+    } catch (error) {
+      $('batchStatus').textContent = `중단됨 · ${error.message}. 같은 화면에서 다시 시도하면 업로드한 파일을 재사용합니다.`;
+      notice(error.message, true);
+      await loadAll().catch(() => {});
+    } finally {
+      $('batchDraft').disabled = $('batchPublish').disabled = false;
+    }
+  }
   async function login(event) {
     event.preventDefault();
     if (!apiConfigOK) return notice('헤뭉이 Supabase 연결 설정을 확인해 주세요.', true);
@@ -358,13 +563,14 @@
     $('password').value = ''; notice('로그아웃했습니다.');
   }
   function createSlot(kind) {
-    const prefix = {video:'video',image:'gallery',today:'today',emoticon:'emoticon',webtoon:'webtoon'}[kind];
+    const prefix = {video:'video',image:'gallery',today:'today',emoticon:'emoticon',webtoon:'webtoon',goods:'goods-new'}[kind];
     if (!prefix) return;
     const slug = kind === 'webtoon'
       ? `webtoon-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`
       : `${prefix}-${crypto.randomUUID().slice(0, 12)}`;
-    labels.set(slug, {video:'새 영상',image:'새 갤러리 이미지',today:'헤뭉이의 오늘',emoticon:'새 이모티콘',webtoon:'새 일상다반사 웹툰'}[kind]);
-    renderSelector(); selectSlot(slug);
+    labels.set(slug, {video:'새 영상',image:'새 갤러리 이미지',today:'헤뭉이의 오늘',emoticon:'새 이모티콘',webtoon:'새 일상다반사 웹툰',goods:'새 굿즈 상품'}[kind]);
+    closeBatch(); renderSelector(); selectSlot(slug);
+    $('title').focus();
   }
 
   $('loginForm').addEventListener('submit', login);
@@ -372,7 +578,24 @@
   $('reload').addEventListener('click', () => loadAll().then(() => notice('최신 정보를 불러왔습니다.')).catch(error => notice(error.message, true)));
   $('search').addEventListener('input', renderList);
   $('filter').addEventListener('change', renderList);
+  $('showBase').addEventListener('change', () => { renderSelector(); renderList(); });
   $('slot').addEventListener('change', event => selectSlot(event.target.value));
+  $('openCardBatch').addEventListener('click', () => { resetBatch(); openBatch(); });
+  $('closeBatch').addEventListener('click', closeBatch);
+  $('batchFiles').addEventListener('change', () => {
+    if (batchLocked) return;
+    for (const url of batchObjectUrls.values()) URL.revokeObjectURL(url);
+    batchObjectUrls.clear(); batchCaptions.clear();
+    batchFiles = [...$('batchFiles').files];
+    if (batchFiles.length > 20) { notice('한 시리즈에 최대 20장까지 등록할 수 있습니다.', true); batchFiles = []; $('batchFiles').value = ''; }
+    renderBatchPages();
+  });
+  $('batchDraft').addEventListener('click', () => saveBatch(false));
+  $('batchPublish').addEventListener('click', () => saveBatch(true));
+  $('quickWebtoon').addEventListener('click', () => createSlot('webtoon'));
+  $('quickToday').addEventListener('click', () => createSlot('today'));
+  $('quickGoods').addEventListener('click', () => createSlot('goods'));
+  $('quickEmoticon').addEventListener('click', () => createSlot('emoticon'));
   $('addImage').addEventListener('click', () => createSlot('image'));
   $('addVideo').addEventListener('click', () => createSlot('video'));
   $('addToday').addEventListener('click', () => createSlot('today'));

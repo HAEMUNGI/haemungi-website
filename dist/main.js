@@ -151,6 +151,10 @@
     ...scene, slug: `card-${String(i + 1).padStart(2, '0')}`,
     art: `assets/cardnews-01-${String(i + 1).padStart(2, '0')}.webp`
   }));
+  let birthStoryData = storyData.map(scene => ({...scene}));
+  const managedBirthCardImages = new Map();
+  const managedStorySeries = new Map();
+  let selectedStorySeries = 'birth';
   let storyPage = 0;
   const storyImage = document.getElementById('storyImage');
   const storyTitle = document.getElementById('storyTitle');
@@ -159,6 +163,18 @@
   const storyDots = document.getElementById('storyDots');
   const storyThumbs = document.getElementById('storyThumbs');
   const storyArt = document.getElementById('storyArt');
+  const seriesSelect = document.getElementById('cardSeriesSelect');
+  function selectStorySeries(id) {
+    const source = id === 'birth' ? birthStoryData : managedStorySeries.get(id);
+    if (!source?.length) return;
+    selectedStorySeries = id;
+    storyData = source.map(scene => ({...scene}));
+    storyPage = 0;
+    seriesSelect.value = id;
+    thumbs = buildStoryControls();
+    renderStory();
+  }
+  seriesSelect.addEventListener('change', () => selectStorySeries(seriesSelect.value));
   function buildStoryControls() {
     storyThumbs.replaceChildren();
     storyDots.replaceChildren();
@@ -208,11 +224,29 @@
   // Allow optional published CMS artwork to replace a card without losing the carousel.
   window.HM_MANAGED_SET_CARD = (slug, art) => {
     if (!/^card-\d{2}$/.test(slug) || !/^https:\/\//.test(art)) return;
-    const item = storyData.find(scene => scene.slug === slug);
+    const item = birthStoryData.find(scene => scene.slug === slug);
     if (!item) return;
+    managedBirthCardImages.set(slug, art);
     item.art = art;
-    thumbs = buildStoryControls();
-    renderStory();
+    if (selectedStorySeries === 'birth') {
+      const current = storyData.find(scene => scene.slug === slug);
+      if (current) current.art = art;
+      thumbs = buildStoryControls(); renderStory();
+    }
+  };
+  window.HM_MANAGED_SET_SERIES = series => {
+    managedStorySeries.clear();
+    series.forEach(({id, pages}) => {
+      if (!/^[a-z0-9]+$/.test(id) || !Array.isArray(pages) || !pages.length) return;
+      managedStorySeries.set(id, pages);
+    });
+    seriesSelect.replaceChildren(new Option('첫 번째 이야기 · 헤뭉이의 탄생 (9장)', 'birth'));
+    for (const [id, pages] of managedStorySeries) {
+      const seriesName = pages[0]?.seriesTitle || pages[0]?.title || '새 이야기';
+      seriesSelect.add(new Option(`${seriesName} (${pages.length}장)`, id));
+    }
+    if (selectedStorySeries !== 'birth' && !managedStorySeries.has(selectedStorySeries)) selectStorySeries('birth');
+    else seriesSelect.value = selectedStorySeries;
   };
   const changeStory = (delta) => { storyPage = (storyPage + delta + storyData.length) % storyData.length; renderStory(); };
   document.getElementById('storyPrev').addEventListener('click', () => {
@@ -281,6 +315,33 @@
     document.getElementById('goodsCount').textContent = `${count}가지 콘셉트`;
     document.getElementById('goodsNoResults').hidden = count > 0;
   }
+  window.HM_MANAGED_ADD_GOODS = products => {
+    // Only remove products injected by the CMS; the original ten are permanent.
+    goodsCards.filter(card => card.dataset.hmNewGoods).forEach(card => {
+      goodsOriginalOrder.delete(card); card.remove();
+    });
+    for (let i = goodsCards.length - 1; i >= 0; i--) if (goodsCards[i].dataset.hmNewGoods) goodsCards.splice(i, 1);
+    products.forEach(product => {
+      if (!/^goods-new-[a-z0-9-]+$/.test(product.slot) || !/^https:\/\//.test(product.image)) return;
+      const card = document.createElement('button'); card.type = 'button'; card.className = 'goods-item';
+      card.dataset.hmNewGoods = product.slot;
+      card.dataset.goodsKind = 'collectible'; card.dataset.goodsSlug = product.slot;
+      card.dataset.goodsName = product.name; card.dataset.goodsDesc = product.description;
+      card.dataset.goodsImg = product.image;
+      const thumb = document.createElement('span'); thumb.className = 'goods-thumb protected-media';
+      const img = document.createElement('img'); img.src = product.image; img.alt = product.alt || product.name;
+      img.loading = 'lazy'; img.decoding = 'async';
+      const badge = document.createElement('span'); badge.className = 'goods-badge'; badge.textContent = 'COMING SOON';
+      thumb.append(img, badge);
+      const kind = document.createElement('span'); kind.className = 'goods-category'; kind.textContent = 'NEW COLLECTION';
+      const title = document.createElement('strong'); title.textContent = product.name;
+      const action = document.createElement('span'); action.className = 'goods-bottom'; action.textContent = '상세 디자인 보기 ↗';
+      card.append(thumb, kind, title, action);
+      goodsCards.push(card); goodsOriginalOrder.set(card, goodsOriginalOrder.size);
+      goodsGrid.append(card);
+    });
+    renderGoods();
+  };
   document.querySelectorAll('[data-goods-filter]').forEach(button => button.addEventListener('click', () => {
     goodsCategory = button.dataset.goodsFilter;
     window.HM_STATS?.track('goods_filter', 'goods', goodsCategory);
@@ -516,15 +577,17 @@
         }))
         .filter(s => typeof s.title === 'string' && typeof s.body === 'string' && safePath(s.art));
       if (cards.length > 0) {
-        storyData = cards;
-        storyPage = Math.min(storyPage, storyData.length - 1);
-        thumbs = buildStoryControls();
-        renderStory();
+        birthStoryData = cards.map(scene => ({...scene, art:managedBirthCardImages.get(scene.slug) || scene.art}));
+        if (selectedStorySeries === 'birth') {
+          storyData = birthStoryData.map(scene => ({...scene}));
+          storyPage = Math.min(storyPage, storyData.length - 1);
+          thumbs = buildStoryControls(); renderStory();
+        }
       }
 
       if (goodsRows.length > 0) {
         const byOrder = new Map(goodsRows.map(g => [Number(g.display_order), g]));
-        goodsCards.forEach((card, index) => {
+        goodsCards.filter(card => !card.dataset.hmNewGoods).forEach((card, index) => {
           const row = byOrder.get(index + 1);
           const art = row && assetMap.get(row.asset_slug);
           if (!row || !art || typeof row.name !== 'string' ||

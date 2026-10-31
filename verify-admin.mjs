@@ -64,4 +64,24 @@ assert.match(site, /data-lightbox="assets\/daily-first-encounter\.webp"/);
 assert.match(site, /data-lightbox="assets\/daily-little-moments\.webp"/);
 assert.match(publicJS, /if \(!response\.ok\) return;/);
 assert.match(publicJS, /Keep the approved built-in original assets/);
+// A new story is a separately published collection, never a replacement of birth cards.
+for (const id of ['openCardBatch','batchTitle','batchFiles','batchPages','batchDraft','batchPublish',
+  'showBase','quickGoods','quickWebtoon','quickToday','quickEmoticon']) {
+  assert.match(html, new RegExp(`id="${id}"`), `Missing content-library control ${id}`);
+}
+assert.match(admin, /const originalSlots = new Set/);
+assert.match(admin, /select\.replaceChildren\(new Option\('보관함에서 콘텐츠를 골라 주세요'/);
+assert.match(admin, /batchFiles\.length > 20/);
+assert.match(admin, /batchSeries \|\|= /);
+assert.match(admin, /`cardnews-\$\{batchSeries\}-\$\{number\}`/);
+assert.match(admin, /resolution=merge-duplicates,return=representation/);
+assert.match(admin, /async function publishSeries/);
+assert.match(admin, /async function hideSeries/);
+assert.match(publicJS, /function updateCardNewsSeries/);
+assert.match(publicJS, /window\.HM_MANAGED_SET_SERIES\?\./);
+assert.match(publicJS, /window\.HM_MANAGED_ADD_GOODS\?\./);
+assert.match(main, /window\.HM_MANAGED_SET_SERIES = series =>/);
+assert.match(main, /managedBirthCardImages\.get\(scene\.slug\)/);
+assert.match(main, /window\.HM_MANAGED_ADD_GOODS = products =>/);
+assert.match(site, /id="cardSeriesSelect"/);
 console.log('PASS: content & analytics admin markup, JS syntax, owner-only RLS reports, safe original artwork fallback.');
