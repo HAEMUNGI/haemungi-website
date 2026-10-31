@@ -460,7 +460,7 @@
       const img = document.createElement('img'); img.src = batchObjectUrls.get(file); img.alt = `카드 ${index + 1} 미리보기`;
       const info = document.createElement('div'); info.className = 'batch-page-info';
       const title = document.createElement('strong'); title.textContent = `${index + 1}장 · ${file.name}`;
-      const caption = document.createElement('input'); caption.type = 'text'; caption.maxLength = 80;
+      const caption = document.createElement('input'); caption.type = 'text'; caption.maxLength = 40;
       caption.placeholder = `${index + 1}장 제목 (선택)`; caption.value = batchCaptions.get(file) || '';
       caption.disabled = batchLocked;
       caption.addEventListener('input', () => batchCaptions.set(file, caption.value));
