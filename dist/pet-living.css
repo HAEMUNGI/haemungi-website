@@ -38,6 +38,7 @@
   outline:0;
   cursor:pointer;
   touch-action:pan-y;
+  -webkit-tap-highlight-color:transparent;
 }
 .pg-pet-stage.hm-living .hm-living-world[hidden]{display:none!important}
 .pg-pet-stage.hm-living .hm-living-room-image{
