@@ -49,7 +49,7 @@ assert.match(html,/pet-living\.js/);
 assert.match(html,/pet-living\.css/);
 assert.doesNotMatch(html,/pet-motion\.js/,'Old shaking engine must not be loaded');
 new Function(living);
-for(const marker of ['requestAnimationFrame','hm-living-world','hm-living-actor','haemungi-living-room.jpg','haemungi-3d-idle.webp','haemungi-3d-play.webp','hm_playground_pet_v1']){
+for(const marker of ['requestAnimationFrame','hm-living-world','hm-living-actor','haemungi-living-room.jpg','haemungi-3d-idle.png','haemungi-3d-play.png','hm_playground_pet_v1']){
  assert.ok(living.includes(marker)||script.includes(marker),'Missing living room integration: '+marker);
 }
 for(const marker of ['.hm-living-actor','.hm-living-caption','@media(max-width:700px)','prefers-reduced-motion']){
@@ -61,11 +61,11 @@ for(const name of ['haemungi-living-room.jpg','haemungi-3d-reference.jpg']){
  assert.equal(data.subarray(0,3).toString('hex'),'ffd8ff',name+' must be JPEG');
 }
 for(const pose of ['idle','walk','feed','play','sleep']){
- const name='dist/assets/haemungi-3d-'+pose+'.webp';
+ const name='dist/assets/haemungi-3d-'+pose+'.png';
  const data=readFileSync(name);
  assert.ok(data.length>400000,name+' must be high-resolution');
- assert.equal(data.subarray(0,4).toString(),'RIFF',name+' not WebP');
- assert.equal(data.subarray(8,16).toString(),'WEBPVP8L',name+' must preserve lossless alpha');
+ assert.equal(data.subarray(1,4).toString(),'PNG',name+' not PNG');
+ assert.equal(data[25],6,name+' must be RGBA with transparency');
 }
 // Fourth-generation pet interactions must preserve daily tarot and the original pet storage.
 for(const marker of ['hm-living-pet-target','pointerdown','pointermove','pointerup','pointercancel',
