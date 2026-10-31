@@ -368,6 +368,7 @@
     dialogImage.alt = title;
     dialogTitle.textContent = title;
     dialogDescription.textContent = description || '';
+    document.getElementById('dialogStoryLink').hidden = true;
     if (!assetDialog.open) assetDialog.showModal();
   }
   document.querySelectorAll('[data-lightbox]').forEach(button => button.addEventListener('click', () => {

@@ -3,3 +3,6 @@
 .hm-story-library label{font-size:13px;font-weight:800;color:#795b45;white-space:nowrap}
 .hm-story-library select{flex:1;min-width:0;max-width:420px;min-height:43px;border:1px solid #e2cdb6;border-radius:10px;background:#fff;color:#644933;padding:9px 12px;font:600 13px system-ui,sans-serif}
 @media(max-width:580px){.hm-story-library{margin:0 16px 24px;padding:14px;flex-direction:column;align-items:stretch;gap:7px}.hm-story-library select{max-width:none;width:100%}}
+.hm-archive-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;margin-top:16px;padding:9px 17px;border:1px solid #ddc5aa;border-radius:30px;background:#fffaf3;color:#805b40;font-size:13px;font-weight:800;text-decoration:none;box-shadow:0 8px 25px #a8876114}
+.hm-archive-link:hover{background:#f5e7d5;text-decoration:none}.hm-archive-link:focus-visible{outline:3px solid #cba27c;outline-offset:3px}
+.hm-story-read{margin-top:11px}.asset-dialog #dialogStoryLink{margin:5px 0 15px}

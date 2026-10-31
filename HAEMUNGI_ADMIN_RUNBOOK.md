@@ -62,6 +62,17 @@
 - 파일 교체 시 기존 Storage 파일을 자동 삭제하지 않습니다. 데이터 유실 방지가 우선이며, 장기 운영 시 관리자 확인 후 사용하지 않는 파일을 정리해야 합니다.
 - 큰 동영상은 별도 영상 호스팅의 HTTPS 주소를 연결하면 Storage 용량을 절약할 수 있습니다.
 
+## 공개 이야기 아카이브 · 검색엔진용 HTML
+
+- 관리자에서 공개한 `webtoon-*`, `today-*`, `gallery-*`, `emoticon-*` 이미지는 기존 URL과 별개로 `https://haemungi.pages.dev/stories/{콘텐츠-ID}` 주소에서 **제목·설명이 서버에서 작성된 실제 HTML**로 제공됩니다.
+- 카드뉴스 묶음(`cardnews-{시리즈-ID}-01` 등)은 `/stories/cardnews-{시리즈-ID}`의 한 편으로 모읍니다. 원래 카드뉴스 넘김은 유지됩니다.
+- `https://haemungi.pages.dev/stories`에서 공개된 작품을 최신순으로 찾아볼 수 있습니다. 홈페이지 ‘오늘’과 ‘일상다반사’에서도 아카이브로 이동할 수 있습니다.
+- `https://haemungi.pages.dev/sitemap.xml`은 공개 중인 작품만 포함하며, `robots.txt`가 검색봇에게 사이트맵을 알려줍니다. 작품을 신규 공개하거나 숨길 때 **GitHub 재배포·SQL 변경이 필요하지 않습니다.** 갱신은 최대 약 1분 지연될 수 있습니다.
+- 검색용 HTML은 Cloudflare Pages Functions를 사용합니다. `dist/_routes.json`에 `/stories`, `/stories/*`, `/sitemap.xml`만 포함시켜 기존 홈페이지·놀이터·정적 이미지 요청은 Functions 호출 대상에서 제외합니다.
+- 이미 등록한 글의 본문을 검색에 노출하려면 관리자의 **설명 필드**에 문장을 넣어야 합니다. 그림 속 글자만 있는 경우 검색용 본문을 자동 인식하지 않습니다.
+- 비공개·숨김 콘텐츠는 공개 API의 `is_published = true` 조건과 RLS를 통과하지 못하므로 이야기 상세 페이지에 노출되지 않습니다. 미등록 주소는 `404`와 `noindex`, 데이터 API 장애는 `503`과 `noindex`로 응답합니다.
+- 실제 구글 색인 등록 여부는 배포 성공과 별개입니다. 사이트 소유자가 Google Search Console에 사이트맵을 제출하거나 URL 검사를 통해 확인해야 합니다. 검색 결과 노출·순위는 보장되지 않습니다.
+
 ## 적용·운영 검증 상태
 
 - 프런트엔드 및 `admin-setup.sql` 소스는 코드 검사를 통과했습니다.

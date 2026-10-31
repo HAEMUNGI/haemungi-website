@@ -106,6 +106,11 @@
         document.getElementById('dialogImage').alt = img.alt;
         document.getElementById('dialogTitle').textContent = row.title || '헤뭉이 원화';
         document.getElementById('dialogDescription').textContent = row.description || '';
+        const storyLink = document.getElementById('dialogStoryLink');
+        if (storyLink) {
+          storyLink.href = `/stories/${encodeURIComponent(row.slot)}`;
+          storyLink.hidden = false;
+        }
         if (dialog && !dialog.open) dialog.showModal();
       });
       grid.append(button);
@@ -157,7 +162,14 @@
       const copy = document.createElement('div'); copy.className = 'hm-special-card-copy';
       const title = document.createElement('h3'); title.textContent = row.title || '헤뭉이';
       const description = document.createElement('p'); description.textContent = row.description || '';
-      copy.append(title, description); article.append(imageLink, copy); grid.append(article);
+      copy.append(title, description);
+      if (/^(today|emoticon)-[a-z0-9-]+$/.test(row.slot)) {
+        const storyLink = document.createElement('a'); storyLink.className = 'hm-archive-link hm-story-read';
+        storyLink.href = `/stories/${encodeURIComponent(row.slot)}`;
+        storyLink.textContent = '이야기 전체 읽기 ↗';
+        copy.append(storyLink);
+      }
+      article.append(imageLink, copy); grid.append(article);
     });
     empty.hidden = count > 0;
   }
