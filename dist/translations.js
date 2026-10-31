@@ -361,4 +361,7 @@ window.HAEMUNGI_TRANSLATIONS = Object.freeze([
   ,["작고 따뜻한 헤뭉이의 세계를 만나보세요.","Discover HAEMUNGI's little warm world.","ヘムンギの小さく温かな世界へようこそ。","欢迎探索 HAEMUNGI 温暖的小世界。"]
   ,["헤뭉이 캐릭터 공식 원화","Official HAEMUNGI character illustration","ヘムンギ公式イラスト","HAEMUNGI 官方角色插画"]
   ,["헤뭉이 놀이터","HAEMUNGI Playground","ヘムンギの遊び場","HAEMUNGI 游乐场"]
+  ,["읽고 싶은 카드뉴스","Choose a card story","読みたいカードニュース","选择想阅读的卡片故事"]
+  ,["카드뉴스 시리즈 선택","Choose a card story series","カードニュースのシリーズを選択","选择卡片故事系列"]
+  ,["첫 번째 이야기 · 헤뭉이의 탄생 (9장)","First story · The Birth of HAEMUNGI (9 cards)","最初の物語 · ヘムンギの誕生（9枚）","第一个故事 · HAEMUNGI 的诞生（9张）"]
 ]);

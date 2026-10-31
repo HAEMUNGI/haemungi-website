@@ -111,6 +111,30 @@
       grid.append(button);
     });
   }
+  function updateCardNewsSeries(rows) {
+    const grouped = new Map();
+    rows.filter(row => row.kind === 'image' && /^cardnews-[a-z0-9]+-\d{2}$/.test(row.slot))
+      .forEach(row => {
+        const match = /^cardnews-([a-z0-9]+)-(\d{2})$/.exec(row.slot);
+        const uri = urlFor(row);
+        if (!uri) return;
+        if (!grouped.has(match[1])) grouped.set(match[1], []);
+        const parts = (row.title || '').split(' · ');
+        const seriesTitle = parts[0] || '헤뭉이의 새 이야기';
+        grouped.get(match[1]).push({slug:row.slot, number:Number(match[2]),
+          seriesTitle, title:parts.slice(1).join(' · ') || `${Number(match[2])}장`,
+          body:row.description || '', art:uri});
+      });
+    window.HM_MANAGED_SET_SERIES?.([...grouped].map(([id, pages]) => ({
+      id, pages:pages.sort((a, b) => a.number - b.number)
+    })).sort((a, b) => a.id.localeCompare(b.id)));
+  }
+  function addNewGoods(rows) {
+    window.HM_MANAGED_ADD_GOODS?.(rows.filter(row => row.kind === 'image' && row.slot.startsWith('goods-new-'))
+      .map(row => ({slot:row.slot, name:row.title || '헤뭉이의 새 굿즈',
+        description:row.description || '헤뭉이 굿즈 디자인 시안입니다.',
+        alt:row.alt_text, image:urlFor(row)})).filter(row => row.image));
+  }
   function showNewGallery(rows, prefix, gridId, emptyId) {
     const grid = document.getElementById(gridId);
     const empty = document.getElementById(emptyId);
@@ -211,6 +235,8 @@
   window.HM_MANAGED_APPLY = () => {
     if (publishedRows.length === 0) return;
     applyImages(publishedRows);
+    updateCardNewsSeries(publishedRows);
+    addNewGoods(publishedRows);
     appendGallery(publishedRows);
     showNewGallery(publishedRows, 'today-', 'hmTodayGrid', 'hmTodayEmpty');
     showNewGallery(publishedRows, 'emoticon-', 'hmEmoticonGrid', 'hmEmoticonEmpty');
