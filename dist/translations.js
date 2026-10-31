@@ -364,4 +364,6 @@ window.HAEMUNGI_TRANSLATIONS = Object.freeze([
   ,["읽고 싶은 카드뉴스","Choose a card story","読みたいカードニュース","选择想阅读的卡片故事"]
   ,["카드뉴스 시리즈 선택","Choose a card story series","カードニュースのシリーズを選択","选择卡片故事系列"]
   ,["첫 번째 이야기 · 헤뭉이의 탄생 (9장)","First story · The Birth of HAEMUNGI (9 cards)","最初の物語 · ヘムンギの誕生（9枚）","第一个故事 · HAEMUNGI 的诞生（9张）"]
+  ,["헤뭉이 이야기 아카이브 ↗","HAEMUNGI Story Archive ↗","ヘムンギのお話一覧 ↗","HAEMUNGI 故事档案 ↗"]
+  ,["이야기 전체 읽기 ↗","Read the full story ↗","物語をすべて読む ↗","阅读完整故事 ↗"]
 ]);
