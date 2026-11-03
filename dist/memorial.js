@@ -16,7 +16,15 @@
   let activeScreen = 'entrance';
   let played = new Set();
 
+  // The first approved memorial uses its owner-confirmed tribute image served with the site.
+  // All other entries continue to use the moderated Storage publishing path.
+  const localApprovedPortraits = Object.freeze({
+    'approved/65123d76-a511-47cb-8125-7d4863eac0ab.jpg': '/memorial/leo-tribute.jpg'
+  });
   function publicPhoto(path) {
+    if (Object.prototype.hasOwnProperty.call(localApprovedPortraits, path || '')) {
+      return localApprovedPortraits[path];
+    }
     if (!/^approved\/[a-f0-9-]{36}\.(jpg|jpeg|png|webp)$/.test(path || '')) return '';
     return api + '/storage/v1/object/public/hm-memorial-published/' + path;
   }

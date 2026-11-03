@@ -13,6 +13,14 @@ const sql=text('007_haemungi_starlight_memorial.sql');
 const index=text('dist/index.html');
 const adminHome=text('dist/admin.html');
 const translations=text('dist/translations.js');
+const daylightHero = 'dist/memorial/entrance-daylight.png';
+const approvedFirstPortrait = 'dist/memorial/leo-tribute.jpg';
+assert(existsSync(new URL(daylightHero,import.meta.url)), 'Daylight entrance asset missing');
+assert(existsSync(new URL(approvedFirstPortrait,import.meta.url)), 'Approved first memorial image missing');
+assert.equal(createHash('sha256').update(file(approvedFirstPortrait)).digest('hex'),
+  '28ebd10967e14169a543b4bfbc4d94344e8ced04a5483d1e6cf1f87bd4ab870e',
+  'Approved tribute artwork changed');
+assert(text('dist/memorial.css').includes("url('/memorial/entrance-daylight.png')"),'Bright cover not connected');
 const files=[
   [
     "dist/memorial/entrance.mp4",
