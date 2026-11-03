@@ -15,6 +15,10 @@
   let selectedPet = null;
   let activeScreen = 'entrance';
   let played = new Set();
+  let offeringBusy = false;
+  let offeringsLoadSeq = 0;
+  const flowerNames = Object.freeze({white:'흰 꽃',peach:'연분홍 꽃',gold:'금빛 꽃'});
+  const flowerArt = `<svg viewBox="0 0 54 82" aria-hidden="true" focusable="false"><path d="M27 75 Q23 53 28 32" fill="none" stroke="#61805b" stroke-width="2.5" stroke-linecap="round"/><path d="M26 60 Q12 46 8 58 Q15 65 26 64" fill="#7f9b6e"/><path d="M28 52 Q42 37 46 49 Q41 58 28 57" fill="#708d67"/><g fill="currentColor" stroke="#e4d6bb" stroke-width=".65"><ellipse cx="27" cy="15" rx="7.5" ry="13"/><ellipse cx="27" cy="39" rx="7.5" ry="13"/><ellipse cx="15" cy="27" rx="13" ry="7.5"/><ellipse cx="39" cy="27" rx="13" ry="7.5"/><ellipse cx="18.5" cy="18.5" rx="7.5" ry="12" transform="rotate(-45 18.5 18.5)"/><ellipse cx="35.5" cy="18.5" rx="7.5" ry="12" transform="rotate(45 35.5 18.5)"/><ellipse cx="18.5" cy="35.5" rx="7.5" ry="12" transform="rotate(45 18.5 35.5)"/><ellipse cx="35.5" cy="35.5" rx="7.5" ry="12" transform="rotate(-45 35.5 35.5)"/></g><circle cx="27" cy="27" r="7" fill="#e1b75e"/><circle cx="27" cy="27" r="3" fill="#a8793d"/></svg>`;
 
   // The first approved memorial uses its owner-confirmed tribute image served with the site.
   // All other entries continue to use the moderated Storage publishing path.
@@ -70,7 +74,7 @@
       document.querySelector('[data-skip="' + name + '"]').hidden = true;
       if (name === 'entrance') $('entranceOptions').hidden = true;
       if (name === 'hall') { $('hallSlots').hidden = true; $('hallActions').hidden = true; }
-      if (name === 'ritual') { $('memorialMonitor').hidden = true; $('ritualActions').hidden = true; }
+      if (name === 'ritual') { $('memorialMonitor').hidden = true; $('altarFlowers').hidden = true; $('ritualActions').hidden = true; }
     }
     if (route.name === 'story') showStory(route.id);
     if (route.name === 'ritual') refreshPetList();
@@ -94,7 +98,7 @@
       $('hallSlots').hidden = false; $('hallActions').hidden = false; renderSlots();
     }
     if (name === 'ritual') {
-      $('memorialMonitor').hidden = false; $('ritualActions').hidden = false; refreshPetList();
+      $('memorialMonitor').hidden = false; $('altarFlowers').hidden = false; $('ritualActions').hidden = false; refreshPetList();
     }
   }
   Object.entries(videos).forEach(([name,v]) => {
@@ -116,13 +120,28 @@
     for (let row = 0; row < coordsY.length; row++) for (let col = 0; col < coordsX.length; col++) {
       const slot = row*3 + col + 1;
       const pet = publicPets.find(p => p.slot_index === slot);
+      const openPet = () => { selectedPet=pet;go('story:'+pet.id); };
+      const source = pet && publicPhoto(pet.photo_path);
+      if (source) {
+        const photoButton = document.createElement('button');
+        photoButton.type = 'button';photoButton.className='niche-portrait';
+        photoButton.style.left=coordsX[col]+'%';photoButton.style.top=(coordsY[row]-11.5)+'%';
+        photoButton.setAttribute('aria-label',String(slot).padStart(3,'0')+'호 · '+pet.pet_name+' 사진과 추억 보기');
+        const picture=document.createElement('img');picture.src=source;picture.alt='';
+        picture.loading='lazy';
+        if (Object.prototype.hasOwnProperty.call(localApprovedPortraits,pet.photo_path||'')) {
+          picture.style.objectPosition='left center';
+        }
+        photoButton.appendChild(picture);photoButton.addEventListener('click',openPet);
+        box.appendChild(photoButton);
+      }
       const b = document.createElement('button');
       b.type = 'button'; b.className='plaque';b.style.left=coordsX[col]+'%';b.style.top=coordsY[row]+'%';
       b.dataset.empty = String(!pet);
       b.dataset.pending = String(!pet && slot === 1);
       b.textContent = pet ? pet.pet_name : '';
       b.setAttribute('aria-label', pet ? String(slot).padStart(3,'0')+'호 · '+pet.pet_name+' 추억 보기' : slot === 1 ? '001호 · 등록 준비 중' : String(slot).padStart(3,'0')+'호 · 빈자리 등록 신청');
-      b.addEventListener('click', () => { if(pet){ selectedPet=pet;go('story:'+pet.id); } else if(slot===1){$('hallGuide').textContent='001호는 첫 친구를 위한 준비 중인 자리입니다.';} else {go('apply');} });
+      b.addEventListener('click', () => { if(pet){openPet();} else if(slot===1){$('hallGuide').textContent='001호는 첫 친구를 위한 준비 중인 자리입니다.';} else {go('apply');} });
       box.appendChild(b);
     }
   }
@@ -157,9 +176,72 @@
     for (const pet of publicPets) {
       const b=document.createElement('button');b.type='button';
       b.textContent=pet.pet_name;b.setAttribute('aria-pressed',String(selectedPet?.id===pet.id));
-      b.addEventListener('click',()=>{selectedPet=pet;refreshPetList();});list.appendChild(b);
+      b.addEventListener('click',()=>{selectedPet=pet;$('offeringStatus').textContent='';refreshPetList();});list.appendChild(b);
+    }
+    $('offeringPanel').hidden = !selectedPet;
+    updateFlowerButtons();
+    refreshOfferings();
+  }
+
+  function offeringDayKey(petId) {
+    const d = new Date();
+    const today = [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+    return 'hm-memorial-flower-v1:'+petId+':'+today;
+  }
+  function offeredToday(petId) {
+    try{return localStorage.getItem(offeringDayKey(petId))==='1';}catch(_){return false;}
+  }
+  function rememberOffering(petId) {
+    try{localStorage.setItem(offeringDayKey(petId),'1');}catch(_){}
+  }
+  function updateFlowerButtons() {
+    const done = selectedPet && offeredToday(selectedPet.id);
+    document.querySelectorAll('[data-flower-kind]').forEach(button=>{
+      button.disabled = !selectedPet || offeringBusy || !!done;
+    });
+    if(done && !offeringBusy && !$('offeringStatus').textContent) {
+      $('offeringStatus').textContent = '오늘의 헌화를 마쳤습니다. 내일 다시 마음을 전할 수 있습니다.';
     }
   }
+  async function refreshOfferings(animateLast=false) {
+    const petId=selectedPet?.id, seq=++offeringsLoadSeq;
+    const altar=$('altarFlowers');altar.replaceChildren();
+    if(!petId)return;
+    try {
+      const rows=await restGET('hm_memorial_offerings?select=id,flower_kind,created_at&memorial_id=eq.'+
+        encodeURIComponent(petId)+'&order=created_at.desc&limit=6');
+      if(seq!==offeringsLoadSeq||selectedPet?.id!==petId)return;
+      const recent=(Array.isArray(rows)?rows:[]).slice().reverse();
+      recent.forEach((offering,index)=>{
+        if(!Object.prototype.hasOwnProperty.call(flowerNames,offering.flower_kind))return;
+        const blossom=document.createElement('span');
+        blossom.className='altar-blossom flower-'+offering.flower_kind+
+          (animateLast&&index===recent.length-1?' just-offered':'');
+        blossom.innerHTML=flowerArt;
+        altar.appendChild(blossom);
+      });
+    }catch(_){
+      if(seq===offeringsLoadSeq&&selectedPet?.id===petId){
+        $('offeringStatus').textContent='헌화 내역을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+      }
+    }
+  }
+  document.querySelectorAll('[data-flower-kind]').forEach(button=>button.addEventListener('click',async()=>{
+    const pet=selectedPet,kind=button.dataset.flowerKind,status=$('offeringStatus');
+    if(!pet||offeringBusy||!Object.prototype.hasOwnProperty.call(flowerNames,kind))return;
+    if(offeredToday(pet.id)){updateFlowerButtons();return;}
+    offeringBusy=true;updateFlowerButtons();
+    status.textContent='꽃을 제단에 올리고 있습니다…';
+    try{
+      await restPOST('hm_memorial_offerings',{memorial_id:pet.id,flower_kind:kind});
+      rememberOffering(pet.id);
+      if(selectedPet?.id===pet.id){
+        status.textContent=pet.pet_name+'에게 '+flowerNames[kind]+'을(를) 헌화했습니다.';
+        await refreshOfferings(true);
+      }
+    }catch(err){if(selectedPet?.id===pet.id)status.textContent='헌화 저장에 실패했습니다. '+err.message;}
+    finally{offeringBusy=false;updateFlowerButtons();}
+  }));
   $('goSelectedStory').addEventListener('click',()=>{if(selectedPet)go('story:'+selectedPet.id);});
   $('storyVisitRitual').addEventListener('click',()=>go('ritual'));
   function el(tag,className,txt) {

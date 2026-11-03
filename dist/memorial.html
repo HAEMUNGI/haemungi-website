@@ -52,10 +52,22 @@
       <video id="ritualVideo" src="/memorial/ritual.mp4" preload="metadata" playsinline aria-label="제례실 문이 열리는 영상"></video>
       <img id="ritualStill" src="/memorial/ritual-last.jpg" alt="꽃과 은은한 조명이 놓인 제례실, 비어 있는 검은 추모 모니터" hidden>
       <div class="memorial-monitor" id="memorialMonitor" hidden></div>
+      <div class="altar-flowers" id="altarFlowers" aria-hidden="true" hidden></div>
       <div class="film-cover" id="ritualCover"><div class="cover-text"><p>조용한 추모의 시간</p><button id="playRitual" class="primary-btn" type="button">제례실 입장</button></div></div>
       <button class="skip-film" data-skip="ritual" type="button" hidden>영상 건너뛰기</button>
     </div>
-    <div class="under-film" id="ritualActions" hidden><p id="ritualGuide">친구를 선택하면 모니터에 추억 사진이 나타납니다.</p><div id="ritualPetList" class="pet-list"></div><div class="action-row"><button class="quiet-btn" type="button" data-go="hall">안식관으로 돌아가기</button><button class="quiet-btn" id="goSelectedStory" type="button" hidden>추억 읽기 →</button></div></div>
+    <div class="under-film" id="ritualActions" hidden><p id="ritualGuide">친구를 선택하면 모니터에 추억 사진이 나타납니다.</p><div id="ritualPetList" class="pet-list"></div>
+      <div id="offeringPanel" class="flower-offering" hidden>
+        <h2>꽃 한 송이에 마음을 담아</h2>
+        <p>꽃을 고르면 제례실 제단에 실제로 헌화됩니다. 오늘은 한 송이를 놓을 수 있습니다.</p>
+        <div class="flower-options" role="group" aria-label="헌화할 꽃 선택">
+          <button type="button" data-flower-kind="white"><span aria-hidden="true">✿</span> 흰 꽃</button>
+          <button type="button" data-flower-kind="peach"><span aria-hidden="true">✿</span> 연분홍 꽃</button>
+          <button type="button" data-flower-kind="gold"><span aria-hidden="true">✿</span> 금빛 꽃</button>
+        </div>
+        <p class="offering-status" id="offeringStatus" role="status" aria-live="polite"></p>
+      </div>
+      <div class="action-row"><button class="quiet-btn" type="button" data-go="hall">안식관으로 돌아가기</button><button class="quiet-btn" id="goSelectedStory" type="button" hidden>추억 읽기 →</button></div></div>
   </section>
   <section class="page-screen" data-screen="story" hidden>
     <div class="paper-page">
