@@ -115,6 +115,106 @@
   document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
   window.addEventListener('hashchange', () => routeTo(currentRoute()));
 
+  // Bookfair-style artwork placement: normalized four-corner projection on the original 9:16 scene.
+  // The background photograph and the approved tribute asset are never modified.
+  function nicheArtCorners(slot,row,col) {
+    if(slot===1) return [[.073,.104],[.255,.095],[.254,.211],[.072,.216]];
+    const x=coordsX[col]/100, w=[.18,.20,.22][col], bottom=(coordsY[row]-3.0)/100;
+    const h=[.11,.11,.115,.12][row], skew=[.006,.002,-.003][col];
+    return [[x-w/2,bottom-h+skew],[x+w/2,bottom-h-skew],
+            [x+w/2,bottom-skew/2],[x-w/2,bottom+skew/2]];
+  }
+  function frameHomography(q) {
+    const [[x0,y0],[x1,y1],[x2,y2],[x3,y3]]=q;
+    const dx1=x1-x2,dx2=x3-x2,dx3=x0-x1+x2-x3;
+    const dy1=y1-y2,dy2=y3-y2,dy3=y0-y1+y2-y3;
+    let g=0,h=0;
+    if(Math.abs(dx3)+Math.abs(dy3)>1e-10) {
+      const den=dx1*dy2-dx2*dy1;
+      if(Math.abs(den)<1e-10)throw Error('원근 좌표 오류');
+      g=(dx3*dy2-dx2*dy3)/den;h=(dx1*dy3-dx3*dy1)/den;
+    }
+    return [x1-x0+g*x1,x3-x0+h*x3,x0,y1-y0+g*y1,y3-y0+h*y3,y0,g,h];
+  }
+  function frameInverse(H) {
+    const [a,b,c,d,e,f,g,h]=H;
+    const A=e-f*h,B=c*h-b,C=b*f-c*e,D=f*g-d,E=a-c*g,F=c*d-a*f,G=d*h-e*g,I=b*g-a*h,J=a*e-b*d;
+    const det=a*A+b*D+c*G;
+    if(!Number.isFinite(det)||Math.abs(det)<1e-12)throw Error('원근 역행렬 오류');
+    return [A,B,C,D,E,F,G,I,J].map(n=>n/det);
+  }
+  function frameMap(M,x,y) {
+    const z=M[6]*x+M[7]*y+M[8];
+    return [(M[0]*x+M[1]*y+M[2])/z,(M[3]*x+M[4]*y+M[5])/z];
+  }
+  const nichePhotoCache=new Map();
+  function nichePhoto(src) {
+    if(!nichePhotoCache.has(src)) {
+      const task=(async()=>{
+        const img=new Image();img.crossOrigin='anonymous';img.src=src;await img.decode();
+        return img;
+      })();
+      nichePhotoCache.set(src,task);
+    }
+    return nichePhotoCache.get(src);
+  }
+  async function paintNicheArt(canvas,source,q,cropLeft) {
+    try {
+      const img=await nichePhoto(source);
+      if(!canvas.isConnected)return;
+      const parent=canvas.parentElement;
+      const dpr=Math.min(2,window.devicePixelRatio||1);
+      const xs=q.map(p=>p[0]),ys=q.map(p=>p[1]);
+      const pad=3/Math.max(1,parent.clientWidth);
+      const minX=Math.max(0,Math.min(...xs)-pad),maxX=Math.min(1,Math.max(...xs)+pad);
+      const minY=Math.max(0,Math.min(...ys)-pad*.58),maxY=Math.min(1,Math.max(...ys)+pad*.58);
+      const width=Math.max(1,Math.ceil((maxX-minX)*parent.clientWidth*dpr));
+      const height=Math.max(1,Math.ceil((maxY-minY)*parent.clientHeight*dpr));
+      canvas.width=width;canvas.height=height;
+      Object.assign(canvas.style,{left:minX*100+'%',top:minY*100+'%',
+        width:(maxX-minX)*100+'%',height:(maxY-minY)*100+'%'});
+      const sourceCanvas=document.createElement('canvas');
+      sourceCanvas.width=512;sourceCanvas.height=512;
+      const sourceCtx=sourceCanvas.getContext('2d',{willReadFrequently:true});
+      const frameAspect=((Math.max(...xs)-Math.min(...xs))*parent.clientWidth)/
+        ((Math.max(...ys)-Math.min(...ys))*parent.clientHeight);
+      let cropW=img.naturalWidth,cropH=img.naturalHeight;
+      if(cropW/cropH>frameAspect)cropW=cropH*frameAspect;
+      else cropH=cropW/frameAspect;
+      const cropX=cropLeft?0:(img.naturalWidth-cropW)/2;
+      const cropY=(img.naturalHeight-cropH)/2;
+      sourceCtx.drawImage(img,cropX,cropY,cropW,cropH,0,0,512,512);
+      const pix=sourceCtx.getImageData(0,0,512,512).data;
+      const H=frameInverse(frameHomography(q));
+      const ctx=canvas.getContext('2d');
+      const out=ctx.createImageData(width,height),data=out.data;
+      for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+        const nx=minX+(x+.5)/width*(maxX-minX);
+        const ny=minY+(y+.5)/height*(maxY-minY);
+        const [u,v]=frameMap(H,nx,ny);
+        if(u<0||u>1||v<0||v>1)continue;
+        const sx=Math.max(0,Math.min(511,u*511)),sy=Math.max(0,Math.min(511,v*511));
+        const x0=Math.floor(sx),y0=Math.floor(sy),x1=Math.min(511,x0+1),y1=Math.min(511,y0+1);
+        const tx=sx-x0,ty=sy-y0,at=(y*width+x)*4;
+        for(let c=0;c<3;c++){
+          const a=pix[(y0*512+x0)*4+c],b=pix[(y0*512+x1)*4+c];
+          const d=pix[(y1*512+x0)*4+c],e=pix[(y1*512+x1)*4+c];
+          data[at+c]=Math.round((a+(b-a)*tx)*(1-ty)+(d+(e-d)*tx)*ty);
+        }
+        data[at+3]=255;
+      }
+      if(!canvas.isConnected)return;
+      ctx.putImageData(out,0,0);
+      ctx.save();ctx.beginPath();
+      q.forEach((p,i)=>{
+        const x=(p[0]-minX)/(maxX-minX)*width,y=(p[1]-minY)/(maxY-minY)*height;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      });
+      ctx.closePath();ctx.strokeStyle='#d7bd91';ctx.lineWidth=Math.max(1.5,dpr*2);
+      ctx.shadowColor='rgba(51,32,17,.5)';ctx.shadowBlur=dpr*3;ctx.stroke();ctx.restore();
+      sourceCanvas.width=0;sourceCanvas.height=0;
+    }catch(err){console.warn('안식관 사진 투영 실패',err);}
+  }
   function renderSlots() {
     const box = $('hallSlots');box.replaceChildren();
     for (let row = 0; row < coordsY.length; row++) for (let col = 0; col < coordsX.length; col++) {
@@ -122,18 +222,22 @@
       const pet = publicPets.find(p => p.slot_index === slot);
       const openPet = () => { selectedPet=pet;go('story:'+pet.id); };
       const source = pet && publicPhoto(pet.photo_path);
-      if (source) {
-        const photoButton = document.createElement('button');
-        photoButton.type = 'button';photoButton.className='niche-portrait';
-        photoButton.style.left=coordsX[col]+'%';photoButton.style.top=(coordsY[row]-3.2)+'%';
-        photoButton.setAttribute('aria-label',String(slot).padStart(3,'0')+'호 · '+pet.pet_name+' 사진과 추억 보기');
-        const picture=document.createElement('img');picture.src=source;picture.alt='';
-        picture.loading='lazy';
-        if (Object.prototype.hasOwnProperty.call(localApprovedPortraits,pet.photo_path||'')) {
-          picture.style.objectPosition='left center';
-        }
-        photoButton.appendChild(picture);photoButton.addEventListener('click',openPet);
-        box.appendChild(photoButton);
+      if(source) {
+        const corners=nicheArtCorners(slot,row,col);
+        const artwork=document.createElement('canvas');
+        artwork.width=0;artwork.height=0;artwork.className='niche-art-canvas';
+        artwork.dataset.artSlot=String(slot);
+        artwork.setAttribute('aria-hidden','true');box.appendChild(artwork);
+        const hit=document.createElement('button');
+        hit.type='button';hit.className='niche-art-hit';
+        const xs=corners.map(p=>p[0]),ys=corners.map(p=>p[1]);
+        const left=Math.min(...xs),top=Math.min(...ys),width=Math.max(...xs)-left,height=Math.max(...ys)-top;
+        Object.assign(hit.style,{left:left*100+'%',top:top*100+'%',
+          width:width*100+'%',height:height*100+'%'});
+        hit.setAttribute('aria-label',String(slot).padStart(3,'0')+'호 · '+pet.pet_name+' 사진과 추억 보기');
+        hit.addEventListener('click',openPet);box.appendChild(hit);
+        paintNicheArt(artwork,source,corners,
+          Object.prototype.hasOwnProperty.call(localApprovedPortraits,pet.photo_path||''));
       }
       const b = document.createElement('button');
       b.type = 'button'; b.className='plaque';b.style.left=coordsX[col]+'%';b.style.top=coordsY[row]+'%';

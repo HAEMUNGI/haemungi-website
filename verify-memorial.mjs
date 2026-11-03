@@ -24,8 +24,9 @@ assert(text('dist/memorial.css').includes("url('/memorial/entrance-daylight.png'
 const interactions=text('008_haemungi_memorial_interactions.sql');
 assert(html.includes('id="altarFlowers"') && html.includes('id="offeringStatus"'),'Offering UI absent');
 assert(html.includes('data-flower-kind="white"') && html.includes('data-flower-kind="peach"') && html.includes('data-flower-kind="gold"'),'Flower options absent');
-assert(js.includes('niche-portrait') && js.includes('publicPhoto(pet.photo_path)'),'Portrait not bound to public photo');
-assert(js.includes("photoButton.style.top=(coordsY[row]-3.2)+'%'") && text('dist/memorial.css').includes('transform:translate(-50%,-100%)'),'Niche portrait must rest on shelf rather than float');
+assert(js.includes('nicheArtCorners') && js.includes('paintNicheArt') && js.includes('publicPhoto(pet.photo_path)'),'Projected artwork must bind public photo');
+assert(js.includes("artwork.width=0;artwork.height=0") && js.includes("frameInverse(frameHomography(q))"),'Canvas projection must be initialized safely');
+assert(!js.includes('niche-portrait') && !text('dist/memorial.css').includes('.niche-portrait'),'Floating rectangular photo overlay must stay removed');
 assert(js.includes("hm_memorial_offerings?select=") && js.includes("restPOST('hm_memorial_offerings'"),'Offering read and write absent');
 assert(text('dist/memorial.css').includes('.niche-portrait') && text('dist/memorial.css').includes('.altar-flowers'),'Scene overlays missing');
 assert(interactions.includes('alter table public.hm_memorial_offerings enable row level security;'),'Offerings RLS missing');
