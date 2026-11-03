@@ -28,7 +28,7 @@ assert(js.includes('nicheArtCorners') && js.includes('paintNicheArt') && js.incl
 assert(js.includes("artwork.width=0;artwork.height=0") && js.includes("frameInverse(frameHomography(q))"),'Canvas projection must be initialized safely');
 assert(!js.includes('niche-portrait') && !text('dist/memorial.css').includes('.niche-portrait'),'Floating rectangular photo overlay must stay removed');
 assert(js.includes("hm_memorial_offerings?select=") && js.includes("restPOST('hm_memorial_offerings'"),'Offering read and write absent');
-assert(text('dist/memorial.css').includes('.niche-portrait') && text('dist/memorial.css').includes('.altar-flowers'),'Scene overlays missing');
+assert(text('dist/memorial.css').includes('.niche-art-canvas') && text('dist/memorial.css').includes('.altar-flowers'),'Scene overlays missing');
 assert(interactions.includes('alter table public.hm_memorial_offerings enable row level security;'),'Offerings RLS missing');
 assert(interactions.includes("to anon using (status='approved')"),'Anonymous letter policy regression');
 const files=[
