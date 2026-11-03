@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#201b1a">
+  <meta name="description" content="별빛 추모관. 별이 된 소중한 친구들의 이름과 기억이 머무르는 공간입니다.">
+  <title>별빛 추모관 | 헤뭉이의 작은 세계</title>
+  <link rel="stylesheet" href="/memorial.css">
+  <script src="/content-config.js" defer></script>
+  <script src="/memorial.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#memorial-main">본문으로 이동</a>
+<header class="topbar">
+  <a class="home-link" href="/#home" aria-label="헤뭉이 홈페이지로 돌아가기">← <span>헤뭉이의 작은 세계</span></a>
+  <div class="wordmark"><span class="mark">✧</span> 별빛 추모관 <small>STARLIGHT MEMORIAL</small></div>
+  <button class="top-action" id="openApplication" type="button">친구 등록하기</button>
+</header>
+<main id="memorial-main">
+  <section class="stage-screen" data-screen="entrance">
+    <div class="scene-caption"><small>01 · 별빛 추모관</small><h1>그리움이 머무는 곳</h1><p>언제든 기억하고 싶은 이름이 있기에.</p></div>
+    <div class="film-frame" data-film="entrance">
+      <video id="entranceVideo" src="/memorial/entrance.mp4" preload="metadata" playsinline aria-label="추모관 입장 영상"></video>
+      <img id="entranceStill" src="/memorial/entrance-last.jpg" alt="별빛 추모관의 길게 이어진 안식관 복도" hidden>
+      <div class="film-cover" id="entranceCover">
+        <div class="cover-text"><span aria-hidden="true">✧</span><p>소중한 친구를 기억하는 길</p><button id="playEntrance" class="primary-btn" type="button">추모관에 입장하기</button></div>
+      </div>
+      <div class="film-options" id="entranceOptions" hidden>
+        <p class="options-label">어느 공간을 방문하시겠습니까?</p>
+        <button id="visitHall" class="choice" type="button"><span>안식관</span><small>친구들의 이름을 만나는 곳</small></button>
+        <button id="visitRitual" class="choice" type="button"><span>제례실</span><small>조용히 추억을 나누는 곳</small></button>
+      </div>
+      <button class="skip-film" data-skip="entrance" type="button" hidden>영상 건너뛰기</button>
+    </div>
+  </section>
+  <section class="stage-screen" data-screen="hall" hidden>
+    <div class="scene-caption"><small>02 · 안식관</small><h1>기억의 명패</h1><p>황동 명패를 눌러 친구의 이야기를 만날 수 있습니다.</p></div>
+    <div class="film-frame" data-film="hall">
+      <video id="hallVideo" src="/memorial/hall.mp4" preload="metadata" playsinline aria-label="안식관을 둘러보는 영상"></video>
+      <img id="hallStill" src="/memorial/hall-last.jpg" alt="비어 있는 목재 안치 공간과 황동 명패" hidden>
+      <div id="hallSlots" class="plaque-layer" hidden aria-label="안식관 명패 선택"></div>
+      <div class="film-cover" id="hallCover"><div class="cover-text"><p>안식관을 둘러봅니다</p><button id="playHall" class="primary-btn" type="button">안식관 입장</button></div></div>
+      <button class="skip-film" data-skip="hall" type="button" hidden>영상 건너뛰기</button>
+    </div>
+    <div class="under-film" id="hallActions" hidden><p id="hallGuide">공란은 아직 친구를 기다리는 자리입니다.</p><div class="action-row"><button class="quiet-btn" type="button" data-go="entrance">← 중앙 복도</button><button class="quiet-btn" type="button" data-go="apply">친구 등록 신청</button></div></div>
+  </section>
+  <section class="stage-screen" data-screen="ritual" hidden>
+    <div class="scene-caption"><small>03 · 제례실</small><h1>조용히, 다시 만나는 시간</h1><p>소중한 친구를 기억하는 개인 추모 공간입니다.</p></div>
+    <div class="film-frame" data-film="ritual">
+      <video id="ritualVideo" src="/memorial/ritual.mp4" preload="metadata" playsinline aria-label="제례실 문이 열리는 영상"></video>
+      <img id="ritualStill" src="/memorial/ritual-last.jpg" alt="꽃과 은은한 조명이 놓인 제례실, 비어 있는 검은 추모 모니터" hidden>
+      <div class="memorial-monitor" id="memorialMonitor" hidden></div>
+      <div class="film-cover" id="ritualCover"><div class="cover-text"><p>조용한 추모의 시간</p><button id="playRitual" class="primary-btn" type="button">제례실 입장</button></div></div>
+      <button class="skip-film" data-skip="ritual" type="button" hidden>영상 건너뛰기</button>
+    </div>
+    <div class="under-film" id="ritualActions" hidden><p id="ritualGuide">친구를 선택하면 모니터에 추억 사진이 나타납니다.</p><div id="ritualPetList" class="pet-list"></div><div class="action-row"><button class="quiet-btn" type="button" data-go="hall">안식관으로 돌아가기</button><button class="quiet-btn" id="goSelectedStory" type="button" hidden>추억 읽기 →</button></div></div>
+  </section>
+  <section class="page-screen" data-screen="story" hidden>
+    <div class="paper-page">
+      <button class="back-link" type="button" data-go="hall">← 안식관으로</button>
+      <p class="eyebrow">소중한 이름, 오래 남을 기억</p>
+      <div id="friendStory" class="friend-story" aria-live="polite"></div>
+      <div class="action-row"><button class="quiet-btn" type="button" id="storyVisitRitual">제례실 방문하기</button><button class="quiet-btn" type="button" data-go="hall">다른 친구 만나기</button></div>
+      <section class="letters"><h2>친구에게 남기는 편지</h2><div id="letterList" class="letter-list"></div>
+        <form id="letterForm"><label>보내는 이름<input type="text" name="author_alias" maxlength="30" required placeholder="예: 작은 별을 기억하는 사람"></label>
+        <label>전하고 싶은 말<textarea name="body" maxlength="500" rows="4" required placeholder="친구에게 하고 싶은 말을 적어주세요."></textarea></label>
+        <p class="hint">편지는 관리자 확인 후 공개됩니다.</p><button class="primary-btn" type="submit">편지 남기기</button><p class="form-status" id="letterStatus" role="status"></p></form>
+      </section>
+    </div>
+  </section>
+  <section class="page-screen" data-screen="apply" hidden>
+    <div class="paper-page application">
+      <button class="back-link" type="button" data-go="hall">← 안식관으로</button>
+      <p class="eyebrow">친구 소개 신청</p><h1>우리 친구의 이야기를 들려주세요</h1>
+      <p class="lead">누군가의 소중한 기억을 대신 꾸미지 않습니다. 보내주신 이야기는 관리자가 확인한 뒤 공개됩니다.</p>
+      <form id="applicationForm">
+        <label>친구의 이름 <span class="req">필수</span><input name="pet_name" maxlength="60" required placeholder="소중한 친구의 이름"></label>
+        <label>사진 한 장 <span class="req">필수</span><input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required><small>JPG·PNG·WebP / 최대 5MB · 승인 전 비공개 보관</small></label>
+        <div class="field-grid"><label>처음 만난 날 <input name="born_on" type="date"></label><label>별이 된 날 <input name="passed_on" type="date"></label></div>
+        <label>친구를 소개하는 짧은 이야기 <span class="req">필수</span><textarea name="story" required maxlength="900" rows="5" placeholder="함께했던 일상과 특별한 순간을 소개해주세요."></textarea></label>
+        <label>헤뭉이에게 하고 싶은 말 <textarea name="farewell" maxlength="500" rows="3" placeholder="헤뭉이에게 전하고 싶은 말을 남겨주세요."></textarea></label>
+        <label>신청자 이메일 <span class="req">필수</span><input name="contact_email" type="email" required maxlength="254" autocomplete="email" placeholder="승인 안내를 받을 이메일"></label>
+        <fieldset><legend>공개 여부</legend><label class="radio-label"><input type="radio" name="requested_visibility" value="public" checked> 공개 신청 — 관리자 승인 후 안식관에 표시</label><label class="radio-label"><input type="radio" name="requested_visibility" value="private"> 비공개 신청 — 공개 명패에 표시하지 않음</label></fieldset>
+        <label class="check-label"><input type="checkbox" name="consent_declaration" required> 사진과 이야기를 제출하고 공개 여부를 결정할 정당한 권한이 있으며, 등록 및 검토 목적의 보관에 동의합니다. 공개 신청이 승인되면 이름·사진·이야기가 공개되며, 비공개 신청은 공개하지 않습니다.</label>
+        <div class="bot-field" aria-hidden="true"><label>비워 두세요<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+        <p class="hint">신청 후 바로 공개되지 않습니다. 게시 전 관리자가 내용과 공개 동의를 확인합니다.</p>
+        <button class="primary-btn" type="submit" id="submitApplication">등록 신청하기</button><p class="form-status" id="applicationStatus" role="status"></p>
+      </form>
+      <div id="applicationCard" class="preview-card" hidden></div>
+    </div>
+  </section>
+</main>
+<footer class="footer">© HAEMUNGI · 일현 조성훈 <span>소중한 친구들의 기억을 존중합니다.</span></footer>
+</body></html>
