@@ -25,18 +25,20 @@
   const localApprovedPortraits = Object.freeze({
     'approved/65123d76-a511-47cb-8125-7d4863eac0ab.jpg': '/memorial/leo-tribute.jpg'
   });
-  const sceneFallbacks=Object.freeze({entrance_cover:'/memorial/spring-garden-20261104.jpg'});
   async function refreshSceneArt() {
     try {
       const rows=await restGET('hm_memorial_scene_settings?select=scene_key,image_path');
       for(const row of Array.isArray(rows)?rows:[]) {
-        if(!/^(entrance|hall|ritual)_cover$/.test(row.scene_key||'')||
+        if(!/^(garden_backdrop|(entrance|hall|ritual)_cover)$/.test(row.scene_key||'')||
           !/^scene\/[a-f0-9-]{36}\.(jpg|jpeg|png|webp)$/.test(row.image_path||''))continue;
-        const name=row.scene_key.replace('_cover','');
-        const cover=covers[name];
         const url=api+'/storage/v1/object/public/hm-memorial-published/'+row.image_path;
-        cover.style.setProperty('--scene-image','url("'+url+'")');
-        cover.classList.add('has-scene-image');
+        if(row.scene_key==='garden_backdrop') {
+          document.querySelector('[data-screen="entrance"]').style.setProperty('--garden-image','url("'+url+'")');
+        } else {
+          const cover=covers[row.scene_key.replace('_cover','')];
+          cover.style.setProperty('--scene-image','url("'+url+'")');
+          cover.classList.add('has-scene-image');
+        }
       }
     }catch(err){console.info('추모관 기본 배경을 유지합니다.',err.message);}
   }

@@ -110,7 +110,8 @@
   }
 
   const sceneDefaults=[
-    ['entrance_cover','추모관 입구 · 꽃길','/memorial/spring-garden-20261104.jpg'],
+    ['garden_backdrop','추모관 바깥 정원 배경','/memorial/spring-garden-20261104.jpg'],
+    ['entrance_cover','중앙 입구 · 건물 이미지','/memorial/entrance-daylight.png'],
     ['hall_cover','안식관 입장 화면','/memorial/hall-last.jpg'],
     ['ritual_cover','제례실 입장 화면','/memorial/ritual-last.jpg']
   ];

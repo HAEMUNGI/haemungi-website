@@ -15,6 +15,7 @@ const adminHome=text('dist/admin.html');
 const translations=text('dist/translations.js');
 const daylightHero = 'dist/memorial/spring-garden-20261104.jpg';
 const mediaAdminSql=text('009_haemungi_memorial_media_admin.sql');
+const gardenAdminSql=text('010_haemungi_memorial_garden_backdrop.sql');
 const approvedFirstPortrait = 'dist/memorial/leo-tribute.jpg';
 assert(existsSync(new URL(daylightHero,import.meta.url)), 'Daylight entrance asset missing');
 assert(existsSync(new URL(approvedFirstPortrait,import.meta.url)), 'Approved first memorial image missing');
@@ -24,13 +25,15 @@ assert.equal(createHash('sha256').update(file(approvedFirstPortrait)).digest('he
 assert.equal(createHash('sha256').update(file(daylightHero)).digest('hex'),
   'a02ad35d9123b1bdfccdb95f49772cd80ef2018720495e8b49ecff5fe191041a',
   'Approved spring garden asset changed');
-assert(text('dist/memorial.css').includes("url('/memorial/spring-garden-20261104.jpg')"),'Spring garden cover not connected');
-assert(html.includes('poster="/memorial/spring-garden-20261104.jpg"'),'Entrance poster not updated');
+assert(text('dist/memorial.css').includes("url('/memorial/spring-garden-20261104.jpg')"),'Surrounding spring garden background not connected');
+assert(text('dist/memorial.css').includes("url('/memorial/entrance-daylight.png')"),'Approved entrance building must remain centered');
+assert(html.includes('poster="/memorial/entrance-daylight.png"'),'Original entrance poster changed');
 assert(js.includes('refreshSceneArt()') && js.includes('hm_memorial_scene_settings?select='),'Dynamic scene rendering absent');
 assert(adminJs.includes('renderSceneSettings') && adminJs.includes('uploadPublicImage'),'Admin scene asset controls absent');
 assert(adminJs.includes('frame_focus_x') && js.includes('pet.frame_focus_x'),'Public frame editing absent');
 assert(mediaAdminSql.includes('enable row level security') && mediaAdminSql.includes('mem_scene_admin_insert') &&
   mediaAdminSql.includes('mem_scene_storage_admin_insert'),'Scene authorization missing');
+assert(gardenAdminSql.includes('garden_backdrop'),'Garden admin setting missing');
 const interactions=text('008_haemungi_memorial_interactions.sql');
 assert(html.includes('id="altarFlowers"') && html.includes('id="offeringStatus"'),'Offering UI absent');
 assert(html.includes('data-flower-kind="white"') && html.includes('data-flower-kind="peach"') && html.includes('data-flower-kind="gold"'),'Flower options absent');

@@ -51,3 +51,8 @@
 - `009_haemungi_memorial_media_admin.sql`은 실제 Supabase에 적용되었다. 장면 이미지 파일은 기존 공개 스토리지 `hm-memorial-published/scene/<uuid>.<ext>`에 보관한다.
 - 정책: hm_admins에 등록된 로그인 사용자만 장면 설정·공개 명패를 수정할 수 있다. 익명 방문자는 공개 설정과 공개 사진만 읽는다.
 - 새 운영 사진은 반드시 실보호자 동의 범위를 준수한다. 001호 레오의 원본 이미지와 공개 동의 기록은 보존한다.
+
+## 외곽 정원 배경과 중앙 입구 분리
+- 중앙 건물 원화 `entrance-daylight.png`는 그대로 추모관 입장 카드와 비디오 포스터에 유지한다.
+- 새 봄꽃 길 `spring-garden-20261104.jpg`는 **중앙 카드 바깥 정원 배경**에 표시한다. 좌우 경계를 부드럽게 연결한다.
+- 관리자 공간 배경은 바깥 정원(garden_backdrop)과 중앙 건물(entrance_cover)을 별도로 관리한다. `010_haemungi_memorial_garden_backdrop.sql`을 적용한다.
