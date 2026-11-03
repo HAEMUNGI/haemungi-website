@@ -31,6 +31,9 @@ assert(html.includes('poster="/memorial/entrance-daylight.png"'),'Original entra
 assert(js.includes('refreshSceneArt()') && js.includes('hm_memorial_scene_settings?select='),'Dynamic scene rendering absent');
 assert(adminJs.includes('renderSceneSettings') && adminJs.includes('uploadPublicImage'),'Admin scene asset controls absent');
 assert(adminJs.includes('frame_focus_x') && js.includes('pet.frame_focus_x'),'Public frame editing absent');
+assert(admin.includes('id="frameManager"') && admin.indexOf('id="frameManager"')<admin.indexOf('id="sceneSettings"'),'Dedicated frame editor must be first');
+assert(adminJs.includes('paintNicheArt(art,preview,nicheArtCorners') && adminJs.includes('admin-hall-preview'),'Real hall artwork preview absent');
+assert(adminJs.includes('이 액자 사진·모양을 공개 적용') && adminJs.includes("payload.photo_path=await uploadPublicImage"),'Direct published-frame replacement missing');
 assert(mediaAdminSql.includes('enable row level security') && mediaAdminSql.includes('mem_scene_admin_insert') &&
   mediaAdminSql.includes('mem_scene_storage_admin_insert'),'Scene authorization missing');
 assert(gardenAdminSql.includes('garden_backdrop'),'Garden admin setting missing');
