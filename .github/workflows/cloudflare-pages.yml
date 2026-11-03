@@ -32,6 +32,7 @@ jobs:
           node verify-admin.mjs
           node verify-playground.mjs
           node verify-story-seo.mjs
+          node verify-memorial.mjs
 
       - name: Check optional Cloudflare deployment credentials
         id: cloudflare

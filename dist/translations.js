@@ -366,4 +366,5 @@ window.HAEMUNGI_TRANSLATIONS = Object.freeze([
   ,["첫 번째 이야기 · 헤뭉이의 탄생 (9장)","First story · The Birth of HAEMUNGI (9 cards)","最初の物語 · ヘムンギの誕生（9枚）","第一个故事 · HAEMUNGI 的诞生（9张）"]
   ,["헤뭉이 이야기 아카이브 ↗","HAEMUNGI Story Archive ↗","ヘムンギのお話一覧 ↗","HAEMUNGI 故事档案 ↗"]
   ,["이야기 전체 읽기 ↗","Read the full story ↗","物語をすべて読む ↗","阅读完整故事 ↗"]
+  ,["별빛 추모관","Starlight Memorial","星あかりの追悼館","星光纪念馆"]
 ]);
