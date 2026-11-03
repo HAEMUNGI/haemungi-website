@@ -31,9 +31,9 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .film-cover:not(#entranceCover) .cover-text p{color:#fff5e7}
 
 /* Accessible, photo-led niches and a persistent flower offering at the altar. */
-.niche-portrait{position:absolute;transform:translate(-50%,-50%);width:19.5%;height:10.7%;padding:2px;border:1px solid #e9d2a4;border-radius:3px;background:#fff8e9;box-shadow:0 2px 9px #26140650;overflow:hidden;z-index:2}
+.niche-portrait{position:absolute;transform:translate(-50%,-100%);width:17%;height:9.7%;padding:2px;border:1px solid #c6af8b;border-radius:3px;background:#eee2ce;box-shadow:0 6px 5px #24150866,0 0 0 1px #f5ead7;overflow:hidden;z-index:2}
 .niche-portrait img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
-.niche-portrait:hover,.niche-portrait:focus-visible{outline:2px solid #fff2cb;outline-offset:2px;box-shadow:0 0 0 2px #9b7b44,0 4px 13px #26140670}
+.niche-portrait:hover,.niche-portrait:focus-visible{outline:2px solid #fff2cb;outline-offset:2px;box-shadow:0 0 0 2px #9b7b44,0 6px 9px #26140666}
 .altar-flowers{position:absolute;z-index:2;left:31%;top:53.8%;width:38%;height:9%;display:flex;align-items:flex-end;justify-content:center;pointer-events:none;gap:0}
 .altar-blossom{color:#fff9e8;display:block;flex:0 0 17%;max-width:44px;margin:0 -1.8%;filter:drop-shadow(0 2px 3px #372d2655);transform-origin:50% 100%}
 .altar-blossom svg{width:100%;height:auto;display:block}
@@ -54,5 +54,5 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .flower-options button:hover:not(:disabled){background:#f3e7d2;border-color:#ac8b5c}
 .flower-options button:disabled{opacity:.57}
 .flower-offering .offering-status{margin:11px 0 0;min-height:20px;font-size:12px;color:#77502b}
-@media(max-width:390px){.niche-portrait{width:19%;height:10.4%}.flower-options button{font-size:11px;min-height:64px}.flower-offering{padding:14px 10px}}
+@media(max-width:390px){.niche-portrait{width:17%;height:9.7%}.flower-options button{font-size:11px;min-height:64px}.flower-offering{padding:14px 10px}}
 @media(prefers-reduced-motion:reduce){.altar-blossom.just-offered{animation:none}}

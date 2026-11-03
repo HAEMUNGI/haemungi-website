@@ -125,7 +125,7 @@
       if (source) {
         const photoButton = document.createElement('button');
         photoButton.type = 'button';photoButton.className='niche-portrait';
-        photoButton.style.left=coordsX[col]+'%';photoButton.style.top=(coordsY[row]-11.5)+'%';
+        photoButton.style.left=coordsX[col]+'%';photoButton.style.top=(coordsY[row]-3.2)+'%';
         photoButton.setAttribute('aria-label',String(slot).padStart(3,'0')+'호 · '+pet.pet_name+' 사진과 추억 보기');
         const picture=document.createElement('img');picture.src=source;picture.alt='';
         picture.loading='lazy';
