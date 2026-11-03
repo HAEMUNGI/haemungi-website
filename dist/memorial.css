@@ -66,4 +66,4 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .stage-screen[data-screen="entrance"] .scene-caption{position:relative;z-index:1}
 .stage-screen[data-screen="entrance"] .scene-caption h1,.stage-screen[data-screen="entrance"] .scene-caption p{text-shadow:0 1px 5px #fffdf1d6}
 .film-frame[data-film="entrance"]{border:0;border-radius:0;background:transparent;box-shadow:none}
-#entranceCover{-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+@media(min-width:680px){.film-frame[data-film="entrance"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 13%,#000 87%,transparent);mask-image:linear-gradient(90deg,transparent,#000 13%,#000 87%,transparent)}}
