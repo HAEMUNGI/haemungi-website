@@ -134,7 +134,16 @@
 
   // Bookfair-style artwork placement: normalized four-corner projection on the original 9:16 scene.
   // The background photograph and the approved tribute asset are never modified.
-  function nicheArtCorners(slot,row,col) {
+  function validFrameCorners(q) {
+    if(!Array.isArray(q)||q.length!==4||
+       !q.every(p=>Array.isArray(p)&&p.length===2&&p.every(n=>typeof n==='number'&&Number.isFinite(n)&&n>=0&&n<=1)))return false;
+    const cross=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+    return q.every((p,i)=>cross(p,q[(i+1)%4],q[(i+2)%4])>.00018) &&
+      Math.max(...q.map(p=>p[0]))-Math.min(...q.map(p=>p[0]))>.025 &&
+      Math.max(...q.map(p=>p[1]))-Math.min(...q.map(p=>p[1]))>.025;
+  }
+  function nicheArtCorners(slot,row,col,custom) {
+    if(validFrameCorners(custom))return custom;
     if(slot===1) return [[.073,.104],[.255,.095],[.254,.211],[.072,.216]];
     const x=coordsX[col]/100, w=[.18,.20,.22][col], bottom=(coordsY[row]-3.0)/100;
     const h=[.11,.11,.115,.12][row], skew=[.006,.002,-.003][col];
@@ -175,7 +184,7 @@
     }
     return nichePhotoCache.get(src);
   }
-  async function paintNicheArt(canvas,source,q,focusX,focusY,frameStyle) {
+  async function paintNicheArt(canvas,source,q,focusX,focusY,frameStyle,fit='cover',matColor='#f4ead8') {
     try {
       const img=await nichePhoto(source);
       if(!canvas.isConnected)return;
@@ -195,12 +204,22 @@
       const sourceCtx=sourceCanvas.getContext('2d',{willReadFrequently:true});
       const frameAspect=((Math.max(...xs)-Math.min(...xs))*parent.clientWidth)/
         ((Math.max(...ys)-Math.min(...ys))*parent.clientHeight);
-      let cropW=img.naturalWidth,cropH=img.naturalHeight;
-      if(cropW/cropH>frameAspect)cropW=cropH*frameAspect;
-      else cropH=cropW/frameAspect;
-      const cropX=(img.naturalWidth-cropW)*Math.max(0,Math.min(1,focusX));
-      const cropY=(img.naturalHeight-cropH)*Math.max(0,Math.min(1,focusY));
-      sourceCtx.drawImage(img,cropX,cropY,cropW,cropH,0,0,512,512);
+      sourceCtx.fillStyle=/^#[0-9a-f]{6}$/i.test(matColor)?matColor:'#f4ead8';
+      sourceCtx.fillRect(0,0,512,512);
+      if(fit==='contain') {
+        const imageRatio=img.naturalWidth/img.naturalHeight;
+        const scaledRatio=imageRatio/frameAspect;
+        const drawW=scaledRatio>=1?512:512*scaledRatio;
+        const drawH=scaledRatio>=1?512/scaledRatio:512;
+        sourceCtx.drawImage(img,(512-drawW)/2,(512-drawH)/2,drawW,drawH);
+      }else{
+        let cropW=img.naturalWidth,cropH=img.naturalHeight;
+        if(cropW/cropH>frameAspect)cropW=cropH*frameAspect;
+        else cropH=cropW/frameAspect;
+        const cropX=(img.naturalWidth-cropW)*Math.max(0,Math.min(1,focusX));
+        const cropY=(img.naturalHeight-cropH)*Math.max(0,Math.min(1,focusY));
+        sourceCtx.drawImage(img,cropX,cropY,cropW,cropH,0,0,512,512);
+      }
       const pix=sourceCtx.getImageData(0,0,512,512).data;
       const H=frameInverse(frameHomography(q));
       const ctx=canvas.getContext('2d');
@@ -241,7 +260,7 @@
       const openPet = () => { selectedPet=pet;go('story:'+pet.id); };
       const source = pet && publicPhoto(pet.photo_path);
       if(source) {
-        const corners=nicheArtCorners(slot,row,col);
+        const corners=nicheArtCorners(slot,row,col,pet.frame_corners);
         const artwork=document.createElement('canvas');
         artwork.width=0;artwork.height=0;artwork.className='niche-art-canvas';
         artwork.dataset.artSlot=String(slot);
@@ -257,7 +276,7 @@
         const originalLeo=Object.prototype.hasOwnProperty.call(localApprovedPortraits,pet.photo_path||'');
         paintNicheArt(artwork,source,corners,
           pet.frame_focus_x==null?(originalLeo?0:.5):Number(pet.frame_focus_x),
-          pet.frame_focus_y==null?.5:Number(pet.frame_focus_y),pet.frame_style||'ivory');
+          pet.frame_focus_y==null?.5:Number(pet.frame_focus_y),pet.frame_style||'ivory',pet.frame_fit||'cover',pet.frame_mat_color||'#f4ead8');
       }
       const b = document.createElement('button');
       b.type = 'button'; b.className='plaque';b.style.left=coordsX[col]+'%';b.style.top=coordsY[row]+'%';
@@ -271,7 +290,7 @@
   }
   async function refreshPets() {
     try {
-      const rows = await restGET('hm_memorial_public?select=id,slot_index,pet_name,born_on,passed_on,story,farewell,photo_path,published_at,frame_style,frame_focus_x,frame_focus_y&order=slot_index.asc');
+      const rows = await restGET('hm_memorial_public?select=id,slot_index,pet_name,born_on,passed_on,story,farewell,photo_path,published_at,frame_style,frame_focus_x,frame_focus_y,frame_corners,frame_fit,frame_mat_color&order=slot_index.asc');
       publicPets = Array.isArray(rows) ? rows : [];
       if (selectedPet) selectedPet = publicPets.find(x=>x.id===selectedPet.id) || null;
       if (!$('hallSlots').hidden) renderSlots();

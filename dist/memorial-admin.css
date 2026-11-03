@@ -30,3 +30,41 @@
 .public-edit-card .frame-editor-column>button{display:block;width:100%;min-height:48px;font-weight:700;background:#77522d}
 .public-edit-card .frame-editor-column a{justify-self:start}
 @media(max-width:700px){.public-edit-card{grid-template-columns:1fr}.public-edit-card>h3{grid-column:auto}.admin-hall-preview{max-width:360px}.frame-preview-column{justify-items:center}.frame-editor-column{width:100%}}
+
+
+/* Bookfair-style four-corner artwork editor. Source background and tribute image stay separate. */
+.admin-hall-viewport{position:relative;width:100%;max-width:360px;aspect-ratio:867/1536;
+  overflow:hidden;border:1px solid #bd9e75;border-radius:10px;background:#30251c;
+  box-shadow:0 8px 25px #55402722}
+.admin-hall-viewport .admin-hall-preview{position:absolute;inset:0;width:100%;max-width:none;height:100%;
+  border:0;border-radius:0;box-shadow:none;aspect-ratio:auto;transform-origin:0 0}
+.frame-tool-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.request-card .frame-tool-row button{margin:0;padding:9px 11px;min-height:41px}
+.frame-tool-row .frame-corner-handle{padding:0}
+.frame-zoom-tools{justify-content:center;width:100%}
+.frame-zoom-tools button:nth-child(n+2){min-width:48px;font-size:22px;line-height:1}
+.frame-position-ui{position:absolute;inset:0;z-index:5;pointer-events:none}
+.frame-position-ui[hidden]{display:none!important}
+.frame-corner-outline{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.frame-corner-outline polygon{stroke:#59d9dd;stroke-width:4;stroke-dasharray:13 9;fill:#64d8df16;vector-effect:non-scaling-stroke}
+.request-card .frame-move-area{position:absolute;z-index:1;margin:0;padding:0;background:#5dc8d40b;
+  border:0;border-radius:0;cursor:move;pointer-events:auto;touch-action:none}
+.request-card .frame-corner-handle{position:absolute;z-index:2;display:grid;place-items:center;
+  width:38px;height:38px;padding:0;margin:0;border:4px solid #fff;border-radius:50%;
+  background:#5bd6dc;color:#092e33;font-size:16px;font-weight:800;box-shadow:0 2px 8px #1c3337a8;
+  transform:translate(-50%,-50%);touch-action:none;pointer-events:auto;cursor:grab}
+.request-card .frame-corner-handle:focus-visible{outline:3px solid #e4ad3b;outline-offset:2px}
+.request-card .frame-corner-handle:active{cursor:grabbing}
+.frame-status{line-height:1.6;max-width:430px;min-height:48px;text-align:center}
+.frame-editor-actions{min-width:0}
+.frame-editor-actions .frame-tool-row{margin:6px 0}
+.frame-editor-actions .frame-tool-row button:last-child{background:#77522d;color:#fff}
+.public-edit-card.frame-fullview{grid-template-columns:1fr}
+.public-edit-card.frame-fullview .frame-preview-column{grid-column:1}
+.public-edit-card.frame-fullview .admin-hall-viewport{max-width:min(100%,570px)}
+.public-edit-card.frame-fullview .frame-editor-column{grid-column:1}
+@media(max-width:700px){
+  .admin-hall-viewport{max-width:min(100%,410px)}
+  .request-card .frame-tool-row button{flex:1 1 auto}
+  .frame-position-ui .frame-corner-handle{width:37px;height:37px;flex:initial}
+}

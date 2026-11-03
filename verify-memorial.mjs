@@ -32,7 +32,12 @@ assert(js.includes('refreshSceneArt()') && js.includes('hm_memorial_scene_settin
 assert(adminJs.includes('renderSceneSettings') && adminJs.includes('uploadPublicImage'),'Admin scene asset controls absent');
 assert(adminJs.includes('frame_focus_x') && js.includes('pet.frame_focus_x'),'Public frame editing absent');
 assert(admin.includes('id="frameManager"') && admin.indexOf('id="frameManager"')<admin.indexOf('id="sceneSettings"'),'Dedicated frame editor must be first');
-assert(adminJs.includes('paintNicheArt(art,preview,nicheArtCorners') && adminJs.includes('admin-hall-preview'),'Real hall artwork preview absent');
+assert(adminJs.includes('paintNicheArt(art,preview,corners.map') && adminJs.includes('admin-hall-viewport'),'Real hall artwork preview absent');
+assert(adminJs.includes('frame_corners:accepted') && js.includes('pet.frame_corners') && js.includes('validFrameCorners'),'Saved four-corner projection is not connected to public view');
+assert(adminJs.includes('frame-corner-handle') && adminJs.includes('bindDrag(mover,null)') && adminJs.includes('bindDrag(handle,i)'),'Four-corner drag and full-frame repositioning missing');
+assert(adminJs.includes('이 위치 사용') && adminJs.includes('전체 보기') && adminJs.includes('정밀 조정'),'Bookfair-style frame controls missing');
+assert(adminJs.includes('frame_fit:fit.value') && js.includes("fit==='contain'"),'Contain/cover rendering absent');
+assert(text('011_haemungi_memorial_frame_editor.sql').includes('frame_corners jsonb'),'Persisted frame schema missing');
 assert(adminJs.includes('이 액자 사진·모양을 공개 적용') && adminJs.includes("payload.photo_path=await uploadPublicImage"),'Direct published-frame replacement missing');
 assert(mediaAdminSql.includes('enable row level security') && mediaAdminSql.includes('mem_scene_admin_insert') &&
   mediaAdminSql.includes('mem_scene_storage_admin_insert'),'Scene authorization missing');
