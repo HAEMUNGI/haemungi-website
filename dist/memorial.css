@@ -16,7 +16,7 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .top-action{border-color:#bba183;background:#fffdf8;color:#664a30}.top-action:hover{background:#f2e5d3}
 .scene-caption small,.eyebrow{color:#987246}.scene-caption h1{color:#3b2a20}.scene-caption p{color:#735e49}
 .film-frame{background:#e6d8c1;border:1px solid #d9c5a9;border-radius:14px;box-shadow:0 18px 52px #967a5433}
-#entranceCover{background:linear-gradient(180deg,rgba(255,251,244,.04) 0%,rgba(255,251,244,.02) 57%,rgba(244,227,200,.18) 100%),url('/memorial/entrance-daylight.png') center/cover no-repeat}
+#entranceCover{background:linear-gradient(180deg,rgba(255,251,244,.04) 0%,rgba(255,251,244,.02) 57%,rgba(244,227,200,.18) 100%),var(--scene-image,url('/memorial/spring-garden-20261104.jpg')) center/cover no-repeat}
 #entranceCover .cover-text{position:absolute;left:7%;right:7%;bottom:6%;padding:20px 14px 22px;background:rgba(255,251,243,.88);border:1px solid rgba(255,255,255,.95);border-radius:14px;box-shadow:0 10px 34px #704d2e30;backdrop-filter:blur(8px);color:#432e1e}
 #entranceCover .cover-text>span{color:#a87940;font-size:28px}
 #entranceCover .cover-text p{font:700 clamp(18px,4.4vw,23px)/1.45 'Gowun Batang',serif;margin:3px 0 17px;color:#3b2a20}
@@ -57,3 +57,6 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .flower-offering .offering-status{margin:11px 0 0;min-height:20px;font-size:12px;color:#77502b}
 @media(max-width:390px){.flower-options button{font-size:11px;min-height:64px}.flower-offering{padding:14px 10px}}
 @media(prefers-reduced-motion:reduce){.altar-blossom.just-offered{animation:none}}
+
+/* Optional administrator-chosen cover art; original films and last frames are immutable. */
+#hallCover.has-scene-image,#ritualCover.has-scene-image{background:linear-gradient(180deg,#1d171a52,#1d1719ab),var(--scene-image) center/cover no-repeat}

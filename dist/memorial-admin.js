@@ -108,10 +108,127 @@
     card.appendChild(button('신청 반려','danger',()=>{if(confirm(row.pet_name+'의 신청을 반려하시겠습니까?'))withBusy(()=>patch('hm_memorial_requests',row.id,{status:'rejected'}));}));
     return card;
   }
+
+  const sceneDefaults=[
+    ['entrance_cover','추모관 입구 · 꽃길','/memorial/spring-garden-20261104.jpg'],
+    ['hall_cover','안식관 입장 화면','/memorial/hall-last.jpg'],
+    ['ritual_cover','제례실 입장 화면','/memorial/ritual-last.jpg']
+  ];
+  const portraitDefaults={'approved/65123d76-a511-47cb-8125-7d4863eac0ab.jpg':'/memorial/leo-tribute.jpg'};
+  const allowedImageTypes={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
+  const publicImage=path=>{
+    if(Object.prototype.hasOwnProperty.call(portraitDefaults,path||''))return portraitDefaults[path];
+    if(!/^(approved|scene)\/[a-f0-9-]{36}\.(jpg|jpeg|png|webp)$/.test(path||''))return '';
+    return api+'/storage/v1/object/public/hm-memorial-published/'+path;
+  };
+  const field=(title,control)=>{
+    const label=elem('label','admin-field');label.appendChild(elem('span','',title));
+    label.appendChild(control);return label;
+  };
+  const input=(type,value='',maxLength=0)=>{
+    const e=elem('input');e.type=type;if(type!=='file')e.value=value||'';
+    if(maxLength)e.maxLength=maxLength;return e;
+  };
+  async function uploadPublicImage(file,prefix) {
+    if(!file||!file.size)throw new Error('교체할 사진을 선택해주세요.');
+    const ext=allowedImageTypes[file.type];
+    if(!ext||file.size>5*1024*1024)throw new Error('5MB 이하 JPG·PNG·WebP 이미지만 등록할 수 있습니다.');
+    const path=prefix+crypto.randomUUID()+'.'+ext;
+    await request('/storage/v1/object/hm-memorial-published/'+path,{
+      method:'POST',body:file,headers:{'Content-Type':file.type,'x-upsert':'false'}
+    });
+    return path;
+  }
+  function photoPicker(defaultSrc) {
+    const preview=elem('img','admin-art-preview');preview.src=defaultSrc;preview.alt='현재 공개 이미지 미리보기';
+    const file=input('file');file.accept='image/jpeg,image/png,image/webp';
+    file.addEventListener('change',()=>{
+      const image=file.files?.[0];if(!image)return;
+      if(!allowedImageTypes[image.type]||image.size>5*1024*1024) {
+        notice('5MB 이하 JPG·PNG·WebP 이미지만 선택해주세요.',true);file.value='';return;
+      }
+      const url=URL.createObjectURL(image);preview.src=url;
+      preview.addEventListener('load',()=>URL.revokeObjectURL(url),{once:true});
+    });
+    return {preview,file};
+  }
+  function renderSceneSettings(rows) {
+    const box=$('sceneSettings');box.replaceChildren();
+    for(const [sceneKey,label,fallback] of sceneDefaults) {
+      const scene=(rows||[]).find(x=>x.scene_key===sceneKey);
+      const src=scene?publicImage(scene.image_path):fallback;
+      const card=elem('article','request-card scene-card');
+      card.appendChild(elem('h3','',label));
+      const {preview,file}=photoPicker(src||fallback);card.appendChild(preview);
+      card.appendChild(field('새 배경 이미지 (세로형 9:16 권장)',file));
+      card.appendChild(elem('p','meta',scene?'관리자가 교체한 공개 이미지':'현재 기본 배경 · 원본 영상 변경 없음'));
+      card.appendChild(button('배경 이미지 적용','',()=>withBusy(async()=>{
+        const imagePath=await uploadPublicImage(file.files?.[0],'scene/');
+        await request(rest('hm_memorial_scene_settings','?on_conflict=scene_key'),{
+          method:'POST',body:JSON.stringify({scene_key:sceneKey,image_path:imagePath,updated_at:new Date().toISOString()}),
+          headers:{Prefer:'resolution=merge-duplicates,return=minimal'}
+        });
+        notice(label+'의 공개 배경을 교체했습니다.');
+      })));
+      if(scene)card.appendChild(button('기본 배경 복원','secondary',()=>{
+        if(!confirm(label+'을 기본 배경으로 되돌리시겠습니까?'))return;
+        withBusy(async()=>{
+          await request(rest('hm_memorial_scene_settings','?scene_key=eq.'+sceneKey),{
+            method:'DELETE',headers:{Prefer:'return=minimal'}
+          });
+          notice(label+'의 기본 배경을 복원했습니다.');
+        });
+      }));
+      box.appendChild(card);
+    }
+  }
   function renderPublic(row){
-    const card=elem('article','request-card');card.appendChild(elem('h3','',String(row.slot_index).padStart(3,'0')+'호 · '+row.pet_name));
-    card.appendChild(elem('p','meta',dates(row)));card.appendChild(elem('p','',row.story||''));
-    const a=elem('a','', '공개된 추억 페이지 보기 →');a.href='/memorial.html#story:'+row.id;a.target='_blank';a.rel='noopener';card.appendChild(a);return card;
+    const card=elem('article','request-card public-edit-card');
+    card.appendChild(elem('h3','',String(row.slot_index).padStart(3,'0')+'호 · '+row.pet_name));
+    const {preview,file}=photoPicker(publicImage(row.photo_path));card.appendChild(preview);
+    card.appendChild(field('공개 액자 사진 교체 · 원본 보존',file));
+    const name=input('text',row.pet_name,60);name.required=true;
+    const born=input('date',row.born_on||'');
+    const passed=input('date',row.passed_on||'');
+    const story=elem('textarea');story.value=row.story||'';story.maxLength=900;story.rows=4;story.required=true;
+    const farewell=elem('textarea');farewell.value=row.farewell||'';farewell.maxLength=500;farewell.rows=2;
+    const slot=elem('select');for(let i=1;i<=12;i++){
+      const opt=elem('option','',String(i).padStart(3,'0')+'호');opt.value=String(i);
+      opt.selected=i===row.slot_index;slot.appendChild(opt);
+    }
+    const frame=elem('select');for(const [key,label] of [['ivory','아이보리 액자'],['brass','황동 액자'],['walnut','원목 액자']]){
+      const opt=elem('option','',label);opt.value=key;opt.selected=(row.frame_style||'ivory')===key;frame.appendChild(opt);
+    }
+    const focusX=input('range',String(Math.round((row.frame_focus_x==null?
+      (Object.prototype.hasOwnProperty.call(portraitDefaults,row.photo_path||'')?0:.5):Number(row.frame_focus_x))*100)));
+    focusX.min='0';focusX.max='100';focusX.step='5';
+    const focusY=input('range',String(Math.round((row.frame_focus_y==null?.5:Number(row.frame_focus_y))*100)));
+    focusY.min='0';focusY.max='100';focusY.step='5';
+    const cropNote=elem('p','meta');
+    const updateCrop=()=>{cropNote.textContent='사진 중심: 가로 '+focusX.value+'% · 세로 '+focusY.value+'%';};
+    focusX.addEventListener('input',updateCrop);focusY.addEventListener('input',updateCrop);updateCrop();
+    const grid=elem('div','edit-fields');
+    for(const [label,control] of [['명패 이름',name],['태어난 날',born],['떠난 날',passed],['안식관 번호',slot],
+      ['액자 재질',frame],['사진 가로 위치',focusX],['사진 세로 위치',focusY],['추모 문구',story],['마지막 인사',farewell]])
+      grid.appendChild(field(label,control));
+    grid.appendChild(cropNote);card.appendChild(grid);
+    card.appendChild(button('공개 액자·명패 변경사항 저장','',()=>withBusy(async()=>{
+      const payload={
+        pet_name:name.value.trim(),born_on:born.value||null,passed_on:passed.value||null,
+        slot_index:Number(slot.value),frame_style:frame.value,
+        frame_focus_x:Number(focusX.value)/100,frame_focus_y:Number(focusY.value)/100,
+        story:story.value.trim(),farewell:farewell.value.trim()
+      };
+      if(!payload.pet_name||!payload.story)throw new Error('이름과 추모 문구는 비워둘 수 없습니다.');
+      if(payload.born_on&&payload.passed_on&&payload.born_on>payload.passed_on)
+        throw new Error('생몰 날짜의 순서를 확인해주세요.');
+      if(file.files?.[0])payload.photo_path=await uploadPublicImage(file.files[0],'approved/');
+      await patch('hm_memorial_public',row.id,payload);
+      notice(payload.pet_name+'의 공개 액자·명패를 갱신했습니다.');
+    })));
+    const a=elem('a','', '공개된 추억 페이지 보기 →');
+    a.href='/memorial.html#story:'+row.id;a.target='_blank';a.rel='noopener';card.appendChild(a);
+    return card;
   }
   function renderLetter(row){
     const card=elem('article','request-card');
@@ -122,11 +239,22 @@
     return card;
   }
   async function reload(){
-    const [requests,published,letters]=await Promise.all([
+    const [requests,published,letters,scenes,offerings]=await Promise.all([
       request(rest('hm_memorial_requests','?select=*&status=eq.pending&order=created_at.asc')),
       request(rest('hm_memorial_public','?select=*&order=slot_index.asc')),
-      request(rest('hm_memorial_letters','?select=*&status=eq.pending&order=created_at.asc'))
+      request(rest('hm_memorial_letters','?select=*&status=eq.pending&order=created_at.asc')),
+      request(rest('hm_memorial_scene_settings','?select=*&order=scene_key.asc')),
+      request(rest('hm_memorial_offerings','?select=memorial_id,flower_kind,created_at&order=created_at.desc&limit=100'))
     ]);
+    renderSceneSettings(scenes);
+    const offeringBox=$('offeringAdminList');offeringBox.replaceChildren();
+    const counts=new Map();for(const offering of offerings){
+      const n=counts.get(offering.memorial_id)||0;counts.set(offering.memorial_id,n+1);
+    }
+    for(const pet of published){
+      offeringBox.appendChild(elem('p','',pet.pet_name+' · 최근 100건 중 '+(counts.get(pet.id)||0)+'건 헌화'));
+    }
+    if(!published.length)offeringBox.appendChild(elem('p','empty','공개된 친구가 없습니다.'));
     for(const [id,rows,render] of [['requestList',requests,renderRequest],['publishedList',published,renderPublic],['letterAdminList',letters,renderLetter]]){
       const box=$(id);box.replaceChildren();
       if(!rows.length)box.appendChild(elem('p','empty','해당 항목이 없습니다.'));

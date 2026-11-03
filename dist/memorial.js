@@ -25,6 +25,21 @@
   const localApprovedPortraits = Object.freeze({
     'approved/65123d76-a511-47cb-8125-7d4863eac0ab.jpg': '/memorial/leo-tribute.jpg'
   });
+  const sceneFallbacks=Object.freeze({entrance_cover:'/memorial/spring-garden-20261104.jpg'});
+  async function refreshSceneArt() {
+    try {
+      const rows=await restGET('hm_memorial_scene_settings?select=scene_key,image_path');
+      for(const row of Array.isArray(rows)?rows:[]) {
+        if(!/^(entrance|hall|ritual)_cover$/.test(row.scene_key||'')||
+          !/^scene\/[a-f0-9-]{36}\.(jpg|jpeg|png|webp)$/.test(row.image_path||''))continue;
+        const name=row.scene_key.replace('_cover','');
+        const cover=covers[name];
+        const url=api+'/storage/v1/object/public/hm-memorial-published/'+row.image_path;
+        cover.style.setProperty('--scene-image','url("'+url+'")');
+        cover.classList.add('has-scene-image');
+      }
+    }catch(err){console.info('추모관 기본 배경을 유지합니다.',err.message);}
+  }
   function publicPhoto(path) {
     if (Object.prototype.hasOwnProperty.call(localApprovedPortraits, path || '')) {
       return localApprovedPortraits[path];
@@ -158,7 +173,7 @@
     }
     return nichePhotoCache.get(src);
   }
-  async function paintNicheArt(canvas,source,q,cropLeft) {
+  async function paintNicheArt(canvas,source,q,focusX,focusY,frameStyle) {
     try {
       const img=await nichePhoto(source);
       if(!canvas.isConnected)return;
@@ -181,8 +196,8 @@
       let cropW=img.naturalWidth,cropH=img.naturalHeight;
       if(cropW/cropH>frameAspect)cropW=cropH*frameAspect;
       else cropH=cropW/frameAspect;
-      const cropX=cropLeft?0:(img.naturalWidth-cropW)/2;
-      const cropY=(img.naturalHeight-cropH)/2;
+      const cropX=(img.naturalWidth-cropW)*Math.max(0,Math.min(1,focusX));
+      const cropY=(img.naturalHeight-cropH)*Math.max(0,Math.min(1,focusY));
       sourceCtx.drawImage(img,cropX,cropY,cropW,cropH,0,0,512,512);
       const pix=sourceCtx.getImageData(0,0,512,512).data;
       const H=frameInverse(frameHomography(q));
@@ -210,7 +225,8 @@
         const x=(p[0]-minX)/(maxX-minX)*width,y=(p[1]-minY)/(maxY-minY)*height;
         if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
       });
-      ctx.closePath();ctx.strokeStyle='#d7bd91';ctx.lineWidth=Math.max(1.5,dpr*2);
+      const frameColors={ivory:'#e8d9bd',brass:'#bc9c58',walnut:'#6a492c'};
+      ctx.closePath();ctx.strokeStyle=frameColors[frameStyle]||frameColors.ivory;ctx.lineWidth=Math.max(1.5,dpr*2);
       ctx.shadowColor='rgba(51,32,17,.5)';ctx.shadowBlur=dpr*3;ctx.stroke();ctx.restore();
       sourceCanvas.width=0;sourceCanvas.height=0;
     }catch(err){console.warn('안식관 사진 투영 실패',err);}
@@ -236,8 +252,10 @@
           width:width*100+'%',height:height*100+'%'});
         hit.setAttribute('aria-label',String(slot).padStart(3,'0')+'호 · '+pet.pet_name+' 사진과 추억 보기');
         hit.addEventListener('click',openPet);box.appendChild(hit);
+        const originalLeo=Object.prototype.hasOwnProperty.call(localApprovedPortraits,pet.photo_path||'');
         paintNicheArt(artwork,source,corners,
-          Object.prototype.hasOwnProperty.call(localApprovedPortraits,pet.photo_path||''));
+          pet.frame_focus_x==null?(originalLeo?0:.5):Number(pet.frame_focus_x),
+          pet.frame_focus_y==null?.5:Number(pet.frame_focus_y),pet.frame_style||'ivory');
       }
       const b = document.createElement('button');
       b.type = 'button'; b.className='plaque';b.style.left=coordsX[col]+'%';b.style.top=coordsY[row]+'%';
@@ -251,7 +269,7 @@
   }
   async function refreshPets() {
     try {
-      const rows = await restGET('hm_memorial_public?select=id,slot_index,pet_name,born_on,passed_on,story,farewell,photo_path,published_at&order=slot_index.asc');
+      const rows = await restGET('hm_memorial_public?select=id,slot_index,pet_name,born_on,passed_on,story,farewell,photo_path,published_at,frame_style,frame_focus_x,frame_focus_y&order=slot_index.asc');
       publicPets = Array.isArray(rows) ? rows : [];
       if (selectedPet) selectedPet = publicPets.find(x=>x.id===selectedPet.id) || null;
       if (!$('hallSlots').hidden) renderSlots();
@@ -417,4 +435,5 @@
   });
   routeTo(currentRoute());
   refreshPets();
+  refreshSceneArt();
 })();

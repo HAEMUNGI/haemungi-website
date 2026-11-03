@@ -1,1 +1,13 @@
 .admin-main{max-width:1020px;margin:0 auto;padding:26px 15px 60px}.admin-heading{margin-bottom:24px}.admin-heading h1{font:700 30px 'Gowun Batang',serif}.admin-heading p{font-size:13px;color:#dccbb4}.admin-panel{background:#f5eee3;color:#2d251d;border-radius:12px;margin:18px 0;padding:24px}.admin-panel h2{font:700 24px 'Gowun Batang',serif;margin-top:0}.admin-list{display:grid;gap:14px}.request-card{border:1px solid #decdb4;padding:16px;border-radius:8px;background:white}.request-card h3{font-size:21px;margin:0 0 5px}.request-card p{font-size:13px;white-space:pre-wrap}.request-card .meta{color:#7d6955;font-size:12px}.request-card label{display:block;font-size:13px;margin:9px 0}.request-card input[type=number],.request-card input[type=file]{max-width:280px;width:100%;background:#fff;border:1px solid #d8bf97;border-radius:4px;padding:9px;color:#1f1a16}.request-card input[type=checkbox]{width:18px;height:18px;vertical-align:middle}.request-card img{width:150px;height:150px;object-fit:contain;background:#ede6df;border-radius:6px}.request-card button{margin:6px 6px 0 0;padding:9px 12px;border-radius:6px;border:1px solid #907354;background:#47372c;color:#fff;cursor:pointer}.request-card button.secondary{background:#fff;color:#57412c}.request-card button.danger{background:#873f3f}.request-card button:disabled{opacity:.5}.request-card details{margin-top:10px}.admin-panel .quiet-btn{color:#493629}.admin-panel a{color:#775c31}.admin-panel .empty{color:#847563;font-size:13px}@media(max-width:600px){.admin-panel{padding:15px}.admin-heading h1{font-size:24px}}
+/* Memorial media controls – responsive, accessible and clearly editable. */
+.admin-help{font-size:13px;color:#806b50;line-height:1.7}
+.scene-card,.public-edit-card{display:grid;gap:11px;align-items:start}
+.scene-card .admin-art-preview{width:min(100%,230px);height:auto;aspect-ratio:9/16;object-fit:cover}
+.public-edit-card .admin-art-preview{width:min(100%,260px);height:auto;max-height:170px;object-fit:contain}
+.admin-field{display:grid!important;gap:5px;color:#584431;font-weight:600}
+.admin-field>span{display:block}
+.request-card .admin-field input,.request-card .admin-field select,.request-card .admin-field textarea{width:100%;max-width:100%;padding:9px;border:1px solid #cdb99b;background:#fff;border-radius:6px;color:#30271e}
+.request-card .admin-field input[type=range]{padding:9px 0;accent-color:#9e7847}
+.edit-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px}
+.edit-fields .admin-field:nth-last-child(-n+2){grid-column:1/-1}
+@media(max-width:600px){.edit-fields{grid-template-columns:1fr}.edit-fields .admin-field:nth-last-child(-n+2){grid-column:auto}}

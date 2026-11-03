@@ -13,14 +13,24 @@ const sql=text('007_haemungi_starlight_memorial.sql');
 const index=text('dist/index.html');
 const adminHome=text('dist/admin.html');
 const translations=text('dist/translations.js');
-const daylightHero = 'dist/memorial/entrance-daylight.png';
+const daylightHero = 'dist/memorial/spring-garden-20261104.jpg';
+const mediaAdminSql=text('009_haemungi_memorial_media_admin.sql');
 const approvedFirstPortrait = 'dist/memorial/leo-tribute.jpg';
 assert(existsSync(new URL(daylightHero,import.meta.url)), 'Daylight entrance asset missing');
 assert(existsSync(new URL(approvedFirstPortrait,import.meta.url)), 'Approved first memorial image missing');
 assert.equal(createHash('sha256').update(file(approvedFirstPortrait)).digest('hex'),
   '28ebd10967e14169a543b4bfbc4d94344e8ced04a5483d1e6cf1f87bd4ab870e',
   'Approved tribute artwork changed');
-assert(text('dist/memorial.css').includes("url('/memorial/entrance-daylight.png')"),'Bright cover not connected');
+assert.equal(createHash('sha256').update(file(daylightHero)).digest('hex'),
+  'a02ad35d9123b1bdfccdb95f49772cd80ef2018720495e8b49ecff5fe191041a',
+  'Approved spring garden asset changed');
+assert(text('dist/memorial.css').includes("url('/memorial/spring-garden-20261104.jpg')"),'Spring garden cover not connected');
+assert(html.includes('poster="/memorial/spring-garden-20261104.jpg"'),'Entrance poster not updated');
+assert(js.includes('refreshSceneArt()') && js.includes('hm_memorial_scene_settings?select='),'Dynamic scene rendering absent');
+assert(adminJs.includes('renderSceneSettings') && adminJs.includes('uploadPublicImage'),'Admin scene asset controls absent');
+assert(adminJs.includes('frame_focus_x') && js.includes('pet.frame_focus_x'),'Public frame editing absent');
+assert(mediaAdminSql.includes('enable row level security') && mediaAdminSql.includes('mem_scene_admin_insert') &&
+  mediaAdminSql.includes('mem_scene_storage_admin_insert'),'Scene authorization missing');
 const interactions=text('008_haemungi_memorial_interactions.sql');
 assert(html.includes('id="altarFlowers"') && html.includes('id="offeringStatus"'),'Offering UI absent');
 assert(html.includes('data-flower-kind="white"') && html.includes('data-flower-kind="peach"') && html.includes('data-flower-kind="gold"'),'Flower options absent');
@@ -65,7 +75,7 @@ for(const [name,code] of [['memorial.js',js],['memorial-admin.js',adminJs]])
   assert.doesNotThrow(()=>new Script(code,{filename:name}),name+' syntax');
 for(const id of ['entranceVideo','hallVideo','ritualVideo','hallSlots','memorialMonitor','applicationForm','letterForm'])
   assert(html.includes('id="'+id+'"'),'Missing visitor UI '+id);
-for(const id of ['requestList','publishedList','letterAdminList'])
+for(const id of ['requestList','publishedList','letterAdminList','sceneSettings','offeringAdminList'])
   assert(admin.includes('id="'+id+'"'),'Missing admin UI '+id);
 for(const path of ['memorial.css','memorial.js','memorial/entrance.mp4','memorial/hall.mp4','memorial/ritual.mp4'])
   assert(html.includes('/'+path),'Missing reference '+path);
@@ -78,4 +88,4 @@ assert(sql.includes("status='pending' and consent_declaration=true"),'Pending-on
 assert(sql.includes("owner_consent_verified=false"),'Consent gate');
 assert(!/레오|2025-11-10|2026-07-01/.test(html+js+admin+adminJs+sql),'Private memorial identity exposed in public code');
 assert(!/sb_secret_|service_role/i.test(html+js+admin+adminJs),'No privileged browser secret');
-console.log('PASS: 6 media hashes, 2 JS syntax, 7 visitor controls, 3 admin controls, privacy gates, and original assets preserved.');
+console.log('PASS: 6 original media hashes, approved tribute and new garden hashes, JS syntax, scene controls, frame editing, RLS, privacy gates.');
