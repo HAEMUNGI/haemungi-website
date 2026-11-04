@@ -48,6 +48,8 @@
       link.href='/memorial.html#story:'+row.id;
       link.setAttribute('aria-label',row.pet_name+'의 추억 읽기');
       const photo=el('div','archive-photo'),src=thumbnail(row);
+      if(row.photo_path==='approved/65123d76-a511-47cb-8125-7d4863eac0ab.jpg')
+        photo.className='archive-photo archive-tribute';
       if(src){
         const img=el('img');img.src=src;img.alt=row.pet_name+'의 추억 사진';
         img.loading='lazy';img.decoding='async';photo.appendChild(img);
