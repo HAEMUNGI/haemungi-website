@@ -15,6 +15,7 @@ for (const name of assets){
   const data=readFileSync(path);
   assert.equal(data.toString('ascii',0,4),'RIFF','Incorrect WebP RIFF header for '+name);
   assert.equal(data.toString('ascii',8,12),'WEBP','Incorrect WebP payload for '+name);
+  assert.equal(data.readUInt32LE(4)+8,data.length,'Invalid WebP RIFF payload length for '+name);
   assert.ok(data.length>30_000,'Artwork is suspiciously small: '+name);
   assert.ok(script.includes('/assets/christmas-'+name+'.webp'),'Artwork not linked in scene data: '+name);
 }
