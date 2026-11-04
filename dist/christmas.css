@@ -1,0 +1,49 @@
+:root{color-scheme:dark;--night:#101b3f;--ink:#faf2e9;--muted:#d1c8dc;--gold:#ffe0a3}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;font-family:"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 48% -10%,#3e4c96 0,transparent 50%),radial-gradient(ellipse at 96% 43%,#482a6b66,transparent 48%),linear-gradient(145deg,#10172f,#1c2149 65%,#111936)}
+a,button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+a:focus-visible,button:focus-visible{outline:3px solid #8ce7ee;outline-offset:4px}
+[hidden]{display:none!important}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip-link{position:fixed;top:-100px;left:12px;z-index:50;background:#fff;color:#111;padding:12px;border-radius:12px}.skip-link:focus{top:10px}
+.village-header{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:10px clamp(12px,2.6vw,35px);background:#101735df;box-shadow:0 1px 16px #0003}
+.home-link,.map-link{border:1px solid #ffe8c83b;background:#ffffff16;border-radius:40px;padding:10px 13px;text-decoration:none;white-space:nowrap;font-size:13px;font-weight:750}
+.home-link:hover,.map-link:hover{background:#ffe4b52b}
+.village-brand{font-family:Georgia,"Nanum Myeongjo",serif;font-size:clamp(13px,2.1vw,19px);font-weight:800;letter-spacing:-.02em;text-align:center}
+.header-charm{font-size:18px;color:#ffe0a3}
+.village-layout{width:min(100%,1240px);margin:0 auto;padding:clamp(10px,2.4vw,30px);display:grid;grid-template-columns:minmax(0,630px) minmax(0,1fr);gap:clamp(18px,3vw,44px);align-items:start}
+.village-frame{position:relative;width:100%;max-width:630px;aspect-ratio:9/16;margin:0;overflow:hidden;border-radius:20px;border:1px solid #ffdbb85c;background:#283b71;box-shadow:0 24px 80px #0008}
+.scene-image{display:block;width:100%;height:100%;object-fit:fill;user-select:none;-webkit-user-drag:none}
+.map-hotspots{position:absolute;inset:0;z-index:2}
+.map-spot{position:absolute;border:2px solid transparent;border-radius:15px;transition:background .18s,border-color .18s,box-shadow .18s;touch-action:manipulation}
+.map-spot:hover,.map-spot:focus-visible{border-color:#ffebb4;background:#fce29626;box-shadow:0 0 0 2px #ffcf7b44,0 0 28px #ffdd93a6}
+.spot-market{left:8%;top:24%;width:25%;height:7.7%}
+.spot-sled{left:73%;top:25%;width:26%;height:8.1%}
+.spot-square{left:34%;top:40%;width:35%;height:8.3%}
+.spot-parade{left:9%;top:53%;width:27%;height:8.5%}
+.spot-fishing{left:69%;top:53.2%;width:28%;height:8.5%}
+.spot-stage{left:33.8%;top:58.4%;width:34%;height:7.7%}
+.image-credit{position:absolute;bottom:8px;right:10px;pointer-events:none;font-size:10px;font-weight:750;letter-spacing:.03em;color:#fffcf9;text-shadow:0 1px 5px #101426d9}
+.village-info{border:1px solid #fbd8a93d;background:linear-gradient(160deg,#292e57e8,#171d3fef);border-radius:24px;padding:clamp(20px,3.1vw,38px);box-shadow:0 12px 34px #0003}
+.eyebrow{margin:0 0 12px;font-size:11px;font-weight:850;letter-spacing:.16em;color:#f7c787}
+.village-info h2{font-family:Georgia,"Nanum Myeongjo",serif;font-size:clamp(24px,2.8vw,35px);letter-spacing:-.045em;line-height:1.4;word-break:keep-all;margin:0 0 13px;color:#fff3dd}
+#sceneDescription{color:#e1d6e5;line-height:1.85;font-size:15px;word-break:keep-all;margin:0}
+.scene-actions{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 16px}
+.scene-actions a{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;min-height:46px;padding:12px 15px;font-size:14px;font-weight:850;border-radius:12px;border:1px solid #fff4d45e}
+.button-primary{color:#2e2241;background:#ffe0a3;box-shadow:0 5px 16px #ffe09d33}.button-primary:hover{background:#fff0be}
+.button-secondary{color:#ffefdc;background:#ffffff17}.button-secondary:hover{background:#ffffff2a}
+.place-directory{padding-top:21px;margin-top:23px;border-top:1px solid #ffe2ba35}
+.directory-title{display:flex;justify-content:space-between;gap:5px;align-items:center;margin:0 0 13px;font-size:14px;font-weight:850;color:#fff3dd}
+.directory-title span{font-family:Georgia,serif;font-size:11px;letter-spacing:.1em;color:#d3b8b1}
+.place-links{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.place-links a{display:flex;align-items:center;gap:8px;min-height:50px;padding:10px 11px;text-decoration:none;font-size:13px;font-weight:740;color:#fff3e7;background:#ffffff10;border:1px solid #f6d6a03d;border-radius:12px;transition:background .2s}
+.place-links a:hover,.place-links a[aria-current="location"]{background:#fbd39e24;border-color:#fbd596}
+.place-links a span{font-size:17px;flex-shrink:0}
+.village-tip{font-size:12px;color:#bcb5cb;line-height:1.8;margin:24px 0 0}
+.village-footer-links{display:flex;flex-wrap:wrap;gap:13px;padding-top:15px}
+.village-footer-links a{font-size:12px;color:#f0d09f;text-underline-offset:4px}
+.site-footer{padding:12px 10px 30px;text-align:center;font-size:11px;color:#c7bad6}
+@media(max-width:900px){.village-layout{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px}.village-frame,.village-info{width:min(100%,580px)}.village-header{min-height:57px;padding:8px 10px;gap:6px}.home-link span{display:none}.home-link,.map-link{font-size:12px;padding:9px 12px}.header-charm{display:none}}
+@media(max-width:420px){.village-frame{border-radius:14px}.village-info{padding:21px 18px;border-radius:18px}.village-layout{gap:12px;padding:8px}.place-links a{font-size:12px;padding:10px 9px}.village-brand{font-size:13px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
