@@ -1,20 +1,20 @@
 (() => {
 'use strict';
-// These are real piano recordings, released by their composer under Creative Commons.
-// Audio starts on a visitor click only. No synthetic tones and no YouTube audio extraction.
+// Authentic recordings of temple bells, wind chimes, water and birds. Source and license are linked.
+// Audio begins on visitor click. No musical melody, generated hum, or YouTube audio extraction.
 const $=id=>document.getElementById(id);
 const sounds={
-  haesu:{name:"바다 앞의 명상",title:"Meditation Impromptu 01",creator:'Kevin MacLeod',source:'https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_01_-_Meditation_Impromptu_01.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/6/67/Kevin_MacLeod_-_01_-_Meditation_Impromptu_01.ogg',license:'CC BY 3.0'},
-  daewoong:{name:"고요한 마음",title:"Meditation Impromptu 02",creator:'Kevin MacLeod',source:'https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_02_-_Meditation_Impromptu_02.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/e/e8/Kevin_MacLeod_-_02_-_Meditation_Impromptu_02.ogg',license:'CC BY 3.0'},
-  lantern:{name:"등불의 온기",title:"Bathed in the Light",creator:'Kevin MacLeod',source:'https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_Bathed_in_the_Light.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/e/e6/Kevin_MacLeod_-_Bathed_in_the_Light.ogg',license:'CC BY 3.0'},
-  kitchen:{name:"따뜻한 오후",title:"Autumn Day",creator:'Kevin MacLeod',source:'https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_Autumn_Day.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/5/59/Kevin_MacLeod_-_Autumn_Day.ogg',license:'CC BY 3.0'},
-  wish:{name:"조용히 소원을 적는 시간",title:"Calmant",creator:'Kevin MacLeod',source:'https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_Calmant.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/3/3c/Kevin_MacLeod_-_Calmant.ogg',license:'CC BY 3.0'},
-  rest:{name:"파도에 쉬어가는 시간",title:"Meditation Impromptu 03",creator:'Kevin MacLeod',source:'https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_03_-_Meditation_Impromptu_03.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/1/17/Kevin_MacLeod_-_03_-_Meditation_Impromptu_03.ogg',license:'CC BY 3.0'},
-  trail:{name:"천천히 걷는 길",title:"On the Passing of Time",creator:'Kevin MacLeod',source:'https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_On_the_Passing_of_Time.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/f/fe/Kevin_MacLeod_-_On_the_Passing_of_Time.ogg',license:'CC BY 3.0'}
+  haesu:{name:"잔잔히 밀려오는 물결",title:"Waves (호숫가 물결 현장 녹음)",creator:"Dsw4",source:'https://commons.wikimedia.org/wiki/File:Waves.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/1/1f/Waves.ogg',license:"퍼블릭 도메인",licenseUrl:"",level:0.5},
+  daewoong:{name:"고요히 울리는 사찰 범종",title:"Bonsyou5599 (사찰 범종 녹음)",creator:"Jnn",source:'https://commons.wikimedia.org/wiki/File:Bonsyou5599.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/3/33/Bonsyou5599.ogg',license:"CC BY 2.1 JP",licenseUrl:"https://creativecommons.org/licenses/by/2.1/jp/",level:0.38,gapMs:55000},
+  lantern:{name:"바람에 스치는 맑은 풍경",title:"Windglockenspiel.Koshi (풍경 녹음)",creator:"Membeth",source:'https://commons.wikimedia.org/wiki/File:Windglockenspiel.Koshi.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/a/a6/Windglockenspiel.Koshi.ogg',license:"CC0 1.0",licenseUrl:"https://creativecommons.org/publicdomain/zero/1.0/",level:0.55,gapMs:12000},
+  kitchen:{name:"창밖의 산들바람과 새소리",title:"Gentle breeze and birds singing",creator:"ezwa",source:'https://commons.wikimedia.org/wiki/File:Gentle_breeze_and_birds_singing.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/0/0e/Gentle_breeze_and_birds_singing.ogg',license:"퍼블릭 도메인",licenseUrl:"",level:0.56},
+  wish:{name:"잠깐 울렸다 사라지는 풍경",title:"Windchimes (짧은 풍경 녹음)",creator:"Esc861",source:'https://commons.wikimedia.org/wiki/File:Windchimes.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/0/09/Windchimes.ogg',license:"퍼블릭 도메인",licenseUrl:"",level:0.6,gapMs:35000},
+  rest:{name:"조용히 흐르는 물소리",title:"Swale (작은 물줄기 녹음)",creator:"Ksd5",source:'https://commons.wikimedia.org/wiki/File:Swale.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/8/84/Swale.ogg',license:"CC0 1.0",licenseUrl:"https://creativecommons.org/publicdomain/zero/1.0/",level:0.5},
+  trail:{name:"새들이 노래하는 정원길",title:"Birds singing in garden",creator:"ezwa",source:'https://commons.wikimedia.org/wiki/File:Birds_singing_in_garden.ogg',url:'https://upload.wikimedia.org/wikipedia/commons/8/80/Birds_singing_in_garden.ogg',license:"퍼블릭 도메인",licenseUrl:"",level:0.55}
 };
 const player=$('templeAudio'),toggle=$('templeAudioToggle'),volume=$('templeAudioVolume'),mood=$('templeAudioMood'),credit=$('templeAudioCredit'),status=$('templeAudioStatus');
 const licensed=new Map();
-let scene='',running=false,audio=null,generation=0;
+let scene='',running=false,audio=null,generation=0,gapTimer=null;
 function sceneFromHash(){const key=location.hash.replace(/^#/,'');return Object.hasOwn(sounds,key)?key:''}
 function validRemote(input){
   try{
@@ -43,18 +43,20 @@ function displayCredit(){
   }
   const item=sounds[scene];
   if(!item)return;
-  credit.append(document.createTextNode('곡명: '+item.title+' · 작곡: '+item.creator+' · '));
-  addLink('음원 출처 ↗',item.source);
+  credit.append(document.createTextNode('현장 녹음: '+item.title+' · 녹음자: '+item.creator+' · '));
+  addLink('녹음 출처 ↗',item.source);
   credit.append(document.createTextNode(' · '));
-  addLink(item.license+' ↗','https://creativecommons.org/licenses/by/3.0/');
-  credit.append(document.createTextNode(' · 원본 그대로 재생(변경 없음)'));
+  if(item.licenseUrl)addLink(item.license+' ↗',item.licenseUrl);
+  else addLink(item.license+' ↗',item.source);
+  credit.append(document.createTextNode(' · 원본 그대로 재생(편집 없음)'));
 }
 function updateButton(){
-  toggle.textContent=running?'Ⅱ 음악 멈추기':'▶ 음악 듣기';
+  toggle.textContent=running?'Ⅱ 소리 멈추기':'▶ 마음 소리 듣기';
   toggle.setAttribute('aria-pressed',String(running));
 }
 function stopSound(){
   generation++;
+  if(gapTimer!==null){clearTimeout(gapTimer);gapTimer=null}
   const previous=audio;audio=null;
   if(previous){previous.pause();previous.removeAttribute('src');previous.load()}
   running=false;updateButton();
@@ -63,13 +65,26 @@ async function startSound(){
   if(!scene)return;
   const startedAt=++generation,trackInfo=licensed.get(scene)||sounds[scene];
   toggle.disabled=true;
-  status.textContent='음원을 불러오는 중입니다…';
+  status.textContent='소리를 불러오는 중입니다…';
   const track=new Audio();
   audio=track;
-  track.preload='auto';track.loop=true;track.volume=volumeValue();track.src=trackInfo.url;
+  track.preload='auto';track.loop=!trackInfo.gapMs;
+  track.volume=volumeValue()*(trackInfo.level??1);
+  track.src=trackInfo.url;
+  if(trackInfo.gapMs){
+    track.addEventListener('ended',()=>{
+      if(audio!==track)return;
+      gapTimer=setTimeout(async()=>{
+        gapTimer=null;
+        if(audio!==track)return;
+        try{track.currentTime=0;await track.play()}
+        catch(_){if(audio===track){stopSound();status.textContent='다음 종소리를 재생하지 못했습니다.'}}
+      },trackInfo.gapMs);
+    });
+  }
   track.addEventListener('error',()=>{
     if(audio===track&&startedAt===generation){
-      stopSound();status.textContent='음원에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+      stopSound();status.textContent='소리에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
     }
   });
   try{
@@ -79,7 +94,7 @@ async function startSound(){
   }catch(_){
     if(startedAt!==generation)return;
     stopSound();
-    status.textContent='음악을 재생하지 못했습니다. 음원 주소나 브라우저 설정을 확인해 주세요.';
+    status.textContent='소리를 재생하지 못했습니다. 주소나 브라우저 설정을 확인해 주세요.';
   }finally{toggle.disabled=false}
 }
 function render(){
@@ -108,16 +123,16 @@ async function loadTracks(){
       const source=mediaURL(row,c);
       if(source){licensed.set(key,{title:row.title.trim(),description:row.description.trim(),url:source});changed=true}
     }
-    if(changed&&audio){stopSound();status.textContent='새 음악이 등록되었습니다. 재생 버튼을 눌러 주세요.'}
+    if(changed&&audio){stopSound();status.textContent='새 소리가 등록되었습니다. 재생 버튼을 눌러 주세요.'}
     if(changed)render();
   }catch(_){/* Licensed recordings remain the fallback; never use synthetic tones. */}
   finally{clearTimeout(timer)}
 }
 toggle.addEventListener('click',()=>{
-  if(audio){stopSound();status.textContent='음악을 멈췄습니다.'}
+  if(audio){stopSound();status.textContent='소리를 멈췄습니다.'}
   else startSound();
 });
-volume.addEventListener('input',()=>{if(audio)audio.volume=volumeValue()});
+volume.addEventListener('input',()=>{if(audio)audio.volume=volumeValue()*(licensed.get(scene)?1:sounds[scene]?.level??1)});
 window.addEventListener('hashchange',render);
 window.addEventListener('temple:video-start',()=>{if(audio){stopSound();status.textContent='영상 소리가 겹치지 않도록 음악을 멈췄습니다.'}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&audio){stopSound();status.textContent='다시 듣고 싶을 때 재생 버튼을 눌러 주세요.'}});

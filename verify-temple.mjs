@@ -45,12 +45,15 @@ assert.match(html,/class="video-poster"/,'visible fallback poster when thumbnail
 assert.match(js,/thumbnail\.addEventListener\('error'/,'video thumbnail error handling');
 assert.match(js,/i\.ytimg\.com\/vi\//,'video-specific thumbnail updated');
 assert.match(css,/\.video-thumb/,'thumbnail overlay styling');
-assert.match(audio,/creativecommons\.org\/licenses\/by\/3\.0/,'CC BY link displayed');
-assert.match(audio,/Kevin MacLeod/,'composer attribution');
+assert.match(audio,/creativecommons\.org\/licenses\/by\/2\.1\/jp/,'temple bell CC attribution');
+assert.doesNotMatch(audio,/Kevin MacLeod|Meditation Impromptu|Calmant/,'piano music removed');
+assert.match(audio,/Bonsyou5599/,'authentic temple bell');
+assert.match(audio,/Windglockenspiel.Koshi/,'recorded wind chime');
+assert.match(audio,/gapTimer/,'spacing between short bell sounds');
 assert.doesNotMatch(audio,/youtube-nocookie|\/embed\//,'YouTube not hidden as audio');
 for(const location of locations){
   assert.match(audio,new RegExp('^  '+location+':\\{name:', 'm'),location+' ambient program missing');
   assert.ok(admin.includes("'music-temple-"+location+"'"),location+' admin audio slot missing');
 }
 assert.match(admin,/저작자·출처·이용허락/,'admin copyright attribution required');
-console.log('temple: seven scenes, melodic CC audio, licensed replacement slots, YouTube thumbnail and player, credits and private wishes PASS');
+console.log('temple: seven scenes, real bell and nature ambience, licensed owner slots, YouTube thumbnail, credits and private wishes PASS');
