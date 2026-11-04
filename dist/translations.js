@@ -368,4 +368,5 @@ window.HAEMUNGI_TRANSLATIONS = Object.freeze([
   ,["이야기 전체 읽기 ↗","Read the full story ↗","物語をすべて読む ↗","阅读完整故事 ↗"]
   ,["별빛 추모관","Starlight Memorial","星あかりの追悼館","星光纪念馆"]
   ,["파도가 들리는 법당","Temple of the Waves","波音が聞こえるお堂","听见海浪的佛堂"]
+  ,["헤뭉이 크리스마스 빌리지","HAEMUNGI Christmas Village","ヘムンギのクリスマス村","HAEMUNGI 圣诞村"]
 ]);
