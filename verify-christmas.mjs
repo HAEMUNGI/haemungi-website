@@ -17,7 +17,7 @@ for (const name of assets){
   assert.equal(data.toString('ascii',8,12),'WEBP','Incorrect WebP payload for '+name);
   assert.equal(data.readUInt32LE(4)+8,data.length,'Invalid WebP RIFF payload length for '+name);
   assert.ok(data.length>30_000,'Artwork is suspiciously small: '+name);
-  assert.ok(script.includes('/assets/christmas-'+name+'.webp'),'Artwork not linked in scene data: '+name);
+  assert.ok(script.includes('/assets/christmas-'+name+'.jpg'),'Warm JPEG not linked in scene data: '+name);
 }
 const spots=['market','sled','square','parade','fishing','stage'];
 for (const name of spots){
@@ -30,6 +30,9 @@ assert.ok(script.includes("window.addEventListener('hashchange',render)"),'Deep 
 assert.ok(page.includes('aria-live="polite"'),'Scene changes must be announced');
 assert.ok(home.includes('<a href="/christmas.html"><small>14</small>'),'Homepage navigation not wired');
 assert.ok(css.includes('@media(max-width:420px)'),'Mobile styles missing');
+assert.ok(css.includes('color-scheme:light'),'Warm light theme missing');
+assert.ok(page.includes('id="sceneStatus"')&&page.includes('id="retryScene"'),'Image loading and retry UI missing');
+assert.ok(page.includes('/assets/christmas-map.jpg'),'Warm JPEG not prioritized');
 assert.ok(css.includes('prefers-reduced-motion'),'Reduced-motion fallback missing');
 assert.ok(!page.includes('<audio')&&!page.includes('<iframe'),'Unapproved music or video embed');
 console.log('Christmas village PASS — 8 artwork assets, 6 map hotspots, 7 scenes, navigation, accessibility');

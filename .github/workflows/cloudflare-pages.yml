@@ -39,13 +39,20 @@ jobs:
       - name: Decode all eight Christmas WebP images (pixel-level QA)
         run: bash verify-christmas-decode.sh
 
+      - name: Build warm JPEG variants from the 8 original Christmas paintings
+        run: bash build-christmas-warm.sh
+
       - name: Probe live artwork integrity (PR diagnostic)
         if: github.event_name == 'pull_request'
         run: bash verify-christmas-live.sh
 
       - name: Test Chromium rendering of Christmas Village scenes (PR)
         if: github.event_name == 'pull_request'
-        run: node verify-christmas-browser.mjs
+        run: |
+          python3 -m http.server 18763 --bind 127.0.0.1 --directory dist >/tmp/haemungi-warm-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          CHRISTMAS_TEST_URL=http://127.0.0.1:18763/christmas.html node verify-christmas-browser.mjs
 
       - name: Check optional Cloudflare deployment credentials
         id: cloudflare
@@ -71,6 +78,10 @@ jobs:
       - name: Verify published Christmas artwork integrity
         if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'
         run: bash verify-christmas-live.sh
+
+      - name: Verify all 8 warm JPEG artwork files are live
+        if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'
+        run: bash verify-christmas-jpeg-live.sh
 
       - name: Test Chromium rendering of published Christmas Village scenes
         if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'

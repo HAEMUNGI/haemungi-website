@@ -1,4 +1,4 @@
-:root{color-scheme:dark;--night:#101b3f;--ink:#faf2e9;--muted:#d1c8dc;--gold:#ffe0a3}
+:root{color-scheme:light;--night:#fff8f0;--ink:#583e33;--muted:#756154;--gold:#a55b39}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;min-height:100vh;font-family:"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 48% -10%,#3e4c96 0,transparent 50%),radial-gradient(ellipse at 96% 43%,#482a6b66,transparent 48%),linear-gradient(145deg,#10172f,#1c2149 65%,#111936)}
@@ -47,3 +47,42 @@ a:focus-visible,button:focus-visible{outline:3px solid #8ce7ee;outline-offset:4p
 @media(max-width:900px){.village-layout{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px}.village-frame,.village-info{width:min(100%,580px)}.village-header{min-height:57px;padding:8px 10px;gap:6px}.home-link span{display:none}.home-link,.map-link{font-size:12px;padding:9px 12px}.header-charm{display:none}}
 @media(max-width:420px){.village-frame{border-radius:14px}.village-info{padding:21px 18px;border-radius:18px}.village-layout{gap:12px;padding:8px}.place-links a{font-size:12px;padding:10px 9px}.village-brand{font-size:13px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* HAEMUNGI warm Christmas edition — retain the original map layout and hitboxes. */
+:root{color-scheme:light;--night:#fff8f0;--ink:#583e33;--muted:#756154;--gold:#a55b39}
+html{background:#fff8f0}
+body{color:#583e33;background:radial-gradient(ellipse at 18% 2%,#fffefa 0,transparent 48%),radial-gradient(ellipse at 90% 58%,#ffe9d8 0,transparent 55%),linear-gradient(150deg,#fff9f3 0%,#fff3e7 60%,#fffaf5 100%)}
+a:focus-visible,button:focus-visible{outline-color:#b56243}
+.village-header{background:#fff9f2f5;border-bottom:1px solid #ecd4bd;box-shadow:0 2px 16px #aa795619}
+.home-link,.map-link{color:#684835;border:1px solid #e8cab0;background:#fffdf9;box-shadow:0 2px 9px #ab81521b}
+.home-link:hover,.map-link:hover{background:#fff1e1}
+.village-brand{color:#76513f}
+.header-charm{color:#d89b5e}
+.village-frame{border-color:#e8cbb2;background:#fff2e5;box-shadow:0 14px 38px #b18b6530}
+.scene-image{background:#fff2e5;object-fit:contain;transition:opacity .2s}
+.scene-image.is-loading{opacity:.23}
+.scene-image.is-loaded{opacity:1}
+.scene-image.is-error{opacity:.08}
+.map-spot:hover,.map-spot:focus-visible{border-color:#e99e50;background:#f9e2ad3d;box-shadow:0 0 0 2px #f2ba7770}
+.image-credit{color:#fffaf2;text-shadow:0 1px 5px #64412ce0}
+.village-info{color:#583e33;background:linear-gradient(160deg,#fffdf9,#fff0e2);border-color:#eed0b3;box-shadow:0 10px 28px #bf957025}
+.eyebrow{color:#a65d41}
+.village-info h2{color:#5f4032}
+#sceneDescription{color:#786052}
+.scene-actions a{border-color:#dfb99b}
+.button-primary{background:#edbf83;color:#573722;box-shadow:0 4px 14px #d5a67542}
+.button-primary:hover{background:#f9d7a1}
+.button-secondary{background:#fffbf6;color:#684b3a}
+.button-secondary:hover{background:#fff0da}
+.place-directory{border-top-color:#e8cab2}
+.directory-title{color:#654433}
+.directory-title span{color:#996e53}
+.place-links a{color:#5e4638;background:#fffaf5;border-color:#ead4be}
+.place-links a:hover,.place-links a[aria-current="location"]{background:#ffe8cf;border-color:#d9a474}
+.village-tip{color:#7d6253}
+.village-footer-links a{color:#a16347}
+.site-footer{color:#856957}
+.scene-status{position:absolute;z-index:5;left:5%;right:5%;bottom:7%;padding:17px 15px;border-radius:17px;border:1px solid #e7c29e;background:#fffbf4ef;box-shadow:0 5px 24px #82593535;color:#664631;text-align:center;font-size:14px;line-height:1.6}
+.scene-status button{display:inline-block;margin:10px auto 0;padding:10px 20px;background:#f4d09c;border:1px solid #dba46c;border-radius:12px;color:#583b28;font-weight:800}
+.scene-status.is-error{background:#fff9f0}
+@media(max-width:420px){.scene-status{font-size:13px;padding:12px}.village-header{background:#fffbf6}}
