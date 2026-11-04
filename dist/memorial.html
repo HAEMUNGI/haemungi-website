@@ -31,6 +31,7 @@
         <p class="options-label">어느 공간을 방문하시겠습니까?</p>
         <button id="visitHall" class="choice" type="button"><span>안식관</span><small>친구들의 이름을 만나는 곳</small></button>
         <button id="visitRitual" class="choice" type="button"><span>제례실</span><small>조용히 추억을 나누는 곳</small></button>
+        <a class="choice" href="/memorial-archive.html"><span>별들의 기록</span><small>더 많은 친구들의 소중한 추억 찾기</small></a>
       </div>
       <button class="skip-film" data-skip="entrance" type="button" hidden>영상 건너뛰기</button>
     </div>
@@ -44,7 +45,7 @@
       <div class="film-cover" id="hallCover"><div class="cover-text"><p>안식관을 둘러봅니다</p><button id="playHall" class="primary-btn" type="button">안식관 입장</button></div></div>
       <button class="skip-film" data-skip="hall" type="button" hidden>영상 건너뛰기</button>
     </div>
-    <div class="under-film" id="hallActions" hidden><p id="hallGuide">공란은 아직 친구를 기다리는 자리입니다.</p><div class="action-row"><button class="quiet-btn" type="button" data-go="entrance">← 중앙 복도</button><button class="quiet-btn" type="button" data-go="apply">친구 등록 신청</button></div></div>
+    <div class="under-film" id="hallActions" hidden><p id="hallGuide">공란은 아직 친구를 기다리는 자리입니다.</p><div class="action-row"><button class="quiet-btn" type="button" data-go="entrance">← 중앙 복도</button><a class="quiet-btn" href="/memorial-archive.html">별들의 기록 둘러보기</a><button class="quiet-btn" type="button" data-go="apply">친구 등록 신청</button></div></div>
   </section>
   <section class="stage-screen" data-screen="ritual" hidden>
     <div class="scene-caption"><small>03 · 제례실</small><h1>조용히, 다시 만나는 시간</h1><p>소중한 친구를 기억하는 개인 추모 공간입니다.</p></div>
@@ -71,10 +72,10 @@
   </section>
   <section class="page-screen" data-screen="story" hidden>
     <div class="paper-page">
-      <button class="back-link" type="button" data-go="hall">← 안식관으로</button>
+      <a class="back-link" href="/memorial-archive.html">← 별들의 기록</a>
       <p class="eyebrow">소중한 이름, 오래 남을 기억</p>
       <div id="friendStory" class="friend-story" aria-live="polite"></div>
-      <div class="action-row"><button class="quiet-btn" type="button" id="storyVisitRitual">제례실 방문하기</button><button class="quiet-btn" type="button" data-go="hall">다른 친구 만나기</button></div>
+      <div class="action-row"><button class="quiet-btn" type="button" id="storyVisitRitual">제례실 방문하기</button><a class="quiet-btn" href="/memorial-archive.html">다른 친구 만나기</a></div>
       <section class="letters"><h2>친구에게 남기는 편지</h2><div id="letterList" class="letter-list"></div>
         <form id="letterForm"><label>보내는 이름<input type="text" name="author_alias" maxlength="30" required placeholder="예: 작은 별을 기억하는 사람"></label>
         <label>전하고 싶은 말<textarea name="body" maxlength="500" rows="4" required placeholder="친구에게 하고 싶은 말을 적어주세요."></textarea></label>
