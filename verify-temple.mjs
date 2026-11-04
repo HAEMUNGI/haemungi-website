@@ -41,6 +41,8 @@ assert.match(html,/src="\/temple-audio\.js"/,'audio controller included');
 assert.doesNotMatch(audio,/AudioContext|createOscillator|createBuffer/,'synthesized drones removed');
 assert.match(audio,/new Audio\(\)/,'real audio player');
 assert.match(html,/id="videoThumb"/,'visible YouTube preview thumbnail');
+assert.match(html,/class="video-poster"/,'visible fallback poster when thumbnail CDN is unavailable');
+assert.match(js,/thumbnail\.addEventListener\('error'/,'video thumbnail error handling');
 assert.match(js,/i\.ytimg\.com\/vi\//,'video-specific thumbnail updated');
 assert.match(css,/\.video-thumb/,'thumbnail overlay styling');
 assert.match(audio,/creativecommons\.org\/licenses\/by\/3\.0/,'CC BY link displayed');
