@@ -15,7 +15,10 @@ let peerViews=new Map(),currentPeers=[];
 let starPage=0,starCursors=[null],starNextCursor=null,starStatus='unloaded',starRequest=0;
 
 function setAvatarPosition(node,x,scale=1){
-  node.style.left=(x*100).toFixed(2)+'%';
+  const shore=sceneForStep(step)==='shore';
+  const visualX=shore?(node.classList.contains('is-self')?.20+(x-.5)*.30:
+    .65+((parseInt(node.dataset.visitorHash||'0',10)%100)/100)*.27):x;
+  node.style.left=(visualX*100).toFixed(2)+'%';
   node.style.top='80%';
   node.style.setProperty('--avatar-scale',String(scale));
 }
@@ -36,6 +39,7 @@ function renderPeers(visitors=currentPeers){
     present.add(visitor.id);
     let node=peerViews.get(visitor.id);
     if(!node){node=makeVisitor(visitor);peerViews.set(visitor.id,node);avatarLayer.append(node);}
+    node.dataset.visitorHash=String(parseInt(visitor.id.slice(0,8),16)%100);
     node.dataset.tone=String(visitor.tone);setAvatarPosition(node,visitor.x,.9);
   }
   for(const [id,node] of peerViews)if(!present.has(id)){node.remove();peerViews.delete(id);}

@@ -1,10 +1,10 @@
 // Scene progression is purely client-side; no private memorial records are stored here.
-export const LAST_STEP=15;
+export const LAST_STEP=11;
 export const PUBLIC_STAR_PAGE_SIZE=18;
 export function clampStep(value){return Math.max(0,Math.min(LAST_STEP,Math.round(Number(value)||0)));}
 export function sceneForStep(value){const step=clampStep(value);return step<6?'garden':step<11?'trail':'shore';}
 export function sceneProgress(value){const step=clampStep(value),scene=sceneForStep(step);
-  return scene==='garden'?step/6:scene==='trail'?(step-6)/5:(step-11)/4;
+  return scene==='garden'?step/6:scene==='trail'?(step-6)/5:1;
 }
 export function relayYForStep(value){return .93-(clampStep(value)/LAST_STEP)*.36;}
 export function sceneForRelayY(value){if(!Number.isFinite(value))return null;
