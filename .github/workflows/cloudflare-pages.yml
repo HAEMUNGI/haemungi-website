@@ -36,6 +36,17 @@ jobs:
           node verify-temple.mjs
           node verify-christmas.mjs
 
+      - name: Decode all eight Christmas WebP images (pixel-level QA)
+        run: bash verify-christmas-decode.sh
+
+      - name: Probe live artwork integrity (PR diagnostic)
+        if: github.event_name == 'pull_request'
+        run: bash verify-christmas-live.sh
+
+      - name: Test Chromium rendering of Christmas Village scenes (PR)
+        if: github.event_name == 'pull_request'
+        run: node verify-christmas-browser.mjs
+
       - name: Check optional Cloudflare deployment credentials
         id: cloudflare
         env:
@@ -56,3 +67,11 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=haemungi --branch=main
+
+      - name: Verify published Christmas artwork integrity
+        if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'
+        run: bash verify-christmas-live.sh
+
+      - name: Test Chromium rendering of published Christmas Village scenes
+        if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'
+        run: node verify-christmas-browser.mjs
