@@ -108,14 +108,11 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid #1
 .temple-video-dialog>p a{color:#71476d}
 @media(max-width:420px){.temple-video .video-poster span{display:none}.temple-video .video-poster strong{top:13%;font-size:11px}.temple-video .video-play{padding:5px 8px;font-size:10px}.temple-audio{padding:13px}.temple-audio-controls{gap:10px}.temple-audio-controls input{width:90px}.temple-video-dialog{padding:7px;border-radius:10px}}
 
-/* Haesu Kwanum light: photo untouched, only the original halo gently glows. */
-.haesu-aura{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
-.haesu-aura-haze{opacity:.19;animation:haesu-halo-breathe 8s ease-in-out infinite}
-.haesu-aura-line{opacity:.17;animation:haesu-halo-breathe 8s ease-in-out infinite}
-.haesu-aura-orbit{stroke-dasharray:7 93;stroke-dashoffset:100;opacity:0;filter:drop-shadow(0 0 3px #fff7cc);animation:haesu-halo-orbit 8s ease-in-out infinite}
-.haesu-aura-spark{opacity:0;filter:drop-shadow(0 0 4px #ffe8a3);animation:haesu-halo-spark 8s ease-in-out infinite}
-.haesu-aura-spark-two{animation-delay:-4s}
-@keyframes haesu-halo-breathe{0%,100%{opacity:.12}45%{opacity:.38}75%{opacity:.2}}
-@keyframes haesu-halo-orbit{0%,10%{stroke-dashoffset:100;opacity:0}20%{opacity:.8}72%{opacity:.75}86%,100%{stroke-dashoffset:0;opacity:0}}
-@keyframes haesu-halo-spark{0%,10%,26%,100%{opacity:0}17%{opacity:.9}22%{opacity:.15}}
-@media(prefers-reduced-motion:reduce){.haesu-aura-haze,.haesu-aura-line{opacity:.19}.haesu-aura-orbit,.haesu-aura-spark{opacity:0}}
+/* Haesu Kwanum: brighten only the photographed halo, never draw an offset circle. */
+.haesu-aura-copy,.haesu-aura{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.haesu-aura-copy{display:block;object-fit:fill;user-select:none;mix-blend-mode:screen;filter:brightness(1.85) saturate(1.65);-webkit-mask-image:radial-gradient(ellipse 18.5% 11.5% at 65.7% 14.1%,transparent 42%,#0009 68%,#000 79%,transparent 100%);mask-image:radial-gradient(ellipse 18.5% 11.5% at 65.7% 14.1%,transparent 42%,#0009 68%,#000 79%,transparent 100%);opacity:.12;animation:haesu-photographic-glow 7.2s ease-in-out infinite}
+.haesu-aura-spark{opacity:0;filter:drop-shadow(0 0 6px #ffefad) drop-shadow(0 0 9px #ffe48e);animation:haesu-ring-twinkle 7.2s ease-in-out infinite}
+.haesu-aura-spark-a{animation-delay:0s}.haesu-aura-spark-b{animation-delay:-1.05s}.haesu-aura-spark-c{animation-delay:-2.1s}.haesu-aura-spark-d{animation-delay:-3.15s}.haesu-aura-spark-e{animation-delay:-4.2s}.haesu-aura-spark-f{animation-delay:-5.25s}.haesu-aura-spark-g{animation-delay:-6.3s}
+@keyframes haesu-photographic-glow{0%,100%{opacity:.1}19%{opacity:.35}32%{opacity:.85}44%{opacity:.32}62%{opacity:.65}78%{opacity:.25}92%{opacity:.53}}
+@keyframes haesu-ring-twinkle{0%,10%,31%,100%{opacity:0}17%,21%{opacity:1}26%{opacity:.45}}
+@media(prefers-reduced-motion:reduce){.haesu-aura-copy{opacity:.27}.haesu-aura-spark{opacity:0}}
