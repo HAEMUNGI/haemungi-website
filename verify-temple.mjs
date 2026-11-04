@@ -38,11 +38,17 @@ assert.match(html,/id="templeVideoCredit"/,'YouTube copyright credit');
 assert.match(html,/반야의 쉼터/,'verified owner-selected YouTube channel attribution');
 assert.match(html,/id="templeAudioCredit"/,'audio copyright attribution');
 assert.match(html,/src="\/temple-audio\.js"/,'audio controller included');
-assert.match(audio,/window\.AudioContext/,'original Web Audio soundscape');
+assert.doesNotMatch(audio,/AudioContext|createOscillator|createBuffer/,'synthesized drones removed');
+assert.match(audio,/new Audio\(\)/,'real audio player');
+assert.match(html,/id="videoThumb"/,'visible YouTube preview thumbnail');
+assert.match(js,/i\.ytimg\.com\/vi\//,'video-specific thumbnail updated');
+assert.match(css,/\.video-thumb/,'thumbnail overlay styling');
+assert.match(audio,/creativecommons\.org\/licenses\/by\/3\.0/,'CC BY link displayed');
+assert.match(audio,/Kevin MacLeod/,'composer attribution');
 assert.doesNotMatch(audio,/youtube-nocookie|\/embed\//,'YouTube not hidden as audio');
 for(const location of locations){
   assert.match(audio,new RegExp('^  '+location+':\\{name:', 'm'),location+' ambient program missing');
   assert.ok(admin.includes("'music-temple-"+location+"'"),location+' admin audio slot missing');
 }
 assert.match(admin,/저작자·출처·이용허락/,'admin copyright attribution required');
-console.log('temple: seven scenes, original audio, licensed replacement slots, visible YouTube screen, credits and private wishes PASS');
+console.log('temple: seven scenes, melodic CC audio, licensed replacement slots, YouTube thumbnail and player, credits and private wishes PASS');
