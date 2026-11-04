@@ -36,6 +36,9 @@ jobs:
           node verify-temple.mjs
           node verify-christmas.mjs
 
+      - name: Decode all eight Christmas WebP images (pixel-level QA)
+        run: bash verify-christmas-decode.sh
+
       - name: Check optional Cloudflare deployment credentials
         id: cloudflare
         env:
