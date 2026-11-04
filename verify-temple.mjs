@@ -32,7 +32,7 @@ assert.doesNotMatch(js,/innerHTML\s*=\s*.*wish/,'wish insertion must use textCon
 assert.match(css,/@media\(max-width:420px\)/,'mobile layout');
 assert.match(css, /prefers-reduced-motion:reduce/,'reduced motion support');
 assert.match(html,/id="haesuAura"[^>]+viewBox="0 0 864 1536"/,'responsive halo overlay uses original image coordinates');
-assert.match(js,/aura\.hidden=next!=='haesu'/,'aura only appears at Kwanum location');
+assert.match(js,/aura\.toggleAttribute\('hidden',next!=='haesu'\)/,'SVG halo hidden attribute toggles correctly');
 assert.match(css,/haesu-halo-orbit/,'subtle traveling halo light');
 assert.match(css,/\.haesu-aura\{[^}]*pointer-events:none/,'halo cannot block interactions');
 assert.match(css,/prefers-reduced-motion:reduce\)\{\.haesu-aura/,'halo reduced motion fallback');
