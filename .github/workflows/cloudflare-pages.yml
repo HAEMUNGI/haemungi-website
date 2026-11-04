@@ -43,6 +43,10 @@ jobs:
         if: github.event_name == 'pull_request'
         run: bash verify-christmas-live.sh
 
+      - name: Test Chromium rendering of Christmas Village scenes (PR)
+        if: github.event_name == 'pull_request'
+        run: node verify-christmas-browser.mjs
+
       - name: Check optional Cloudflare deployment credentials
         id: cloudflare
         env:
@@ -67,3 +71,7 @@ jobs:
       - name: Verify published Christmas artwork integrity
         if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'
         run: bash verify-christmas-live.sh
+
+      - name: Test Chromium rendering of published Christmas Village scenes
+        if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'
+        run: node verify-christmas-browser.mjs
