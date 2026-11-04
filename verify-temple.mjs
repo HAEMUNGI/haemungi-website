@@ -35,6 +35,7 @@ assert.match(js,/hP-8B7sHJt4/,'owner-approved YouTube fallback');
 assert.match(html,/id="templeVideoDialog"/,'large visible YouTube player');
 assert.match(css,/min-height:200px/,'YouTube player minimum visible height');
 assert.match(html,/id="templeVideoCredit"/,'YouTube copyright credit');
+assert.match(html,/반야의 쉼터/,'verified owner-selected YouTube channel attribution');
 assert.match(html,/id="templeAudioCredit"/,'audio copyright attribution');
 assert.match(html,/src="\/temple-audio\.js"/,'audio controller included');
 assert.match(audio,/window\.AudioContext/,'original Web Audio soundscape');
