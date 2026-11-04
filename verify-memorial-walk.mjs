@@ -73,6 +73,9 @@ assert.equal(ws.sent.filter(m=>m.event==='broadcast').length,1); // 12s cap
 const first=ws.sent.find(m=>m.event==='broadcast');
 assert.equal(first.payload.event,'move');
 assert.equal(first.payload.payload.id,ID);
+assert.equal(relay.sendMoment('boat'),true);
+assert.equal(relay.sendMoment('boat'),false); // Cooldown prevents repeat spam.
+assert.deepEqual(ws.sent.filter(m=>m.payload?.event==='boat').map(m=>Object.keys(m.payload.payload)),[['id']]);
 ws.receive('presence_diff',{joins:{[uid(2)]:metas(2)},leaves:{[uid(1)]:metas(1)}});
 assert.equal(peers.length,1);
 assert.equal(peers[0].id,uid(2));
