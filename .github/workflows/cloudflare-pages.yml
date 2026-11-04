@@ -34,6 +34,7 @@ jobs:
           node verify-story-seo.mjs
           node verify-memorial.mjs
           node verify-temple.mjs
+          node verify-christmas.mjs
 
       - name: Check optional Cloudflare deployment credentials
         id: cloudflare

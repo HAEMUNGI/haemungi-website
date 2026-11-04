@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101b3f">
+  <meta name="robots" content="noai, noimageai">
+  <meta name="description" content="헤뭉이 크리스마스 빌리지 — 중앙광장, 야행 야시장, 퍼레이드, 썰매타기, 얼음낚시와 특설무대를 둘러보는 겨울 축제 지도.">
+  <meta property="og:title" content="헤뭉이 크리스마스 빌리지">
+  <meta property="og:description" content="눈송이처럼 포근한 일곱 장면, 헤뭉이의 겨울 마을로 놀러 오세요.">
+  <meta property="og:image" content="https://haemungi.pages.dev/assets/christmas-map.webp">
+  <title>헤뭉이 크리스마스 빌리지 | HAEMUNGI</title>
+  <link rel="preload" as="image" href="/assets/christmas-map.webp" fetchpriority="high">
+  <link rel="stylesheet" href="/christmas.css">
+  <script src="/christmas.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문으로 이동</a>
+  <header class="village-header">
+    <a href="/#home" class="home-link" aria-label="헤뭉이 홈페이지로 돌아가기">← <span>헤뭉이의 작은 세계</span></a>
+    <span class="village-brand">❄ 헤뭉이 크리스마스 빌리지</span>
+    <a class="map-link" id="mapReturn" href="#map" hidden>전체 지도</a>
+    <span class="header-charm" id="headerCharm" aria-hidden="true">✦</span>
+  </header>
+  <main id="main" class="village-layout">
+    <h1 class="sr-only">헤뭉이 크리스마스 빌리지</h1>
+    <figure class="village-frame" id="sceneFrame">
+      <img id="sceneImage" class="scene-image" src="/assets/christmas-map.webp" width="864" height="1536"
+        alt="여섯 개 장소를 표시한 헤뭉이 크리스마스 빌리지 전체 지도" fetchpriority="high" decoding="async" draggable="false">
+      <nav id="mapHotspots" class="map-hotspots" aria-label="크리스마스 빌리지 지도에서 장소 선택">
+        <a href="#market" class="map-spot spot-market" aria-label="야행 야시장으로 이동"><span class="sr-only">야행 야시장</span></a>
+        <a href="#sled" class="map-spot spot-sled" aria-label="썰매타기 광장으로 이동"><span class="sr-only">썰매타기 광장</span></a>
+        <a href="#square" class="map-spot spot-square" aria-label="크리스마스 중앙광장으로 이동"><span class="sr-only">크리스마스 중앙광장</span></a>
+        <a href="#parade" class="map-spot spot-parade" aria-label="퍼레이드 광장으로 이동"><span class="sr-only">퍼레이드 광장</span></a>
+        <a href="#fishing" class="map-spot spot-fishing" aria-label="얼음낚시 광장으로 이동"><span class="sr-only">얼음낚시 광장</span></a>
+        <a href="#stage" class="map-spot spot-stage" aria-label="특설무대로 이동"><span class="sr-only">특설무대</span></a>
+      </nav>
+      <span class="image-credit" aria-hidden="true">© HAEMUNGI · 일현 조성훈</span>
+    </figure>
+    <section class="village-info" aria-live="polite">
+      <p class="eyebrow" id="sceneKicker">HAEMUNGI · CHRISTMAS VILLAGE</p>
+      <h2 id="sceneTitle">눈 내리는 밤, 헤뭉이의 크리스마스</h2>
+      <p id="sceneDescription">반짝이는 표지판을 눌러 여섯 광장으로 이동해 보세요. 겨울 정원에도 작은 선물이 기다리고 있어요.</p>
+      <div class="scene-actions" id="sceneActions">
+        <a href="#square" class="button-primary">🎄 중앙광장부터 구경하기</a>
+      </div>
+      <div class="place-directory">
+        <p class="directory-title">어디로 놀러 갈까몽? <span>7 SCENES</span></p>
+        <nav id="placeLinks" class="place-links" aria-label="크리스마스 장소 목록"></nav>
+      </div>
+      <p class="village-tip" id="villageTip">지도에 보이는 나무 간판을 눌러도 해당 장소로 이동해요. 그림은 원본 그대로 감상할 수 있어요.</p>
+      <div class="village-footer-links">
+        <a href="/temple.html">✿ 파도가 들리는 법당</a>
+        <a href="/playground.html">✧ 헤뭉이 놀이터</a>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">헤뭉이의 작은 세계 · © 2026 일현 조성훈 / HAEMUNGI</footer>
+</body>
+</html>
