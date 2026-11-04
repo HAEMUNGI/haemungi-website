@@ -6,8 +6,13 @@ if [ "${#artworks[@]}" -ne 8 ]; then
   echo "::error::Expected exactly 8 Christmas artwork files; found ${#artworks[@]}"
   exit 1
 fi
-command -v ffmpeg >/dev/null || { echo "::error::ffmpeg is required for image decode validation"; exit 1; }
-command -v ffprobe >/dev/null || { echo "::error::ffprobe is required for image dimensions validation"; exit 1; }
+if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+  # Hosted images can omit ffmpeg; install it only when absent.
+  sudo apt-get update -qq
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq ffmpeg
+fi
+command -v ffmpeg >/dev/null || { echo "::error::ffmpeg installation failed"; exit 1; }
+command -v ffprobe >/dev/null || { echo "::error::ffprobe installation failed"; exit 1; }
 for artwork in "${artworks[@]}"; do
   printf 'Decoding: %s\n' "$artwork"
   metadata="$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height -of csv=p=0 "$artwork")"
