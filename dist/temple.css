@@ -27,6 +27,10 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid #1
 .spot-rest{left:12.2%;top:66.5%;width:27.5%;height:8.4%}
 .spot-trail{left:35.5%;top:79%;width:29.5%;height:6.4%}
 .temple-video{position:absolute;left:28%;top:11.85%;width:61.5%;height:16.6%;overflow:hidden;background:#16121a;border-radius:1px;box-shadow:0 1px 4px #1b0e1a9c;display:grid;place-items:center;color:#eee5df;text-align:center}
+.temple-video .video-poster{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:clamp(7px,1vw,12px) 5px;background:radial-gradient(ellipse at 52% 42%,#d3a45b 0%,#94617a 40%,#38243c 100%);color:#fff1db;text-shadow:0 1px 8px #27122ecc;line-height:1.2}
+.temple-video .video-poster span{font-size:clamp(9px,1.25vw,13px);letter-spacing:.1em}
+.temple-video .video-poster strong{font-size:clamp(11px,1.65vw,18px);font-family:Georgia,"Nanum Myeongjo",serif}
+.temple-video .video-poster small{font-size:clamp(9px,1.25vw,13px);letter-spacing:.02em}
 .temple-video .video-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.86)}
 .temple-video .video-pending{position:relative;z-index:1;font-size:clamp(10px,1.6vw,17px);line-height:1.5;opacity:.85}
 .video-play{position:relative;z-index:2;border:1px solid #e7d6ae;background:#231c2699;color:#fff6df;border-radius:999px;padding:9px 12px;font-size:clamp(10px,1.5vw,16px);cursor:pointer}
