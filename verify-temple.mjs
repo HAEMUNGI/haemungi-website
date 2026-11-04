@@ -6,6 +6,7 @@ const get=p=>readFileSync(join(root,p),'utf8');
 const html=get('dist/temple.html');
 const js=get('dist/temple.js');
 const css=get('dist/temple.css');
+const audio=get('dist/temple-audio.js');
 const home=get('dist/index.html');
 const admin=get('dist/admin.js');
 const managed=get('dist/managed-content.js');
@@ -30,4 +31,17 @@ assert.match(js,/localStorage\.setItem\(wishKey/,'wish persistence');
 assert.doesNotMatch(js,/innerHTML\s*=\s*.*wish/,'wish insertion must use textContent');
 assert.match(css,/@media\(max-width:420px\)/,'mobile layout');
 assert.match(css, /prefers-reduced-motion:reduce/,'reduced motion support');
-console.log('temple: seven scenes, 8 artworks, YouTube CMS screen, private wishes, responsive layout PASS');
+assert.match(js,/hP-8B7sHJt4/,'owner-approved YouTube fallback');
+assert.match(html,/id="templeVideoDialog"/,'large visible YouTube player');
+assert.match(css,/min-height:200px/,'YouTube player minimum visible height');
+assert.match(html,/id="templeVideoCredit"/,'YouTube copyright credit');
+assert.match(html,/id="templeAudioCredit"/,'audio copyright attribution');
+assert.match(html,/src="\/temple-audio\.js"/,'audio controller included');
+assert.match(audio,/window\.AudioContext/,'original Web Audio soundscape');
+assert.doesNotMatch(audio,/youtube-nocookie|\/embed\//,'YouTube not hidden as audio');
+for(const location of locations){
+  assert.match(audio,new RegExp('^  '+location+':\\{name:', 'm'),location+' ambient program missing');
+  assert.ok(admin.includes("'music-temple-"+location+"'"),location+' admin audio slot missing');
+}
+assert.match(admin,/저작자·출처·이용허락/,'admin copyright attribution required');
+console.log('temple: seven scenes, original audio, licensed replacement slots, visible YouTube screen, credits and private wishes PASS');
