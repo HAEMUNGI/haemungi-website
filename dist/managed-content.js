@@ -177,7 +177,7 @@
     const grid = document.querySelector('#page-videos .videos-grid');
     if (!grid) return;
     grid.querySelectorAll('[data-hm-video]').forEach(el => el.remove());
-    const videos = rows.filter(row => row.kind === 'video');
+    const videos = rows.filter(row => row.kind === 'video' && row.slot !== 'video-temple');
     grid.querySelectorAll('.video-tile:not([data-hm-video])').forEach(tile => {
       tile.hidden = videos.length > 0;
       tile.dataset.hmDefaultHidden = videos.length > 0 ? 'true' : 'false';

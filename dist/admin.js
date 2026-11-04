@@ -10,7 +10,8 @@
       [`goods-${name}`, `${i + 1}번 굿즈 · ${name}`]),
     ['daily-first', '첫 만남 웹툰'], ['daily-moments', '일상다반사 웹툰 · 기존 회차 수정'],
     ...Array.from({length: 9}, (_, i) => [`card-${String(i + 1).padStart(2, '0')}`, `카드뉴스 ${i + 1}장`]),
-    ['music-main', '배경음악']
+    ['music-main', '배경음악'],
+    ['video-temple', '파도가 들리는 법당 · 대웅전 유튜브']
   ];
   const labels = new Map(slots);
   const originalSlots = new Set(slots.map(([slot]) => slot));

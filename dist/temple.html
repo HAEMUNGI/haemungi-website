@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff7ea">
+  <meta name="description" content="파도가 들리는 법당 — 바다를 품은 헤뭉이의 마음쉼터. 해수관음상, 대웅전, 법등마당, 공양간, 발원당, 바다 쉼터, 해안 산책로를 천천히 둘러보세요.">
+  <meta property="og:title" content="파도가 들리는 법당 | 헤뭉이의 마음쉼터">
+  <meta property="og:image" content="https://haemungi.pages.dev/assets/temple-map.webp">
+  <title>파도가 들리는 법당 | 헤뭉이의 마음쉼터</title>
+  <link rel="preload" as="image" href="/assets/temple-map.webp">
+  <link rel="stylesheet" href="/temple.css">
+  <script src="/content-config.js" defer></script>
+  <script src="/temple.js" defer></script>
+</head>
+<body>
+  <a href="#temple-main" class="skip-link">본문으로 이동</a>
+  <header class="temple-header">
+    <a class="temple-back" href="/#home">← <span>헤뭉이의 작은 세계</span></a>
+    <span class="temple-wordmark">✿ 파도가 들리는 법당</span>
+    <a class="temple-map-link" href="/temple.html#map" id="mapReturn">전체 지도</a>
+  </header>
+  <main id="temple-main">
+    <h1 class="sr-only">파도가 들리는 법당 — 헤뭉이의 마음쉼터</h1>
+    <div class="temple-shell">
+      <figure class="temple-frame" id="templeFrame">
+        <img class="temple-art" id="templeArt" src="/assets/temple-map.webp" width="720" height="1280" alt="벚꽃과 노을, 바다가 어우러진 파도가 들리는 법당의 전체 지도" fetchpriority="high" decoding="async">
+        <nav id="mapHotspots" class="map-hotspots" aria-label="법당 지도 장소 선택">
+          <a class="map-spot spot-haesu" href="#haesu" aria-label="해수관음상으로 이동"><span class="sr-only">해수관음상</span></a>
+          <a class="map-spot spot-daewoong" href="#daewoong" aria-label="법당 대웅전으로 이동"><span class="sr-only">법당 대웅전</span></a>
+          <a class="map-spot spot-lantern" href="#lantern" aria-label="법등마당으로 이동"><span class="sr-only">법등마당</span></a>
+          <a class="map-spot spot-kitchen" href="#kitchen" aria-label="공양간으로 이동"><span class="sr-only">공양간</span></a>
+          <a class="map-spot spot-wish" href="#wish" aria-label="발원당으로 이동"><span class="sr-only">발원당</span></a>
+          <a class="map-spot spot-rest" href="#rest" aria-label="바다 쉼터로 이동"><span class="sr-only">바다 쉼터</span></a>
+          <a class="map-spot spot-trail" href="#trail" aria-label="해안 산책로로 이동"><span class="sr-only">해안 산책로</span></a>
+        </nav>
+        <div class="temple-video" id="templeVideo" hidden aria-label="대웅전 유튜브 영상">
+          <div class="video-pending" id="videoPending">명상 영상<br>준비 중</div>
+          <button class="video-play" id="videoPlay" type="button" hidden aria-label="대웅전 영상 재생">▶ 영상 보기</button>
+          <div class="video-mount" id="videoMount"></div>
+        </div>
+        <button class="wish-hotspot" id="wishHotspot" type="button" aria-label="발원문 작성하기" hidden><span class="sr-only">발원문 작성하기</span></button>
+        <button class="quiet-exit" id="quietExit" type="button" hidden>고요한 화면 나가기</button>
+      </figure>
+      <section class="temple-info" aria-live="polite">
+        <p class="scene-kicker" id="sceneKicker">HAEMUNGI · 마음쉼터</p>
+        <h2 id="sceneTitle">마음을 쉬어 가는 바닷가 법당</h2>
+        <p id="sceneDescription">일곱 장소의 이름을 누르면 그곳으로 이동합니다. 서두르지 않아도 괜찮습니다.</p>
+        <div class="scene-actions" id="sceneActions"></div>
+        <div class="temple-saved" id="wishSaved" hidden>
+          <h3>이 기기에 간직한 발원문</h3>
+          <ul id="wishSavedList"></ul>
+          <p>소원은 공개되지 않으며, 이 브라우저에만 보관됩니다.</p>
+        </div>
+        <div class="place-directory" id="placeDirectory" aria-label="다른 장소로 이동">
+          <p class="directory-title">어디로 가볼까요?</p>
+          <div class="place-links" id="placeLinks"></div>
+        </div>
+        <p class="temple-note">이곳은 실제 사찰이 아닌 창작 속 마음쉼터입니다. 후원이나 결제 없이 조용히 머무를 수 있습니다.</p>
+      </section>
+    </div>
+  </main>
+  <dialog class="wish-dialog" id="wishDialog" aria-labelledby="wishDialogTitle">
+    <form id="wishForm">
+      <button class="dialog-close" id="wishClose" type="button" aria-label="발원문 닫기">×</button>
+      <p class="scene-kicker">발원당 · 마음을 적는 시간</p>
+      <h2 id="wishDialogTitle">오늘의 소원을 적어 보세요</h2>
+      <p>여기에 적은 마음은 다른 사람에게 공개되지 않습니다. 이 기기에만 저장됩니다.</p>
+      <label for="wishText">나의 발원문</label>
+      <textarea id="wishText" maxlength="300" rows="6" required placeholder="지금 마음에 품고 있는 바람을 천천히 적어 주세요."></textarea>
+      <span class="wish-count" id="wishCount">0 / 300</span>
+      <div class="dialog-actions"><button type="button" id="wishCancel">취소</button><button type="submit" class="wish-submit">발원함에 담기</button></div>
+      <p class="wish-message" id="wishMessage" role="status"></p>
+    </form>
+  </dialog>
+  <footer class="temple-footer">파도가 들리는 법당 · 헤뭉이의 작은 세계 © 2026 일현 조성훈</footer>
+</body>
+</html>
