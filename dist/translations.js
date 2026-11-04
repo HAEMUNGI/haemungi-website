@@ -367,4 +367,5 @@ window.HAEMUNGI_TRANSLATIONS = Object.freeze([
   ,["헤뭉이 이야기 아카이브 ↗","HAEMUNGI Story Archive ↗","ヘムンギのお話一覧 ↗","HAEMUNGI 故事档案 ↗"]
   ,["이야기 전체 읽기 ↗","Read the full story ↗","物語をすべて読む ↗","阅读完整故事 ↗"]
   ,["별빛 추모관","Starlight Memorial","星あかりの追悼館","星光纪念馆"]
+  ,["파도가 들리는 법당","Temple of the Waves","波音が聞こえるお堂","听见海浪的佛堂"]
 ]);
