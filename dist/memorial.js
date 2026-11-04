@@ -17,6 +17,7 @@
   let played = new Set();
   let offeringBusy = false;
   let offeringsLoadSeq = 0;
+  let storyLoadSeq = 0;
   const flowerNames = Object.freeze({white:'흰 꽃',peach:'연분홍 꽃',gold:'금빛 꽃'});
   const flowerArt = `<svg viewBox="0 0 54 82" aria-hidden="true" focusable="false"><path d="M27 75 Q23 53 28 32" fill="none" stroke="#61805b" stroke-width="2.5" stroke-linecap="round"/><path d="M26 60 Q12 46 8 58 Q15 65 26 64" fill="#7f9b6e"/><path d="M28 52 Q42 37 46 49 Q41 58 28 57" fill="#708d67"/><g fill="currentColor" stroke="#e4d6bb" stroke-width=".65"><ellipse cx="27" cy="15" rx="7.5" ry="13"/><ellipse cx="27" cy="39" rx="7.5" ry="13"/><ellipse cx="15" cy="27" rx="13" ry="7.5"/><ellipse cx="39" cy="27" rx="13" ry="7.5"/><ellipse cx="18.5" cy="18.5" rx="7.5" ry="12" transform="rotate(-45 18.5 18.5)"/><ellipse cx="35.5" cy="18.5" rx="7.5" ry="12" transform="rotate(45 35.5 18.5)"/><ellipse cx="18.5" cy="35.5" rx="7.5" ry="12" transform="rotate(45 18.5 35.5)"/><ellipse cx="35.5" cy="35.5" rx="7.5" ry="12" transform="rotate(-45 35.5 35.5)"/></g><circle cx="27" cy="27" r="7" fill="#e1b75e"/><circle cx="27" cy="27" r="3" fill="#a8793d"/></svg>`;
 
@@ -290,9 +291,10 @@
   }
   async function refreshPets() {
     try {
-      const rows = await restGET('hm_memorial_public?select=id,slot_index,pet_name,born_on,passed_on,story,farewell,photo_path,published_at,frame_style,frame_focus_x,frame_focus_y,frame_corners,frame_fit,frame_mat_color&order=slot_index.asc');
+      // Only the twelve physical niches belong in this scene. Never fetch the full archive.
+      const rows = await restGET('hm_memorial_public?select=id,slot_index,pet_name,born_on,passed_on,story,farewell,photo_path,published_at,frame_style,frame_focus_x,frame_focus_y,frame_corners,frame_fit,frame_mat_color&slot_index=not.is.null&order=slot_index.asc&limit=12');
       publicPets = Array.isArray(rows) ? rows : [];
-      if (selectedPet) selectedPet = publicPets.find(x=>x.id===selectedPet.id) || null;
+      if (selectedPet) selectedPet = publicPets.find(x=>x.id===selectedPet.id) || selectedPet;
       if (!$('hallSlots').hidden) renderSlots();
       refreshPetList();
       if (activeScreen === 'story') showStory(currentRoute().id);
@@ -316,7 +318,9 @@
       guide.textContent='공개된 친구가 아직 없습니다. 소중한 이야기를 기다리고 있습니다.';
       btn.hidden = true;
     }
-    for (const pet of publicPets) {
+    const ritualPets = selectedPet && !publicPets.some(p=>p.id===selectedPet.id)
+      ? [selectedPet,...publicPets] : publicPets;
+    for (const pet of ritualPets) {
       const b=document.createElement('button');b.type='button';
       b.textContent=pet.pet_name;b.setAttribute('aria-pressed',String(selectedPet?.id===pet.id));
       b.addEventListener('click',()=>{selectedPet=pet;$('offeringStatus').textContent='';refreshPetList();});list.appendChild(b);
@@ -391,11 +395,27 @@
     const n=document.createElement(tag);if(className)n.className=className;if(txt!==undefined)n.textContent=txt;return n;
   }
   async function showStory(id) {
-    const box=$('friendStory');box.replaceChildren();
-    const pet=publicPets.find(x=>x.id===id);
-    if (!pet){box.appendChild(el('p','', '공개된 추억을 찾을 수 없습니다.'));$('letterForm').hidden=true;return;}
+    const box=$('friendStory'),seq=++storyLoadSeq;
+    box.replaceChildren();
+    box.appendChild(el('p','hint','소중한 기억을 불러오고 있습니다…'));
+    $('letterForm').hidden=true;
+    let pet=publicPets.find(x=>x.id===id);
+    if(!pet && /^[a-f0-9-]{36}$/i.test(id||'')) {
+      try{
+        const rows=await restGET('hm_memorial_public?select=id,slot_index,pet_name,born_on,passed_on,story,farewell,photo_path,published_at&' +
+          'id=eq.'+encodeURIComponent(id)+'&limit=1');
+        pet=Array.isArray(rows)?rows[0]:null;
+      }catch(_){
+        if(seq===storyLoadSeq && activeScreen==='story')box.replaceChildren(el('p','','추억을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'));
+        return;
+      }
+    }
+    if(seq!==storyLoadSeq||activeScreen!=='story'||currentRoute().id!==id)return;
+    box.replaceChildren();
+    if (!pet){box.appendChild(el('p','', '공개된 추억을 찾을 수 없습니다.'));return;}
     $('letterForm').hidden=false;selectedPet=pet;
-    box.appendChild(el('p','eyebrow', '안식관 '+String(pet.slot_index).padStart(3,'0')+'호'));
+    box.appendChild(el('p','eyebrow',pet.slot_index==null?'별들의 기록 · 열린 추억 공간':
+      '안식관 '+String(pet.slot_index).padStart(3,'0')+'호'));
     box.appendChild(el('h1','',pet.pet_name));
     const date=[pet.born_on,pet.passed_on].filter(Boolean).join(' ~ ');
     if(date)box.appendChild(el('p','dates',date));
