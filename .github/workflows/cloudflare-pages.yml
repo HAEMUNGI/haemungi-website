@@ -33,6 +33,7 @@ jobs:
           node verify-playground.mjs
           node verify-story-seo.mjs
           node verify-memorial.mjs
+          node verify-memorial-scale.cjs
           node verify-temple.mjs
           node verify-christmas.mjs
 

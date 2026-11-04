@@ -1,0 +1,34 @@
+:root{color-scheme:light}
+body{background:linear-gradient(180deg,#fffaf3,#f5ebdd);color:#493629}
+.archive-main{width:min(1050px,100%);margin:0 auto;padding:38px clamp(14px,4vw,38px) 74px;min-height:70dvh}
+.archive-head{text-align:center;margin:0 auto 30px;max-width:680px}
+.archive-head h1{font:700 clamp(27px,5vw,42px)/1.35 'Gowun Batang',serif;margin:12px 0;color:#493324}
+.archive-head p{color:#806954;font-size:14px;line-height:1.8}
+.archive-paper{background:#fffdfa;border:1px solid #e5d6c3;border-radius:22px;padding:clamp(17px,3vw,31px);box-shadow:0 17px 45px #85684918}
+.archive-search{border-bottom:1px solid #efe2d1;padding-bottom:22px}
+.archive-search>label{display:block;font-size:13px;font-weight:700;margin-bottom:10px;color:#67492d}
+.archive-search-row{display:flex;gap:8px}
+.archive-search-row input{min-width:0;flex:1;border:1px solid #dec9b3;border-radius:10px;background:#fffdfa;color:#38291e;padding:12px;font-size:15px}
+.archive-search-row button,.archive-pager button{border:1px solid #b59a79;border-radius:10px;background:#f7ebdc;color:#62472f;padding:11px 15px;white-space:nowrap;font-weight:600;font-size:13px}
+.archive-search-row button[type=submit]{background:#926d49;color:#fff9f0;border-color:#926d49}
+.archive-search-row button:hover,.archive-pager button:hover:not(:disabled){background:#ead6bb}
+.archive-search-row button[type=submit]:hover{background:#745131}
+.archive-status{color:#806d57;font-size:13px;margin:18px 0;min-height:22px}
+.archive-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.archive-card{min-width:0;border:1px solid #eee0cb;border-radius:15px;overflow:hidden;background:#fffaf3;transition:transform .2s ease,box-shadow .2s ease}
+.archive-card:hover{transform:translateY(-3px);box-shadow:0 9px 23px #9b7b5126}
+.archive-card a{display:block;height:100%;color:inherit}
+.archive-photo{aspect-ratio:4/3;background:linear-gradient(135deg,#f8ecdb,#e8d7c2);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.archive-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.archive-photo .archive-placeholder{font:700 48px 'Gowun Batang',serif;color:#bca484}
+.archive-card-body{padding:13px 15px 18px}
+.archive-card h2{font:700 22px/1.4 'Gowun Batang',serif;margin:0 0 4px;color:#4d3625;overflow-wrap:anywhere}
+.archive-dates{font-size:12px;color:#99836c;min-height:19px;margin:0 0 10px}
+.archive-open{font-size:12px;color:#966b3e;font-weight:700}
+.archive-pager{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:26px;font-size:13px;color:#806953}
+.archive-pager button:disabled{opacity:.42;cursor:not-allowed}
+.archive-care{text-align:center;color:#806b55;font-size:12px;margin:24px 0 14px}
+.archive-return{display:block;width:fit-content;margin:auto;padding:11px 17px;border:1px solid #cfb99f;border-radius:30px;color:#755637;font-size:13px}
+@media(max-width:720px){.archive-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.archive-card h2{font-size:19px}}
+@media(max-width:420px){.archive-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.archive-card-body{padding:11px}.archive-card h2{font-size:17px}.archive-search-row{flex-wrap:wrap}.archive-search-row input{flex-basis:100%}.archive-search-row button{flex:1}.archive-photo{aspect-ratio:1/1}.wordmark{font-size:16px}.top-action{padding:9px 7px;font-size:11px}.home-link{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.archive-card{transition:none}.archive-card:hover{transform:none}}

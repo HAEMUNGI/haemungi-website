@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fffaf3">
+  <meta name="description" content="헤뭉이 별빛 추모관의 별들의 기록. 공개 동의가 확인된 소중한 친구들의 이름과 이야기를 찾아보세요.">
+  <title>별들의 기록 | 별빛 추모관 · 헤뭉이</title>
+  <link rel="stylesheet" href="/memorial.css">
+  <link rel="stylesheet" href="/memorial-archive.css">
+  <script src="/content-config.js" defer></script>
+  <script src="/memorial-archive.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#archive-main">본문으로 이동</a>
+  <header class="topbar">
+    <a class="home-link" href="/memorial.html#entrance">← <span>별빛 추모관</span></a>
+    <div class="wordmark"><span class="mark">✧</span> 별들의 기록 <small>OUR LITTLE STARS</small></div>
+    <a class="top-action" href="/memorial.html#apply">친구 등록하기</a>
+  </header>
+  <main id="archive-main" class="archive-main">
+    <div class="archive-head">
+      <span class="eyebrow">STARLIGHT MEMORIAL · 기억의 서재</span>
+      <h1>이름 하나마다, 하나의 우주가 있습니다.</h1>
+      <p>한 번에 모든 별을 화면에 담지 않고, 보고 싶은 친구의 기억을 천천히 만납니다.</p>
+    </div>
+    <section class="archive-paper" aria-label="공개된 추모 기록">
+      <form id="archiveSearch" class="archive-search" role="search">
+        <label for="archiveQuery">기억하고 싶은 친구의 이름</label>
+        <div class="archive-search-row">
+          <input id="archiveQuery" name="query" type="search" maxlength="60" autocomplete="off" placeholder="이름으로 찾아보기">
+          <button type="submit">찾기</button>
+          <button type="button" id="archiveClear">전체 보기</button>
+        </div>
+      </form>
+      <p id="archiveStatus" class="archive-status" role="status" aria-live="polite">별들의 기록을 불러오고 있습니다…</p>
+      <div id="archiveGrid" class="archive-grid" aria-label="공개 승인된 친구 목록"></div>
+      <div class="archive-pager" aria-label="목록 페이지 이동">
+        <button type="button" id="archivePrev" disabled>← 이전</button>
+        <span id="archivePage" aria-live="polite">1쪽</span>
+        <button type="button" id="archiveNext" disabled>다음 →</button>
+      </div>
+    </section>
+    <p class="archive-care">보호자의 공개 동의와 관리자 확인을 마친 이야기만 이곳에 나타납니다.</p>
+    <a class="archive-return" href="/memorial.html#hall">안식관의 첫 열두 자리 둘러보기 →</a>
+  </main>
+  <footer class="footer">© HAEMUNGI · 일현 조성훈 <span>사랑했던 이름을 소중히 기억합니다.</span></footer>
+</body>
+</html>
