@@ -12,12 +12,14 @@ export class MemorialWalkRelay {
     this.onStatus=options.onStatus||(()=>{});
     this.onPeers=options.onPeers||(()=>{});
     this.onMove=options.onMove||(()=>{});
+    this.onMoment=options.onMoment||(()=>{});
     this.position=normalPosition(options.x,options.y)||{x:.5,y:.78};
     this.plan=roomPlan(options.seed||0);
     this.ws=null;this.joined=false;this.joinRef=null;this.seq=0;
     this.attempt=0;this.presence=Object.create(null);this.remoteMoves=new Map();
     this.lastSent=0;this.pending=null;this.moveTimer=null;
     this.heartbeat=null;this.joinTimer=null;this.active=false;
+    this.lastMomentSent=0;this.remoteMoments=new Map();
   }
   get configured() {
     return /^https:\/\/[a-z0-9]+\.supabase\.co$/.test(this.api) &&
@@ -93,6 +95,14 @@ export class MemorialWalkRelay {
       this.remoteMoves.set(peer.id,{...safe,received:now});
       this._publish();
     }
+    if(msg.event==='broadcast'&&msg.payload?.event==='boat'){
+      const id=msg.payload.payload?.id;
+      if(typeof id!=='string'||id===this.id||!this.presence[id])return;
+      const now=Date.now();
+      if(now-(this.remoteMoments.get(id)||0)<6000)return;
+      this.remoteMoments.set(id,now);
+      this.onMoment({id,type:'boat'});
+    }
     if(msg.event==='phx_error'||msg.event==='phx_close'){
       this.active=false;this._disconnect();this._status('unavailable');
     }
@@ -121,6 +131,14 @@ export class MemorialWalkRelay {
     if(elapsed>=MOVE_INTERVAL_MS){this._flushMove();return;}
     if(!this.moveTimer)this.moveTimer=setTimeout(()=>{this.moveTimer=null;this._flushMove();},MOVE_INTERVAL_MS-elapsed);
   }
+  sendMoment(type){
+    if(type!=='boat'||!this.joined)return false;
+    const now=Date.now();
+    if(now-this.lastMomentSent<6000)return false;
+    const success=this._send(this.topic,'broadcast',{type:'broadcast',event:'boat',payload:{id:this.id}});
+    if(success)this.lastMomentSent=now;
+    return success;
+  }
   _flushMove() {
     if(!this.pending || !this.joined)return;
     if(this._send(this.topic,'broadcast',{type:'broadcast',event:'move',payload:this.pending})){
@@ -137,7 +155,7 @@ export class MemorialWalkRelay {
       if(socket.readyState===1){try{socket.send(wireMessage(this.topic,'phx_leave',{},++this.seq,this.joinRef));}catch(_){}}
       try{socket.close();}catch(_){}
     }
-    this.presence=Object.create(null);this.remoteMoves.clear();this.onPeers([]);
+    this.presence=Object.create(null);this.remoteMoves.clear();this.remoteMoments.clear();this.onPeers([]);
   }
   stop() {this.active=false;this._disconnect();this._status('solo');}
 }

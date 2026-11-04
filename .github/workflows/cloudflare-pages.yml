@@ -35,6 +35,7 @@ jobs:
           node verify-memorial.mjs
           node verify-memorial-scale.cjs
           node verify-memorial-walk.mjs
+          node verify-memorial-journey.mjs
           node verify-temple.mjs
           node verify-christmas.mjs
 
