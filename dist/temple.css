@@ -27,8 +27,9 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid #1
 .spot-rest{left:12.2%;top:66.5%;width:27.5%;height:8.4%}
 .spot-trail{left:35.5%;top:79%;width:29.5%;height:6.4%}
 .temple-video{position:absolute;left:28%;top:11.85%;width:61.5%;height:16.6%;overflow:hidden;background:#16121a;border-radius:1px;box-shadow:0 1px 4px #1b0e1a9c;display:grid;place-items:center;color:#eee5df;text-align:center}
-.temple-video .video-pending{font-size:clamp(10px,1.6vw,17px);line-height:1.5;opacity:.7}
-.video-play{border:1px solid #e7d6ae;background:#231c2699;color:#fff6df;border-radius:999px;padding:9px 12px;font-size:clamp(10px,1.5vw,16px);cursor:pointer}
+.temple-video .video-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.86)}
+.temple-video .video-pending{position:relative;z-index:1;font-size:clamp(10px,1.6vw,17px);line-height:1.5;opacity:.85}
+.video-play{position:relative;z-index:2;border:1px solid #e7d6ae;background:#231c2699;color:#fff6df;border-radius:999px;padding:9px 12px;font-size:clamp(10px,1.5vw,16px);cursor:pointer}
 .video-play:hover{background:#785a68}
 .video-mount{display:contents}.video-mount iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:black}
 .wish-hotspot{position:absolute;left:2%;top:76.8%;width:44%;height:21%;background:transparent;border:2px solid transparent;border-radius:14px;cursor:pointer}
