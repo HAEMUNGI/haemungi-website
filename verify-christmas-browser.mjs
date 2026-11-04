@@ -55,9 +55,10 @@ try {
     pending.set(id, {resolve,reject});
     ws.send(JSON.stringify({id,method,params}));
   });
+  await cdp('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:3,mobile:true});
   await cdp('Page.enable');
   await cdp('Runtime.enable');
-  await cdp('Page.navigate', {url:'https://haemungi.pages.dev/christmas#map'});
+  await cdp('Page.navigate', {url:(process.env.CHRISTMAS_TEST_URL || 'https://haemungi.pages.dev/christmas.html') + '#map'});
   const ids = ['map','square','market','parade','sled','fishing','stage','garden'];
   for (const id of ids) {
     if (id !== 'map') {
@@ -65,7 +66,7 @@ try {
         expression: 'location.hash = ' + JSON.stringify('#'+id)
       });
     }
-    const expectPath = 'christmas-' + id + '.webp';
+    const expectPath = 'christmas-' + id + '.jpg';
     let last;
     const deadline = Date.now() + 16000;
     while (Date.now() < deadline) {
@@ -101,9 +102,18 @@ try {
         || !(last.naturalHeight >= 1200) || !last.rendered) {
       throw new Error('Browser image QA FAIL for ' + id + ': ' + JSON.stringify(last));
     }
-    console.log('Browser image QA PASS',id,last.naturalWidth + 'x' + last.naturalHeight);
+    const visual = await cdp('Runtime.evaluate', {expression: `(() => {
+      const img = document.querySelector('#sceneImage'), b = img.getBoundingClientRect();
+      return {width:b.width,height:b.height,opacity:getComputedStyle(img).opacity,
+        bg:getComputedStyle(document.body).backgroundImage,docWidth:document.documentElement.scrollWidth,
+        viewport:innerWidth,statusHidden:document.querySelector('#sceneStatus').hidden};
+    })()`,returnByValue:true});
+    const v=visual?.result?.value;
+    if (!v || v.width < 280 || v.height < 400 || v.opacity !== '1' || !v.statusHidden || v.docWidth > v.viewport + 2)
+      throw new Error('Visible mobile image or layout failed '+id+': '+JSON.stringify(v));
+    console.log('Browser warm JPEG QA PASS',id,last.naturalWidth + 'x' + last.naturalHeight);
   }
-  console.log('All 8 Christmas Village pages rendered in Chromium.');
+  console.log('All 8 Christmas Village warm JPEG scenes rendered with mobile 390px layout.');
 } finally {
   try { ws?.close(); } catch {}
   try { chrome.kill('SIGTERM'); } catch {}
