@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fff8ed">
+  <meta name="description" content="헤뭉이 별빛 추모관의 햇살 가득한 꽃길. 혼자 또는 다른 방문자와 함께 조용히 걸으며 소중한 친구를 기억하는 공간입니다.">
+  <title>함께 걷는 꽃길 | 별빛 추모관 · 헤뭉이</title>
+  <link rel="preload" as="image" href="/memorial/spring-garden-20261104.jpg">
+  <link rel="stylesheet" href="/memorial-walk.css">
+  <script src="/content-config.js" defer></script>
+  <script type="module" src="/memorial-walk.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#walk-main">산책길로 이동</a>
+  <header class="walk-topbar">
+    <a href="/memorial.html#entrance" class="back-link">← <span>별빛 추모관</span></a>
+    <div class="walk-wordmark">✧ 함께 걷는 꽃길 <small>STARLIGHT GARDEN WALK</small></div>
+    <a href="/memorial-archive.html" class="book-link">별들의 기록 ↗</a>
+  </header>
+  <main id="walk-main" class="walk-main">
+    <div class="walk-heading">
+      <p>작은 발자국이 머물렀던 자리</p>
+      <h1>햇살 사이로, 천천히 걸어요.</h1>
+      <span>가고 싶은 곳을 누르면 작은 방문자가 꽃길을 따라 움직입니다.</span>
+    </div>
+    <div class="walk-layout">
+      <section class="walk-scene-wrap" aria-label="추모관 산책길 그림 공간">
+        <div id="walkStage" class="walk-stage" role="group" tabindex="0" aria-label="꽃길 그림. 누르거나 방향키로 산책하기">
+          <div class="walk-light" aria-hidden="true"></div>
+          <div class="walk-scene-title" aria-hidden="true"><span>✧</span> 꽃빛이 머무는 길</div>
+          <div id="walkAvatars" class="walk-avatars" aria-hidden="true">
+            <div id="walkSelf" class="walk-avatar is-self" data-tone="0">
+              <span class="avatar-shadow"></span><span class="avatar-head"></span>
+              <span class="avatar-body"></span><span class="avatar-scarf"></span>
+              <span class="avatar-label">나</span>
+            </div>
+          </div>
+          <div class="walk-stage-foot" aria-hidden="true">먼저 떠난 아이들이 좋아했을 햇살을 기억하며.</div>
+        </div>
+      </section>
+      <aside class="walk-panel" aria-label="산책 조작과 함께 걷기 설정">
+        <div class="walk-panel-title"><span class="little-star">✧</span><div><h2>꽃길 산책</h2><p>잠시 머물러도 괜찮아요.</p></div></div>
+        <div class="walk-status-card">
+          <div class="walk-status-head"><span id="walkMode" class="status-pill">나만의 산책</span><span id="walkRoom">꽃길 · 혼자</span></div>
+          <p id="walkStatus" role="status" aria-live="polite">햇살 속을 자유롭게 걸어보세요.</p>
+          <span id="walkCount" class="walk-count">내 화면의 방문자 · 나 1명</span>
+        </div>
+        <div class="walk-join-row">
+          <button type="button" id="walkJoin" class="walk-primary">✧ 다른 방문자와 함께 걷기</button>
+          <button type="button" id="walkChangeRoom" class="walk-secondary" hidden>다른 꽃길</button>
+          <button type="button" id="walkShare" class="walk-secondary">같은 꽃길 초대</button>
+        </div>
+        <p class="walk-note">함께 걷기는 소규모 시범 기능입니다. 접속할 때만 임시 별 모양이 나타나고, 이름·사진·추모 기록은 공유하지 않습니다.</p>
+        <div class="walk-steering" aria-label="산책 방향 조작">
+          <span>느리게 걸어보기</span>
+          <div class="walk-arrows">
+            <button type="button" data-step="up" aria-label="위쪽으로 걷기">↑</button>
+            <button type="button" data-step="left" aria-label="왼쪽으로 걷기">←</button>
+            <button type="button" data-step="down" aria-label="아래쪽으로 걷기">↓</button>
+            <button type="button" data-step="right" aria-label="오른쪽으로 걷기">→</button>
+          </div>
+        </div>
+        <nav class="walk-destinations" aria-label="추모관 다른 공간">
+          <a href="/memorial.html#hall">안식관 돌아가기</a>
+          <a href="/memorial-archive.html">별들의 기록 만나기</a>
+        </nav>
+        <p class="walk-capacity">이 산책길은 실제 동시 접속 10,000명을 검증한 3D 메타버스가 아닙니다. 작은 구역별 실시간 연결을 검증하는 첫 공간입니다.</p>
+      </aside>
+    </div>
+  </main>
+  <footer>© HAEMUNGI · 일현 조성훈 <span>소중한 기억이 오래 빛나기를.</span></footer>
+</body>
+</html>
