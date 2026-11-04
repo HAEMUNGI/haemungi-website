@@ -3,6 +3,8 @@
   const cfg=window.HAEMUNGI_CONTENT_CONFIG||{},api=cfg.projectUrl||'',key=cfg.publishableKey||'';
   const $=id=>document.getElementById(id);
   let session=null;let busy=false;
+  let archivePage=0,archiveFilter='';
+  let requestPage=0,letterPage=0;
   function notice(txt,error=false){$('notice').textContent=txt;$('notice').style.color=error?'#ffb6a5':'#e9d5b7';}
   function authView(text){$('authMessage').hidden=false;$('authMessage').querySelector('p').textContent=text;$('adminWorkspace').hidden=true;}
   function persist(){if(session)sessionStorage.setItem('hm-owner-session-v1',JSON.stringify(session));}
@@ -41,25 +43,54 @@
     if(!/^approved\/[a-f0-9-]{36}\.(jpg|jpeg|png|webp)$/.test(path||''))return '';
     return api+'/storage/v1/object/public/hm-memorial-published/'+path;
   }
+  async function makeListThumbnail(imageBlob){
+    // An original photo remains untouched. Only a small WebP copy is used for lists.
+    const src=URL.createObjectURL(imageBlob);
+    try {
+      const image=new Image();image.src=src;await image.decode();
+      const ratio=Math.min(1,480/Math.max(image.naturalWidth,image.naturalHeight));
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.round(image.naturalWidth*ratio));
+      canvas.height=Math.max(1,Math.round(image.naturalHeight*ratio));
+      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      const result=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.78));
+      canvas.width=0;canvas.height=0;
+      if(!result||result.type!=='image/webp')throw new Error('목록 사진 최적화에 실패했습니다.');
+      return result;
+    }finally{URL.revokeObjectURL(src);}
+  }
+  async function uploadListThumbnail(imageBlob){
+    const thumb=await makeListThumbnail(imageBlob);
+    const path='thumbs/'+crypto.randomUUID()+'.webp';
+    await request('/storage/v1/object/hm-memorial-published/'+path,{
+      method:'POST',body:thumb,headers:{'Content-Type':'image/webp','x-upsert':'false'}
+    });
+    return path;
+  }
   async function publish(row,slot,verified){
     if(!verified)throw new Error('보호자의 명시적 공개 동의를 먼저 확인해주세요.');
     if(row.requested_visibility!=='public')throw new Error('비공개 신청은 공개할 수 없습니다.');
     if(!row.photo_path)throw new Error('사진을 먼저 등록해주세요.');
-    if(!Number.isInteger(slot)||slot<1||slot>12)throw new Error('안식관 위치는 001~012호 중 선택해주세요.');
+    if(slot!==null&&(!Number.isInteger(slot)||slot<1||slot>12))throw new Error('안식관 위치는 001~012호 중 선택해주세요.');
     if(slot===1 && !(row.requested_slot===1))throw new Error('001호는 첫 친구를 위해 예약되어 있습니다.');
-    const taken=await request(rest('hm_memorial_public','?select=id&slot_index=eq.'+slot));
-    if(taken.some(r=>r.id!==row.id))throw new Error('해당 안치 공간은 이미 사용 중입니다.');
+    if(slot!==null){
+      const taken=await request(rest('hm_memorial_public','?select=id&slot_index=eq.'+slot));
+      if(taken.some(r=>r.id!==row.id))throw new Error('해당 안치 공간은 이미 사용 중입니다.');
+    }
     await patch('hm_memorial_requests',row.id,{owner_consent_verified:true});
     const blob=await fetchPrivatePhoto(row.photo_path);
     const path='approved/'+row.id+'.'+row.photo_path.split('.').pop();
     await request('/storage/v1/object/hm-memorial-published/'+path,{method:'POST',body:blob,
       headers:{'Content-Type':blob.type||'image/jpeg','x-upsert':'true'}});
+    const thumbnailPath=await uploadListThumbnail(blob);
     const publicRow={id:row.id,slot_index:slot,pet_name:row.pet_name,born_on:row.born_on,
-      passed_on:row.passed_on,story:row.story,farewell:row.farewell,photo_path:path};
+      passed_on:row.passed_on,story:row.story,farewell:row.farewell,photo_path:path,
+      thumbnail_path:thumbnailPath};
     await request(rest('hm_memorial_public','?on_conflict=id'),{method:'POST',body:JSON.stringify(publicRow),
       headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});
     await patch('hm_memorial_requests',row.id,{status:'published',approved_slot:slot,approved_at:new Date().toISOString()});
-    notice('안식관 '+String(slot).padStart(3,'0')+'호 공개가 완료되었습니다.');
+    notice(slot===null?'별들의 기록에 공개가 완료되었습니다.':
+      '안식관 '+String(slot).padStart(3,'0')+'호 공개가 완료되었습니다.');
   }
   async function approvePrivate(row,verified){
     if(!verified)throw new Error('보호자의 공개·보관 범위 동의를 확인해주세요.');
@@ -102,6 +133,8 @@
       const slot=elem('input');slot.type='number';slot.min='1';slot.max='12';slot.step='1';slot.value=String(row.requested_slot||2);
       slotLabel.appendChild(slot);card.appendChild(slotLabel);
       card.appendChild(button('승인하고 명패 공개','',()=>withBusy(()=>publish(row,Number(slot.value),consent.checked))));
+      card.appendChild(button('별들의 기록에 승인·공개 (안식관 번호 없음)','secondary',
+        ()=>withBusy(()=>publish(row,null,consent.checked))));
     }else{
       card.appendChild(button('비공개 보관 승인','',()=>withBusy(()=>approvePrivate(row,consent.checked))));
     }
@@ -119,7 +152,7 @@
   const allowedImageTypes={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
   const publicImage=path=>{
     if(Object.prototype.hasOwnProperty.call(portraitDefaults,path||''))return portraitDefaults[path];
-    if(!/^(approved|scene)\/[a-f0-9-]{36}\.(jpg|jpeg|png|webp)$/.test(path||''))return '';
+    if(!/^((approved|scene)\/[a-f0-9-]{36}\.(jpg|jpeg|png|webp)|thumbs\/[a-f0-9-]{36}\.webp)$/.test(path||''))return '';
     return api+'/storage/v1/object/public/hm-memorial-published/'+path;
   };
   const field=(title,control)=>{
@@ -505,7 +538,10 @@
         frame_focus_y:Number(focusY.value)/100,
         frame_corners:accepted,frame_fit:fit.value,frame_mat_color:mat.value
       };
-      if(file.files?.[0])payload.photo_path=await uploadPublicImage(file.files[0],'approved/');
+      if(file.files?.[0]){
+        payload.photo_path=await uploadPublicImage(file.files[0],'approved/');
+        payload.thumbnail_path=await uploadListThumbnail(file.files[0]);
+      }
       await patch('hm_memorial_public',row.id,payload);
       notice(row.pet_name+'의 액자 위치와 사진 설정을 공개 적용했습니다.');
     })));
@@ -532,6 +568,49 @@
     card.appendChild(sceneCol);card.appendChild(editCol);
     return card;
   }
+  function renderArchivePublic(row){
+    const card=elem('article','request-card');
+    card.appendChild(elem('h3','',row.pet_name+' · 별들의 기록'));
+    card.appendChild(elem('p','meta','공개일: '+new Date(row.published_at).toLocaleDateString('ko-KR')+' · 안식관 명패 없음'));
+    const photo=elem('img','admin-art-preview');
+    photo.src=publicImage(row.thumbnail_path)||publicImage(row.photo_path);
+    photo.alt=row.pet_name+' 공개 사진';
+    card.appendChild(photo);
+    const name=input('text',row.pet_name,60);
+    const born=input('date',row.born_on||''),passed=input('date',row.passed_on||'');
+    const story=elem('textarea');story.value=row.story||'';story.maxLength=900;story.rows=3;
+    const farewell=elem('textarea');farewell.value=row.farewell||'';farewell.maxLength=500;farewell.rows=2;
+    const file=input('file');file.accept='image/jpeg,image/png,image/webp';
+    for(const [title,control] of [['이름',name],['처음 만난 날',born],['별이 된 날',passed],
+      ['추억 이야기',story],['마지막 인사',farewell],['사진 교체 (선택)',file]]){
+      card.appendChild(field(title,control));
+    }
+    card.appendChild(button('기록 수정 저장','secondary',()=>withBusy(async()=>{
+      const payload={pet_name:name.value.trim(),born_on:born.value||null,
+        passed_on:passed.value||null,story:story.value.trim(),farewell:farewell.value.trim()};
+      if(!payload.pet_name||!payload.story)throw new Error('이름과 이야기는 필수입니다.');
+      if(payload.born_on&&payload.passed_on&&payload.born_on>payload.passed_on)throw new Error('생몰 날짜 순서를 확인해주세요.');
+      if(file.files?.[0]){
+        payload.photo_path=await uploadPublicImage(file.files[0],'approved/');
+        payload.thumbnail_path=await uploadListThumbnail(file.files[0]);
+      }
+      await patch('hm_memorial_public',row.id,payload);
+      notice(payload.pet_name+'의 기록을 수정했습니다.');
+    })));
+    const link=elem('a','', '공개된 추억 확인하기 →');
+    link.href='/memorial.html#story:'+row.id;link.target='_blank';link.rel='noopener';
+    card.appendChild(link);
+    return card;
+  }
+  function archiveQueryString(){
+    const params=new URLSearchParams({
+      select:'id,pet_name,born_on,passed_on,story,farewell,photo_path,thumbnail_path,published_at',
+      slot_index:'is.null',order:'published_at.desc,id.desc',
+      limit:'25',offset:String(archivePage*24)
+    });
+    if(archiveFilter)params.set('pet_name','ilike.*'+archiveFilter+'*');
+    return '?'+params;
+  }
   function renderLetter(row){
     const card=elem('article','request-card');
     card.appendChild(elem('p','meta',new Date(row.created_at).toLocaleString('ko-KR')+' · '+row.author_alias));
@@ -541,10 +620,11 @@
     return card;
   }
   async function reload(){
-    const [requests,published,letters,scenes,offerings]=await Promise.all([
-      request(rest('hm_memorial_requests','?select=*&status=eq.pending&order=created_at.asc')),
-      request(rest('hm_memorial_public','?select=*&order=slot_index.asc')),
-      request(rest('hm_memorial_letters','?select=*&status=eq.pending&order=created_at.asc')),
+    const [requests,published,archive,letters,scenes,offerings]=await Promise.all([
+      request(rest('hm_memorial_requests','?select=*&status=eq.pending&order=created_at.asc&limit=25&offset='+(requestPage*24))),
+      request(rest('hm_memorial_public','?select=*&slot_index=not.is.null&order=slot_index.asc&limit=12')),
+      request(rest('hm_memorial_public',archiveQueryString())),
+      request(rest('hm_memorial_letters','?select=*&status=eq.pending&order=created_at.asc&limit=25&offset='+(letterPage*24))),
       request(rest('hm_memorial_scene_settings','?select=*&order=scene_key.asc')),
       request(rest('hm_memorial_offerings','?select=memorial_id,flower_kind,created_at&order=created_at.desc&limit=100'))
     ]);
@@ -557,11 +637,48 @@
       offeringBox.appendChild(elem('p','',pet.pet_name+' · 최근 100건 중 '+(counts.get(pet.id)||0)+'건 헌화'));
     }
     if(!published.length)offeringBox.appendChild(elem('p','empty','공개된 친구가 없습니다.'));
-    for(const [id,rows,render] of [['requestList',requests,renderRequest],['publishedList',published,renderPublic],['letterAdminList',letters,renderLetter]]){
+    const archiveBox=$('archiveAdminList');archiveBox.replaceChildren();
+    for(const pet of archive.slice(0,24))archiveBox.appendChild(renderArchivePublic(pet));
+    if(!archive.length)archiveBox.appendChild(elem('p','empty','검색 조건에 맞는 기록이 없습니다.'));
+    $('archiveAdminPage').textContent=(archivePage+1)+'쪽 · 최대 24명씩';
+    $('archiveAdminPrev').disabled=archivePage===0;
+    $('archiveAdminNext').disabled=archive.length<=24;
+    for(const [prefix,rows,n] of [['request',requests,requestPage],['letter',letters,letterPage]]){
+      $(prefix+'AdminPage').textContent=(n+1)+'쪽 · 최대 24건씩';
+      $(prefix+'AdminPrev').disabled=n===0;
+      $(prefix+'AdminNext').disabled=rows.length<=24;
+    }
+    for(const [id,rows,render] of [['requestList',requests.slice(0,24),renderRequest],['publishedList',published,renderPublic],['letterAdminList',letters.slice(0,24),renderLetter]]){
       const box=$(id);box.replaceChildren();
       if(!rows.length)box.appendChild(elem('p','empty','해당 항목이 없습니다.'));
       rows.forEach(row=>box.appendChild(render(row)));
     }
+  }
+  $('archiveAdminSearch').addEventListener('submit',event=>{
+    event.preventDefault();
+    archiveFilter=String($('archiveAdminQuery').value||'').trim()
+      .replace(/[^\p{L}\p{N} \-]/gu,'').slice(0,60);
+    $('archiveAdminQuery').value=archiveFilter;archivePage=0;withBusy(async()=>{});
+  });
+  $('archiveAdminClear').addEventListener('click',()=>{
+    $('archiveAdminQuery').value='';archiveFilter='';archivePage=0;withBusy(async()=>{});
+  });
+  $('archiveAdminPrev').addEventListener('click',()=>{if(archivePage>0){archivePage--;withBusy(async()=>{});}});
+  $('archiveAdminNext').addEventListener('click',()=>{
+    if(!$('archiveAdminNext').disabled){archivePage++;withBusy(async()=>{});}
+  });
+  for(const prefix of ['request','letter']){
+    $(prefix+'AdminPrev').addEventListener('click',()=>{
+      if(prefix==='request'&&requestPage>0)requestPage--;
+      if(prefix==='letter'&&letterPage>0)letterPage--;
+      withBusy(async()=>{});
+    });
+    $(prefix+'AdminNext').addEventListener('click',()=>{
+      if($(prefix+'AdminNext').disabled)return;
+      if(prefix==='request')requestPage++;
+      else letterPage++;
+      withBusy(async()=>{});
+    });
   }
   $('reload').addEventListener('click',()=>withBusy(async()=>{notice('목록을 새로고침했습니다.');}));
   async function init(){
