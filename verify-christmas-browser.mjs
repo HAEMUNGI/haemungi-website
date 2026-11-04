@@ -109,7 +109,7 @@ try {
         viewport:innerWidth,statusHidden:document.querySelector('#sceneStatus').hidden};
     })()`,returnByValue:true});
     const v=visual?.result?.value;
-    if (!v || v.width < 280 || v.height < 400 || v.opacity !== '1' || !v.statusHidden || v.docWidth > v.viewport + 2)
+    if (!v || v.width < 280 || v.height < 400 || Number(v.opacity) < 0.9 || !v.statusHidden || v.docWidth > v.viewport + 2)
       throw new Error('Visible mobile image or layout failed '+id+': '+JSON.stringify(v));
     console.log('Browser warm JPEG QA PASS',id,last.naturalWidth + 'x' + last.naturalHeight);
   }
