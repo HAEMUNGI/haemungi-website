@@ -11,6 +11,12 @@ for(const [action,count] of Object.entries(COUNTS))for(let i=1;i<=count;i++){
   assert.ok(fs.statSync(p).size>2000,`missing or empty sprite ${p}`);
 }
 assert.ok(fs.statSync(path.join(__dirname,'dist','leo-room','room-background.webp')).size>100000);
+const html=fs.readFileSync(path.join(__dirname,'dist','leo-room.html'),'utf8');
+const fullscreenCss=fs.readFileSync(path.join(__dirname,'dist','leo-room-fullscreen.css'),'utf8');
+assert.match(html,/id="roomFullscreen"[^>]*aria-controls="roomViewport"/,'fullscreen entry must target the room viewport');
+assert.match(html,/id="roomFullscreenExit"[^>]*hidden/,'fullscreen exit must be available');
+assert.match(fullscreenCss,/min-width:\s*0/,'fullscreen stage must override mobile 880px minimum width');
+assert.match(fullscreenCss,/aspect-ratio:\s*1536\s*\/\s*865/,'fullscreen stage must retain the original scene ratio');
 console.log('PASS: 25 vetted RGBA sprite frames and approved 16:9 scene asset present');
 
 if(!fs.existsSync(chromium.executablePath())){
@@ -40,6 +46,19 @@ if(!fs.existsSync(chromium.executablePath())){
       assert.equal(initial.bgWidth,1536,`${config.name} room image loaded`);
       assert.equal(initial.imgWidth,384,`${config.name} actual sprite frame loaded`);
       assert.ok(initial.overflow<=4,`${config.name} page must not overflow horizontally`);
+      await page.locator('#roomFullscreen').click();
+      await page.waitForFunction(()=>document.fullscreenElement===document.querySelector('#roomViewport') || document.querySelector('#roomViewport').classList.contains('is-expanded'));
+      const expanded=await page.evaluate(()=>{
+        const viewport=document.querySelector('#roomViewport');
+        const rect=viewport.querySelector('.room-world').getBoundingClientRect();
+        return {stageWidth:rect.width,stageHeight:rect.height,viewWidth:viewport.clientWidth,viewHeight:viewport.clientHeight,exitHidden:document.querySelector('#roomFullscreenExit').hidden};
+      });
+      assert.equal(expanded.exitHidden,false,`${config.name} fullscreen exit accessible`);
+      assert.ok(Math.abs(expanded.stageWidth/expanded.stageHeight-1536/865)<.02,`${config.name} fullscreen keeps scene aspect`);
+      assert.ok(expanded.stageWidth<=expanded.viewWidth+1,`${config.name} fullscreen scene fully visible`);
+      await page.locator('#roomFullscreenExit').click();
+      await page.waitForFunction(()=>!document.fullscreenElement && !document.querySelector('#roomViewport').classList.contains('is-expanded'));
+      assert.equal(await page.locator('#roomFullscreenExit').isHidden(),true,`${config.name} exits fullscreen`);
       await page.screenshot({path:`/tmp/leo-room-${config.name}.png`,fullPage:true});
       const rightBox=await page.locator('#moveRight').boundingBox();
       await page.mouse.move(rightBox.x+rightBox.width/2,rightBox.y+rightBox.height/2);
