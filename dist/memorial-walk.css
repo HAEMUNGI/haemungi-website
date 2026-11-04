@@ -13,7 +13,7 @@ button{font:inherit;cursor:pointer}a{color:inherit;text-decoration:none}[hidden]
 .art-trail{background-image:url('/assets/temple-trail.webp');opacity:0;transform:scale(1.02)}
 .art-shore{background-image:url('/assets/temple-rest.webp');opacity:0;transform:scale(1.02)}
 .scene-trail .art-garden,.scene-shore .art-garden{opacity:0}.scene-trail .art-trail{opacity:1;transform:scale(calc(1.015 + var(--forward)*.22)) translateY(calc(var(--forward)*-3%))}
-.scene-shore .art-shore{opacity:1;transform:scale(calc(1.02 + var(--forward)*.13)) translateY(calc(var(--forward)*-2%))}.scene-shore .art-trail{opacity:0}
+.scene-shore .art-shore{opacity:1;transform:scale(1.045) translateY(-1%)}.scene-shore .art-trail{opacity:0}
 .scene-night-wash{position:absolute;inset:0;background:linear-gradient(180deg,#061526c9 0%,#09233ebb 47%,#123754aa 68%,#0a1d30be 100%);opacity:0;transition:opacity 2.5s ease;pointer-events:none;z-index:2}.scene-shore.time-night .scene-night-wash{opacity:1}
 .scene-shore.time-night .art-shore{filter:brightness(.36) saturate(.63) hue-rotate(155deg)}
 .scene-sun{position:absolute;z-index:3;left:19%;top:43%;width:30%;aspect-ratio:1;transform:translate(-50%,50%) scale(.65);border-radius:50%;background:radial-gradient(circle,#ffeda0 0%,#ffd789a8 9%,#ffcf6550 23%,#ffa64a00 67%);opacity:0;pointer-events:none;transition:opacity 2.5s ease,transform 8s ease;filter:blur(3px)}

@@ -3,16 +3,16 @@ import {readFileSync,existsSync} from 'node:fs';
 import {LAST_STEP,PUBLIC_STAR_PAGE_SIZE,clampStep,sceneForStep,sceneProgress,
   sceneForRelayY,relayYForStep,cleanPublicStar,starPosition,publicStarsUrl} from './dist/memorial-journey-core.mjs';
 
-assert.equal(LAST_STEP,15);
+assert.equal(LAST_STEP,11);
 assert.equal(clampStep(-99),0);
-assert.equal(clampStep(500),15);
-assert.deepEqual(Array.from({length:16},(_,i)=>sceneForStep(i)),[
-  ...Array(6).fill('garden'),...Array(5).fill('trail'),...Array(5).fill('shore')]);
+assert.equal(clampStep(500),11);
+assert.deepEqual(Array.from({length:12},(_,i)=>sceneForStep(i)),[
+  ...Array(6).fill('garden'),...Array(5).fill('trail'),'shore']);
 assert.equal(sceneProgress(0),0);
 assert.ok(sceneProgress(4)>sceneProgress(3));
 assert.equal(sceneProgress(6),0);
 assert.ok(sceneProgress(10)>sceneProgress(8));
-assert.equal(sceneProgress(15),1);
+assert.equal(sceneProgress(11),1);
 for(let i=0;i<=LAST_STEP;i++)assert.equal(sceneForRelayY(relayYForStep(i)),sceneForStep(i));
 const uid='65123d76-a511-47cb-8125-7d4863eac0ab';
 assert.deepEqual(cleanPublicStar({id:uid,pet_name:' 레오 ',published_at:'2026-11-04T12:00:00Z'}),
@@ -58,4 +58,4 @@ assert.doesNotMatch(js,/service_role|hm_memorial_requests|contact_email/);
 assert.doesNotMatch(relay,/hm_memorial_public|pet_name|contact_email/);
 for(const file of ['dist/memorial/spring-garden-20261104.jpg','dist/assets/temple-trail.webp',
   'dist/assets/temple-rest.webp'])assert.ok(existsSync(file));
-console.log('MEMORIAL JOURNEY PASS: 16 progressive steps; linked 3 scenes; mobile controls; paper boat voyage; morning/night; public-approved paged stars; no personal data in realtime.');
+console.log('MEMORIAL JOURNEY PASS: 11 walking steps; linked 3 scenes; mobile controls; paper boat voyage; morning/night; public-approved paged stars; no personal data in realtime.');
