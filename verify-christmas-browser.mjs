@@ -107,5 +107,15 @@ try {
 } finally {
   try { ws?.close(); } catch {}
   try { chrome.kill('SIGTERM'); } catch {}
-  rmSync(dataDir, {recursive:true,force:true});
+  if (chrome.exitCode === null && chrome.signalCode === null) {
+    await Promise.race([
+      new Promise(resolve => chrome.once('exit', resolve)),
+      sleep(3000)
+    ]);
+  }
+  try {
+    rmSync(dataDir, {recursive:true,force:true,maxRetries:10,retryDelay:150});
+  } catch (cleanupError) {
+    console.warn('Chrome temp cleanup warning:', String(cleanupError));
+  }
 }
