@@ -8,6 +8,7 @@
   <title>레오의 작은 일상 | 별빛 추모관</title>
   <link rel="preload" href="/leo-room/room-background.webp" as="image">
   <link rel="stylesheet" href="/leo-room.css">
+  <link rel="stylesheet" href="/leo-room-fullscreen.css">
   <script src="/leo-room.js" defer></script>
 </head>
 <body>
@@ -26,7 +27,10 @@
     <section class="room-shell" aria-labelledby="room-heading">
       <div class="room-heading-row">
         <h2 id="room-heading">햇살 가득한 레오의 방</h2>
-        <span class="room-hint">바닥을 눌러 이동 · 물건을 눌러 상호작용</span>
+        <div class="room-heading-actions">
+          <span class="room-hint">바닥을 눌러 이동 · 물건을 눌러 상호작용</span>
+          <button class="room-fullscreen-entry" id="roomFullscreen" type="button" aria-controls="roomViewport" aria-label="레오의 방 전체화면 보기" aria-pressed="false">⛶ 전체화면 보기</button>
+        </div>
       </div>
       <div class="room-viewport" id="roomViewport" aria-label="레오의 인터랙티브 추억방. 좌우 스크롤하여 방 전체를 볼 수 있습니다.">
         <div class="room-world" id="roomWorld">
@@ -43,6 +47,8 @@
           </div>
           <div class="leo-hearts" id="leoHearts" aria-hidden="true">♡</div>
         </div>
+        <button class="room-fullscreen-exit" id="roomFullscreenExit" type="button" aria-label="전체화면 종료" hidden>⤢ 돌아가기</button>
+        <span class="room-rotate-hint" aria-hidden="true">휴대전화를 가로로 돌리면 방을 더 크게 볼 수 있어요.</span>
       </div>
       <p class="mobile-room-hint">작은 화면에서는 방을 좌우로 밀어 전체 공간을 살펴보세요.</p>
       <div class="room-status" id="leoStatus" aria-live="polite" role="status">레오가 햇살 아래에서 쉬고 있어요.</div>

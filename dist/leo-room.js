@@ -232,6 +232,64 @@
     const y=clamp((event.clientY-rect.top)/rect.height*STAGE_H,570,775);
     approach(x,y,()=>{setAction('sit');announce('레오가 햇살 아래에서 쉬고 있어요.');},'레오가 선택한 자리로 걸어가요.');
   });
+  const fullscreenButton=$('roomFullscreen');
+  const fullscreenExit=$('roomFullscreenExit');
+  let scrollBeforeFullscreen=0;
+  const nativeFullscreen=()=>document.fullscreenElement===viewport || document.webkitFullscreenElement===viewport;
+  const fullscreenActive=()=>nativeFullscreen() || viewport.classList.contains('is-expanded');
+  const syncFullscreenControls=()=>{
+    const active=fullscreenActive();
+    fullscreenButton.setAttribute('aria-pressed',String(active));
+    fullscreenButton.textContent=active?'⤢ 돌아가기':'⛶ 전체화면 보기';
+    fullscreenExit.hidden=!active;
+  };
+  const leaveFullscreen=async()=>{
+    try{
+      if(nativeFullscreen()){
+        if(document.exitFullscreen)await document.exitFullscreen();
+        else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+      }
+    }catch(_){/* Browsers can already have ended fullscreen on Escape. */}
+    viewport.classList.remove('is-expanded');
+    document.body.classList.remove('room-expanded');
+    try{screen.orientation?.unlock?.();}catch(_){}
+    syncFullscreenControls();
+    requestAnimationFrame(()=>{viewport.scrollLeft=scrollBeforeFullscreen;});
+  };
+  const enterFullscreen=async()=>{
+    scrollBeforeFullscreen=viewport.scrollLeft;
+    let entered=false;
+    try{
+      if(viewport.requestFullscreen){await viewport.requestFullscreen();entered=nativeFullscreen();}
+      else if(viewport.webkitRequestFullscreen){await Promise.resolve(viewport.webkitRequestFullscreen());entered=nativeFullscreen();}
+    }catch(_){/* Fall back to an in-page expanded room if fullscreen is blocked. */}
+    if(!entered){
+      viewport.classList.add('is-expanded');
+      document.body.classList.add('room-expanded');
+    }else{
+      try{await screen.orientation?.lock?.('landscape');}catch(_){}
+    }
+    viewport.scrollLeft=0;
+    syncFullscreenControls();
+  };
+  fullscreenButton.addEventListener('click',()=>{
+    if(fullscreenActive())void leaveFullscreen();
+    else void enterFullscreen();
+  });
+  fullscreenExit.addEventListener('click',()=>{void leaveFullscreen();});
+  const fullscreenChanged=()=>{
+    syncFullscreenControls();
+    if(!fullscreenActive()){
+      try{screen.orientation?.unlock?.();}catch(_){}
+      requestAnimationFrame(()=>{viewport.scrollLeft=scrollBeforeFullscreen;});
+    }
+  };
+  document.addEventListener('fullscreenchange',fullscreenChanged);
+  document.addEventListener('webkitfullscreenchange',fullscreenChanged);
+  window.addEventListener('keydown',event=>{
+    if(event.key==='Escape' && viewport.classList.contains('is-expanded'))void leaveFullscreen();
+  });
+  syncFullscreenControls();
   sprite.addEventListener('error',()=>{if(!sprite.dataset.errorShown){sprite.dataset.errorShown='1';announce('레오 이미지 연결 상태를 확인하고 있어요.');}});
   setBall();
   render();
