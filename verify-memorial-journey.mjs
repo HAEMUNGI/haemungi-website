@@ -44,6 +44,7 @@ for(const className of ['art-garden','art-trail','art-shore','scene-night-wash',
   'walk-controls','boat-field','scene-stars'])assert.match(html,new RegExp(`class="[^"]*\\b${className}\\b`));
 assert.match(css,/scene-trail \.art-trail/);
 assert.match(css,/scene-shore \.art-shore/);
+assert.match(css,/\.walk-stage\{[^}]*overflow:clip/); // A clipped stage must not become a focus-scroll container.
 assert.match(css,/@keyframes boat-voyage/);
 assert.match(css,/prefers-reduced-motion/);
 assert.match(css,/height:calc\(100dvh - 141px\)/); // Mobile buttons inside viewport.
