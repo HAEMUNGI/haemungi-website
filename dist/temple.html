@@ -26,6 +26,15 @@
     <div class="temple-shell">
       <figure class="temple-frame" id="templeFrame">
         <img class="temple-art" id="templeArt" src="/assets/temple-map.webp" width="720" height="1280" alt="벚꽃과 노을, 바다가 어우러진 파도가 들리는 법당의 전체 지도" fetchpriority="high" decoding="async">
+        <!-- Artwork stays intact; this light-only layer aligns to its 864 × 1536 coordinates. -->
+        <svg class="haesu-aura" id="haesuAura" viewBox="0 0 864 1536" preserveAspectRatio="none" aria-hidden="true" focusable="false" hidden>
+          <defs><filter id="haesuAuraSoftGlow" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="7"></feGaussianBlur></filter></defs>
+          <ellipse class="haesu-aura-haze" cx="568" cy="210" rx="146" ry="159" fill="none" stroke="#ffdd92" stroke-width="17" filter="url(#haesuAuraSoftGlow)"></ellipse>
+          <ellipse class="haesu-aura-line" cx="568" cy="210" rx="146" ry="159" fill="none" stroke="#fff3cf" stroke-width="2.2"></ellipse>
+          <ellipse class="haesu-aura-orbit" cx="568" cy="210" rx="146" ry="159" fill="none" stroke="#fff8db" stroke-width="7" stroke-linecap="round" pathLength="100"></ellipse>
+          <g class="haesu-aura-spark haesu-aura-spark-one" transform="translate(473 89)"><path d="M-12 0H12M0-12V12M-6-6L6 6M6-6L-6 6" stroke="#fff8da" stroke-width="2.4" stroke-linecap="round"></path></g>
+          <g class="haesu-aura-spark haesu-aura-spark-two" transform="translate(697 284)"><path d="M-10 0H10M0-10V10M-5-5L5 5M5-5L-5 5" stroke="#fff7d2" stroke-width="2.1" stroke-linecap="round"></path></g>
+        </svg>
         <nav id="mapHotspots" class="map-hotspots" aria-label="법당 지도 장소 선택">
           <a class="map-spot spot-haesu" href="#haesu" aria-label="해수관음상으로 이동"><span class="sr-only">해수관음상</span></a>
           <a class="map-spot spot-daewoong" href="#daewoong" aria-label="법당 대웅전으로 이동"><span class="sr-only">법당 대웅전</span></a>
