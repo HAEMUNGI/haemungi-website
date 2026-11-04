@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fff8ed">
+  <meta name="description" content="별빛 추모관 001호 레오의 작은 일상. 햇살이 비치는 방에서 레오의 모습을 떠올리고 조용히 추억하는 인터랙티브 공간입니다.">
+  <title>레오의 작은 일상 | 별빛 추모관</title>
+  <link rel="preload" href="/leo-room/room-background.webp" as="image">
+  <link rel="stylesheet" href="/leo-room.css">
+  <script src="/leo-room.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#room-controls">동작 조작으로 바로 이동</a>
+  <header class="room-topbar">
+    <a href="/memorial.html#hall" class="back-link" aria-label="별빛 추모관 안식관으로 돌아가기">← <span>별빛 추모관</span></a>
+    <span class="room-mark">✧ HAEMUNGI MEMORIES</span>
+    <a href="/#home" class="home-link">헤뭉이의 작은 세계 ↗</a>
+  </header>
+  <main class="room-main">
+    <div class="room-intro">
+      <span class="eyebrow">OUR FIRST LITTLE STAR · 001</span>
+      <h1>레오의 작은 일상 <span aria-hidden="true">🐾</span></h1>
+      <p>창가에 내려앉는 햇살처럼, 함께한 작고 따뜻한 순간을 떠올리는 방.</p>
+    </div>
+    <section class="room-shell" aria-labelledby="room-heading">
+      <div class="room-heading-row">
+        <h2 id="room-heading">햇살 가득한 레오의 방</h2>
+        <span class="room-hint">바닥을 눌러 이동 · 물건을 눌러 상호작용</span>
+      </div>
+      <div class="room-viewport" id="roomViewport" aria-label="레오의 인터랙티브 추억방. 좌우 스크롤하여 방 전체를 볼 수 있습니다.">
+        <div class="room-world" id="roomWorld">
+          <img class="room-background" src="/leo-room/room-background.webp" alt="따스한 창문 햇살, 캣타워, 포근한 침대, 장난감, 밥그릇이 마련된 레오의 방" draggable="false">
+          <div class="room-floortarget" id="roomFloor" aria-label="바닥을 선택하면 레오가 이동합니다"></div>
+          <button class="zone zone-tower" data-zone="tower" type="button" aria-label="캣타워에 올라가기"><span>캣타워</span></button>
+          <button class="zone zone-bed" data-zone="bed" type="button" aria-label="침대로 가서 잠자기"><span>포근한 잠자리</span></button>
+          <button class="zone zone-food" data-zone="food" type="button" aria-label="밥그릇으로 가기"><span>밥그릇</span></button>
+          <button class="zone zone-ball" data-zone="ball" type="button" aria-label="공을 가지고 놀기"><span>공놀이</span></button>
+          <div class="toy-ball" id="toyBall" aria-hidden="true"><img src="/leo-room/props/toy-ball.png" alt=""></div>
+          <div class="leo-character" id="leoCharacter" aria-label="움직이는 일러스트로 표현한 레오" role="img">
+            <img id="leoSprite" src="/leo-room/sprites/sit/frame_03.png" alt="" draggable="false">
+            <span class="leo-shadow" aria-hidden="true"></span>
+          </div>
+          <div class="leo-hearts" id="leoHearts" aria-hidden="true">♡</div>
+        </div>
+      </div>
+      <p class="mobile-room-hint">작은 화면에서는 방을 좌우로 밀어 전체 공간을 살펴보세요.</p>
+      <div class="room-status" id="leoStatus" aria-live="polite" role="status">레오가 햇살 아래에서 쉬고 있어요.</div>
+      <div class="room-controls" id="room-controls" aria-label="레오의 동작 조작">
+        <div class="direction-group" aria-label="이동 조작">
+          <button type="button" id="moveLeft" class="control-button arrow" aria-label="왼쪽으로 걷기">←</button>
+          <button type="button" id="moveRight" class="control-button arrow" aria-label="오른쪽으로 걷기">→</button>
+          <button type="button" id="runToggle" class="control-button">달리기 <small>OFF</small></button>
+        </div>
+        <div class="action-group">
+          <button type="button" class="control-button" data-action="sit">🐾 앉기</button>
+          <button type="button" class="control-button" data-action="sleep">☾ 잠자기</button>
+          <button type="button" class="control-button" data-action="play">◌ 공놀이</button>
+          <button type="button" class="control-button" data-action="jump">↗ 점프</button>
+          <button type="button" class="control-button warm" data-action="call">♡ 레오 부르기</button>
+        </div>
+      </div>
+      <p class="control-note">키보드 ← → 방향키로도 걸을 수 있어요. 달리기를 켜면 더 빠르게 움직입니다.</p>
+    </section>
+    <aside class="remember-note">
+      <span aria-hidden="true">✧</span>
+      <p>2025.11.10 — 2026.07.01</p>
+      <strong>짧지만 큰 행복을 준 우리 아이</strong>
+      <p>이 방의 레오는 사진과 그림을 바탕으로 만든 추억의 표현입니다. 실제 영상이나 생전 행동을 그대로 복원한 것은 아닙니다.</p>
+      <a href="/memorial.html#hall">다시 별빛 추모관으로 돌아가기 →</a>
+    </aside>
+  </main>
+  <footer>© HAEMUNGI · 일현 조성훈 <span>사랑해, 레오야.</span></footer>
+</body>
+</html>

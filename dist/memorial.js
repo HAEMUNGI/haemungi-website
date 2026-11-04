@@ -403,6 +403,14 @@
     if(src){const img=el('img','portrait');img.src=src;img.alt=pet.pet_name+'의 모습';img.loading='lazy';box.appendChild(img);}
     box.appendChild(el('p','',pet.story||''));
     if(pet.farewell){box.appendChild(el('blockquote','',pet.farewell));}
+    // The independent memory room belongs only to approved memorial 001, Leo.
+    // Never display this invitation for an unapproved application or another pet.
+    if (pet.slot_index === 1 && Object.prototype.hasOwnProperty.call(localApprovedPortraits,pet.photo_path||'')) {
+      const roomLink=el('a','leo-room-invitation');
+      roomLink.href='/leo-room.html';
+      roomLink.textContent='🐾 '+pet.pet_name+'의 작은 일상, 햇살 가득한 추억방 방문하기 →';
+      box.appendChild(roomLink);
+    }
     loadLetters(pet.id);
   }
   async function loadLetters(petId){
