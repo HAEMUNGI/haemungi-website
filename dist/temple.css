@@ -78,3 +78,27 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid #1
 @media(max-width:860px){.temple-shell{display:flex;flex-direction:column;align-items:center;padding:12px;gap:18px}.temple-frame{width:min(100%,580px)}.temple-info{width:min(100%,580px)}.temple-header{gap:5px;padding:8px 10px}.temple-wordmark{font-size:14px}.temple-back,.temple-map-link{font-size:12px;padding:9px 10px}.temple-back span{display:none}.temple-video .video-pending{font-size:clamp(9px,2.5vw,15px)}.video-play{font-size:clamp(9px,2.6vw,15px)}}
 @media(max-width:420px){.temple-header{min-height:53px}.temple-shell{padding:8px;gap:13px}.temple-frame{border-radius:12px}.temple-info{padding:20px;border-radius:16px}.place-links{grid-template-columns:1fr 1fr}.place-links a{font-size:12px;padding:10px 9px}.temple-note{margin-top:22px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Per-scene soundscapes: attribution stays visible beside each player. */
+.temple-audio{margin:20px 0 0;padding:17px 18px;border:1px solid #dfcbdf;border-radius:18px;background:linear-gradient(130deg,#fffcf5,#f7edf4);box-shadow:0 5px 20px #765b7420}
+.temple-audio-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;color:#61435f}
+.temple-audio-head strong{font-size:15px}
+.temple-audio-head span{font-size:12px;color:#8b7183}
+.temple-audio-controls{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:13px}
+.temple-audio-controls button{cursor:pointer;color:#fff;background:#745474;border:1px solid #745474;border-radius:30px;padding:11px 18px;font-weight:800;min-height:44px}
+.temple-audio-controls button[aria-pressed="true"]{background:#fffcf7;color:#745474}
+.temple-audio-controls label{font-size:12px;display:flex;align-items:center;gap:9px;color:#705c70}
+.temple-audio-controls input{width:110px;accent-color:#745474;cursor:pointer}
+.temple-audio-credit,.temple-video-credit{font-size:12px;color:#7b6375;line-height:1.75;margin:12px 0 0;overflow-wrap:anywhere}
+.temple-audio-credit a,.temple-video-credit a{color:#674378;font-weight:700;text-underline-offset:3px}
+.temple-audio-status{font-size:12px;color:#76517b;line-height:1.5;margin:5px 0 0}
+.temple-audio-status:empty{display:none}
+.temple-video-dialog{width:min(900px,calc(100vw - 16px));max-width:900px;max-height:calc(100vh - 16px);margin:auto;padding:10px;background:#fff9f1;border:1px solid #e8cdb6;border-radius:16px;color:#4a3b4a;box-shadow:0 22px 90px #11071c8c}
+.temple-video-dialog::backdrop{background:#130c1eda}
+.temple-video-dialog-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 4px 10px;font-size:14px}
+.temple-video-dialog-bar button{font-size:12px;cursor:pointer;border:1px solid #d7c0c4;color:#5e415c;background:#fff;border-radius:20px;padding:8px 12px;min-height:40px}
+.temple-video-dialog .video-mount{display:block;position:relative;width:100%;aspect-ratio:16/9;min-height:200px;background:#17111a;overflow:hidden;border-radius:6px}
+.temple-video-dialog .video-mount iframe{display:block;position:absolute;inset:0;width:100%;height:100%;border:0}
+.temple-video-dialog>p{font-size:12px;line-height:1.55;margin:9px 5px 3px}
+.temple-video-dialog>p a{color:#71476d}
+@media(max-width:420px){.temple-audio{padding:13px}.temple-audio-controls{gap:10px}.temple-audio-controls input{width:90px}.temple-video-dialog{padding:7px;border-radius:10px}}

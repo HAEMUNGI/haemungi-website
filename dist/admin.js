@@ -11,13 +11,20 @@
     ['daily-first', '첫 만남 웹툰'], ['daily-moments', '일상다반사 웹툰 · 기존 회차 수정'],
     ...Array.from({length: 9}, (_, i) => [`card-${String(i + 1).padStart(2, '0')}`, `카드뉴스 ${i + 1}장`]),
     ['music-main', '배경음악'],
+    ['music-temple-haesu', '법당 · 해수관음상 음악'],
+    ['music-temple-daewoong', '법당 · 대웅전 음악'],
+    ['music-temple-lantern', '법당 · 법등마당 음악'],
+    ['music-temple-kitchen', '법당 · 공양간 음악'],
+    ['music-temple-wish', '법당 · 발원당 음악'],
+    ['music-temple-rest', '법당 · 바다 쉼터 음악'],
+    ['music-temple-trail', '법당 · 해안 산책로 음악'],
     ['video-temple', '파도가 들리는 법당 · 대웅전 유튜브']
   ];
   const labels = new Map(slots);
   const originalSlots = new Set(slots.map(([slot]) => slot));
   const icon = {image: '▧', video: '▶', audio: '♫'};
   const safeSlot = value => /^[a-z0-9][a-z0-9-]{0,79}$/.test(value || '');
-  const mediaType = slot => slot === 'music-main' ? 'audio' : slot.startsWith('video-') ? 'video' : 'image';
+  const mediaType = slot => slot.startsWith('music-') ? 'audio' : slot.startsWith('video-') ? 'video' : 'image';
   const fileTypes = {
     'image/png': ['image', 'png'], 'image/jpeg': ['image', 'jpg'],
     'image/webp': ['image', 'webp'], 'image/avif': ['image', 'avif'],
@@ -38,7 +45,7 @@
   const batchPaths = new Map();
   const batchCaptions = new Map();
   const batchObjectUrls = new Map();
-  const groupTitles = {cardnews:'카드뉴스', webtoon:'일상다반사 웹툰', today:'헤뭉이의 오늘', goods:'굿즈', emoticon:'이모티콘', gallery:'원화 갤러리', video:'영상', base:'기본 화면·음악'};
+  const groupTitles = {cardnews:'카드뉴스', webtoon:'일상다반사 웹툰', today:'헤뭉이의 오늘', goods:'굿즈', emoticon:'이모티콘', gallery:'원화 갤러리', video:'영상', audio:'음악·사운드', base:'기본 화면'};
   function category(slot) {
     if (slot.startsWith('cardnews-') || /^card-\d{2}$/.test(slot)) return 'cardnews';
     if (slot.startsWith('webtoon-') || slot.startsWith('daily-')) return 'webtoon';
@@ -47,6 +54,7 @@
     if (slot.startsWith('emoticon-')) return 'emoticon';
     if (slot.startsWith('gallery-')) return 'gallery';
     if (slot.startsWith('video-')) return 'video';
+    if (slot.startsWith('music-')) return 'audio';
     return 'base';
   }
   const cardSeriesId = slot => /^cardnews-([a-z0-9]+)-\d{2}$/.exec(slot)?.[1] || '';
@@ -185,7 +193,7 @@
     info.append(title, detail);
     const state = document.createElement('span');
     state.className = 'item-pill' + (pending ? ' draft' : old?.is_published ? ' live' : '');
-    state.textContent = pending ? '작업 중' : old?.is_published ? '공개 중' : '기본 원화';
+    state.textContent = pending ? '작업 중' : old?.is_published ? '공개 중' : slot.startsWith('music-temple-') ? '음원 등록 대기' : '기본 원화';
     row.append(sign, info, state); row.addEventListener('click', () => { closeBatch(); selectSlot(slot); });
     return row;
   }
@@ -195,7 +203,7 @@
     $('list').replaceChildren();
     const visible = allSlots().filter(slot => {
       if (filter !== 'all' && category(slot) !== filter) return false;
-      if (originalSlots.has(slot) && !$('showBase').checked && filter !== 'base' &&
+      if (originalSlots.has(slot) && !slot.startsWith('music-temple-') && !$('showBase').checked && filter !== 'base' &&
           !live.some(row => row.slot === slot) && !drafts.some(row => row.slot === slot)) return false;
       return `${slot} ${contentName(slot)} ${groupTitles[category(slot)]}`.toLowerCase().includes(term);
     });
@@ -341,6 +349,8 @@
   async function saveDraft() {
     if (!current || !safeSlot(current)) throw new Error('먼저 위치를 선택하세요.');
     const kind = mediaType(current);
+    if (current.startsWith('music-temple-') && (!$('title').value.trim() || !$('description').value.trim()))
+      throw new Error('법당 음악은 음원 제목과 저작자·출처·이용허락 조건을 설명란에 반드시 입력해 주세요.');
     const before = drafts.find(x => x.slot === current) || live.find(x => x.slot === current);
     const linkSelected = $('sourceLink').checked;
     let source_path = null;
@@ -349,6 +359,8 @@
       if (kind === 'image') throw new Error('이미지는 파일로 올려주세요.');
       const input = $('externalUrl').value.trim();
       if (!isSecureURL(input)) throw new Error('HTTPS 주소를 입력해 주세요.');
+      if (current.startsWith('music-temple-') && !/\.(mp3|ogg|wav|m4a)(\?|#|$)/i.test(input))
+        throw new Error('법당 음악 URL은 YouTube가 아닌 직접 재생 가능한 MP3·OGG·WAV·M4A 파일 주소여야 합니다.');
       source_url = input;
     } else if ($('file').files.length > 0) {
       source_path = await upload($('file').files[0], kind);

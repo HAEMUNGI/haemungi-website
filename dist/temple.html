@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/temple.css">
   <script src="/content-config.js" defer></script>
   <script src="/temple.js" defer></script>
+  <script src="/temple-audio.js" defer></script>
 </head>
 <body>
   <a href="#temple-main" class="skip-link">본문으로 이동</a>
@@ -37,7 +38,6 @@
         <div class="temple-video" id="templeVideo" hidden aria-label="대웅전 유튜브 영상">
           <div class="video-pending" id="videoPending">명상 영상<br>준비 중</div>
           <button class="video-play" id="videoPlay" type="button" hidden aria-label="대웅전 영상 재생">▶ 영상 보기</button>
-          <div class="video-mount" id="videoMount"></div>
         </div>
         <button class="wish-hotspot" id="wishHotspot" type="button" aria-label="발원문 작성하기" hidden><span class="sr-only">발원문 작성하기</span></button>
         <button class="quiet-exit" id="quietExit" type="button" hidden>고요한 화면 나가기</button>
@@ -47,6 +47,16 @@
         <h2 id="sceneTitle">마음을 쉬어 가는 바닷가 법당</h2>
         <p id="sceneDescription">일곱 장소의 이름을 누르면 그곳으로 이동합니다. 서두르지 않아도 괜찮습니다.</p>
         <div class="scene-actions" id="sceneActions"></div>
+        <section class="temple-audio" id="templeAudio" hidden aria-label="장소별 마음쉼터 음악">
+          <div class="temple-audio-head"><strong>♫ 이곳의 마음 소리</strong><span id="templeAudioMood"></span></div>
+          <div class="temple-audio-controls">
+            <button id="templeAudioToggle" type="button" aria-pressed="false">▶ 소리 듣기</button>
+            <label for="templeAudioVolume">소리 크기 <input id="templeAudioVolume" type="range" min="0" max="100" value="35" step="5"></label>
+          </div>
+          <p class="temple-audio-credit" id="templeAudioCredit"></p>
+          <p class="temple-audio-status" id="templeAudioStatus" role="status"></p>
+        </section>
+        <p class="temple-video-credit" id="templeVideoCredit" hidden>대웅전 영상: <a id="templeVideoSource" href="https://youtu.be/hP-8B7sHJt4" target="_blank" rel="noopener noreferrer">YouTube 원본·채널 보기 ↗</a>. 영상·음성 저작권은 원 제작자와 권리자에게 있습니다. 이곳은 원본 영상을 재업로드하지 않습니다.</p>
         <div class="temple-saved" id="wishSaved" hidden>
           <h3>이 기기에 간직한 발원문</h3>
           <ul id="wishSavedList"></ul>
@@ -60,6 +70,11 @@
       </section>
     </div>
   </main>
+  <dialog class="temple-video-dialog" id="templeVideoDialog" aria-label="대웅전 명상 영상">
+    <div class="temple-video-dialog-bar"><strong>대웅전 · 유튜브 영상</strong><button id="templeVideoClose" type="button" aria-label="영상 닫기">영상 닫기 ×</button></div>
+    <div class="video-mount" id="videoMount"></div>
+    <p>영상은 YouTube의 정식 플레이어로 재생됩니다. <a id="templeVideoDialogSource" href="https://youtu.be/hP-8B7sHJt4" target="_blank" rel="noopener noreferrer">원본·제작 채널 보기 ↗</a></p>
+  </dialog>
   <dialog class="wish-dialog" id="wishDialog" aria-labelledby="wishDialogTitle">
     <form id="wishForm">
       <button class="dialog-close" id="wishClose" type="button" aria-label="발원문 닫기">×</button>
