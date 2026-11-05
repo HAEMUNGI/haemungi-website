@@ -102,13 +102,22 @@ try {
         || !(last.naturalHeight >= 1200) || !last.rendered) {
       throw new Error('Browser image QA FAIL for ' + id + ': ' + JSON.stringify(last));
     }
-    const visual = await cdp('Runtime.evaluate', {expression: `(() => {
-      const img = document.querySelector('#sceneImage'), b = img.getBoundingClientRect();
-      return {width:b.width,height:b.height,opacity:getComputedStyle(img).opacity,
-        bg:getComputedStyle(document.body).backgroundImage,docWidth:document.documentElement.scrollWidth,
-        viewport:innerWidth,statusHidden:document.querySelector('#sceneStatus').hidden};
-    })()`,returnByValue:true});
-    const v=visual?.result?.value;
+    // Image decoding can finish before its crossfade completes. Wait briefly for
+    // visual stability instead of failing while the intentional fade is active.
+    let v;
+    const visualDeadline = Date.now() + 3000;
+    do {
+      const visual = await cdp('Runtime.evaluate', {expression: `(() => {
+        const img = document.querySelector('#sceneImage'), b = img.getBoundingClientRect();
+        return {width:b.width,height:b.height,opacity:getComputedStyle(img).opacity,
+          bg:getComputedStyle(document.body).backgroundImage,docWidth:document.documentElement.scrollWidth,
+          viewport:innerWidth,statusHidden:document.querySelector('#sceneStatus').hidden};
+      })()`,returnByValue:true});
+      v=visual?.result?.value;
+      if (v && v.width >= 280 && v.height >= 400 && Number(v.opacity) >= 0.9 &&
+          v.statusHidden && v.docWidth <= v.viewport + 2) break;
+      await sleep(120);
+    } while (Date.now() < visualDeadline);
     if (!v || v.width < 280 || v.height < 400 || Number(v.opacity) < 0.9 || !v.statusHidden || v.docWidth > v.viewport + 2)
       throw new Error('Visible mobile image or layout failed '+id+': '+JSON.stringify(v));
     console.log('Browser warm JPEG QA PASS',id,last.naturalWidth + 'x' + last.naturalHeight);
