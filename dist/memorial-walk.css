@@ -104,7 +104,7 @@ footer{text-align:center;border-top:1px solid #eadac9;padding:20px;font-size:10p
 
 /* The supplied artworks are portrait (roughly 9:16). Never crop to fill a wide box. */
 .walk-stage{
-  width:min(100%,calc(56.25dvh - 87px),512px);
+  width:min(100%,calc(56.25dvh - 115px),512px);
   height:auto;min-height:0;aspect-ratio:9 / 16;
 }
 .walk-stage.scene-garden{background:#dce8d3}
@@ -125,7 +125,7 @@ footer{text-align:center;border-top:1px solid #eadac9;padding:20px;font-size:10p
   100%{left:50%;top:var(--boat-horizon);transform:translate(-50%,0) scale(.025);opacity:0}
 }
 @media(max-width:820px){
-  .walk-stage{width:min(100%,calc(56.25dvh - 87px),512px);height:auto;min-height:0}
+  .walk-stage{width:min(100%,calc(56.25dvh - 115px),512px);height:auto;min-height:0}
 }
 @media(max-width:460px){
   .walk-stage{width:min(100%,calc(56.25dvh - 75px));height:auto;min-height:0}
