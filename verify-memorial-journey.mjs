@@ -54,17 +54,20 @@ for(const id of ['walkStage','shoreActions','floatBoat',
   'morningButton','nightButton','starSky','starActions','nextStars','boatField',
   'walkJoystick','joystickThumb'])
   assert.match(html,new RegExp(`id="${id}"`));
-for(const className of ['art-garden','art-trail','art-shore','scene-night-wash','scene-sun',
+for(const className of ['art-garden','art-trail','art-shore','art-shore-night',
   'walk-joystick','boat-field','scene-stars'])assert.match(html,new RegExp(`class="[^"]*\\b${className}\\b`));
 assert.match(css,/scene-trail \.art-trail/);
-assert.match(css,/scene-shore \.art-shore/);
+assert.match(css,/scene-shore\.time-morning \.art-shore/);
+assert.match(css,/scene-shore\.time-night \.art-shore-night/);
+assert.match(css,/background-size:contain/);
+assert.doesNotMatch(css,/background-size:cover/);
 assert.match(css,/\.walk-stage\{[^}]*overflow:clip/); // A clipped stage must not become a focus-scroll container.
 assert.match(css,/@keyframes boat-voyage/);
 assert.match(css,/prefers-reduced-motion/);
 assert.doesNotMatch(html,/id="walkForward"|id="walkBack"/); // No next/back buttons.
 assert.match(css,/\.walk-scene-wrap\.has-shore \.walk-stage/);
 assert.match(css,/\.shore-actions\{position:static/); // Shore actions live below the scenery.
-assert.match(css,/height:calc\(100dvh - 214px\)/); // Coast actions reserve phone space.
+assert.match(css,/56\.25dvh - 123px/); // Coast actions reserve phone space without cropping artwork.
 assert.match(js,/joystick\.addEventListener\('pointerdown'/);
 assert.match(js,/advancePose\(/);
 assert.match(js,/tapDestination\(/);
@@ -78,5 +81,6 @@ assert.match(js,/\.textContent=row\.name/);
 assert.doesNotMatch(js,/service_role|hm_memorial_requests|contact_email/);
 assert.doesNotMatch(relay,/hm_memorial_public|pet_name|contact_email/);
 for(const file of ['dist/memorial/spring-garden-20261104.jpg','dist/assets/temple-trail.webp',
-  'dist/assets/temple-rest.webp'])assert.ok(existsSync(file));
+  'dist/assets/temple-rest.webp',...['garden','morning','night'].map(name=>
+    `dist/assets/memorial-walk-${name}-20261105.webp`)])assert.ok(existsSync(file));
 console.log('MEMORIAL JOURNEY PASS: 11 walking steps; linked 3 scenes; mobile controls; paper boat voyage; morning/night; public-approved paged stars; no personal data in realtime.');
