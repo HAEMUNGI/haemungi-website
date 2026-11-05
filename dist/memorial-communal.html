@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fff4e8">
+  <meta name="description" content="별빛 공동 추모홀. 함께 기억하고, 공개된 별을 찾고, 10분간 임시 제례실에서 인사할 수 있습니다.">
+  <title>별빛 공동 추모홀 | HAEMUNGI</title>
+  <link rel="preload" as="image" href="/memorial/communal-hall-poster.webp">
+  <link rel="stylesheet" href="/memorial-communal.css?v=20261106-hall1">
+  <script src="/content-config.js" defer></script>
+  <script type="module" src="/memorial-communal.js?v=20261106-hall1"></script>
+</head>
+<body>
+  <a class="skip-link" href="#hallMain">본문으로 이동</a>
+  <header class="communal-topbar"><a href="/memorial.html#entrance">← 별빛 추모관</a><div>✧ 별빛 공동 추모홀 <small>STARLIGHT COMMUNAL MEMORIAL</small></div><a href="/memorial-archive.html">별들의 기록 ↗</a></header>
+  <main id="hallMain" class="communal-main">
+    <section id="hallView" aria-labelledby="hallTitle">
+      <div class="communal-heading"><p>함께 기억하는 따뜻한 공간</p><h1 id="hallTitle">별빛 공동 추모홀</h1><p>한 사람의 기억이 모여, 오래 빛나는 별이 됩니다.</p></div>
+      <div class="hall-scene" id="hallScene" aria-label="무지개 천장과 꽃들, 반려동물 공동 제단과 추모 메시지 키오스크가 있는 홀">
+        <img class="hall-poster" id="hallPoster" src="/memorial/communal-hall-poster.webp" alt="무지개 천장 아래 밝은 공동 추모 제단과 오른쪽 추모 메시지 키오스크">
+        <video id="hallTour" src="/memorial/communal-hall.mp4" playsinline preload="metadata" poster="/memorial/communal-hall-poster.webp" aria-label="별빛 공동 추모홀 10초 공간 투어 영상" hidden></video>
+        <div class="hall-entry" id="hallEntry"><div><span>✧ WELCOME</span><p>따뜻한 기억의 홀로 들어오세요.</p><button type="button" id="enterHall">공동 추모홀 입장 · 10초 투어</button></div></div>
+        <button type="button" class="skip-tour" id="skipTour" hidden>영상 건너뛰기</button>
+        <button type="button" class="unmute-tour" id="unmuteTour" hidden>영상 소리 켜기</button>
+        <button type="button" class="kiosk-hotspot" id="kioskHotspot" aria-label="공동 추모홀 키오스크 열기" hidden><span>키오스크 열기</span></button>
+      </div>
+      <div class="hall-actions" id="hallActions" hidden><p>사진 속 오른쪽 키오스크를 눌러 추모 메시지를 남기거나 소중한 아이를 찾아보세요.</p><button type="button" id="openKiosk">✧ 공동 추모 키오스크 열기</button><button type="button" class="light-button" id="replayTour">10초 공간 다시 보기</button></div>
+    </section>
+    <section id="ritualView" hidden aria-labelledby="ritualTitle">
+      <div class="communal-heading"><p>이 순간을 위해 준비한 작은 공간</p><h1 id="ritualTitle">임시 제례실</h1><p id="ritualSubtitle">소중한 아이를 기억하는 10분</p></div>
+      <div class="temporary-scene" id="temporaryScene">
+        <img src="/memorial/ritual-last.jpg" alt="따뜻한 원목으로 꾸며진 별빛 제례실" class="temporary-background">
+        <div class="temporary-monitor" id="temporaryMonitor"><img id="temporaryPetPhoto" alt="선택한 아이의 추모 사진"><div class="temporary-photo-meta"><strong id="temporaryPetName"></strong><small id="temporaryPetDates"></small></div></div>
+      </div>
+      <div class="ritual-controls"><p class="timer-label">남은 이용 시간 <strong id="ritualRemaining" role="timer">10:00</strong></p><p id="ritualStatus" role="status">10분 후 자동으로 이용이 종료됩니다.</p><button type="button" id="endRitual" class="light-button">제례실 이용 마치기</button><a href="/memorial.html#entrance" class="light-button">추모관으로 돌아가기</a></div>
+    </section>
+  </main>
+
+  <dialog id="kioskDialog" class="kiosk-dialog" aria-labelledby="kioskHeading">
+    <div class="kiosk-shell"><header class="kiosk-header"><div><small>STARLIGHT MEMORY KIOSK</small><h2 id="kioskHeading">공동 추모 키오스크</h2></div><button type="button" id="closeKiosk" aria-label="키오스크 닫기">✕</button></header>
+      <nav class="kiosk-tabs" aria-label="키오스크 기능 선택"><button type="button" data-kiosk-tab="message" aria-selected="true">추모 메시지</button><button type="button" data-kiosk-tab="search" aria-selected="false">아이 찾기</button><button type="button" data-kiosk-tab="reservation" aria-selected="false">임시 제례실</button></nav>
+      <section data-kiosk-panel="message"><h3>함께 전하는 그리운 마음</h3><p class="kiosk-help">추모 메시지는 관리자 확인 후 공동 추모홀에 공개됩니다. 하루 최대 3회 접수할 수 있습니다.</p>
+        <div id="hallMessageList" class="message-list" aria-live="polite"></div>
+        <form id="hallMessageForm"><label>남기는 이름<input name="alias" maxlength="30" required placeholder="예: 작은 별을 기억하며" autocomplete="off"></label><label>추모 메시지<textarea name="body" maxlength="300" rows="3" required placeholder="우리의 소중한 친구들에게 전하고 싶은 말을 적어주세요."></textarea></label><label class="honeypot" aria-hidden="true">홈페이지<input name="homepage" autocomplete="off" tabindex="-1"></label><button type="submit">✧ 추모 메시지 남기기</button><p id="hallMessageStatus" role="status"></p></form>
+      </section>
+      <section data-kiosk-panel="search" hidden><h3>소중한 아이를 찾아요</h3><p class="kiosk-help">관리자가 공개를 승인한 기록만 검색됩니다. 아이의 사진을 눌러 선택해 주세요.</p>
+        <form id="petSearchForm" class="search-form"><label>아이 이름<input id="petSearchInput" name="name" maxlength="60" required placeholder="이름을 입력하세요"></label><button type="submit">검색</button></form>
+        <p id="petSearchStatus" role="status"></p><div id="petSearchResults" class="pet-results"></div>
+      </section>
+      <section data-kiosk-panel="reservation" hidden><h3>10분 임시 제례실 예약</h3><p class="kiosk-help">별들의 기록에는 있지만 전용 제례실이 없는 아이를 위한 공간입니다. 하나의 방을 함께 사용하며, 서버 기준 최대 10분 후 자동 종료됩니다.</p><div id="reservationChoice" class="reservation-choice">먼저 ‘아이 찾기’에서 사진을 선택해 주세요.</div><p id="roomAvailability" role="status"></p><button type="button" id="reserveRoom" disabled>선택한 아이와 10분 보내기</button><button type="button" class="light-button" id="checkAvailability">이용 가능 여부 새로고침</button><p id="reservationStatus" role="status"></p></section>
+    </div>
+  </dialog>
+  <footer>© HAEMUNGI · 일현 조성훈 <span>모든 기억에 존중과 따뜻함을.</span></footer>
+</body>
+</html>

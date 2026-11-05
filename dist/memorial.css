@@ -66,6 +66,10 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .stage-screen{min-height:calc(100svh - 112px)}
 .film-frame{width:min(100%,480px,55svh)}
 @media(max-width:540px){.film-frame{width:min(100%,55svh)}}
+/* The sixth destination remains reachable on small-height mobile browsers. */
+#entranceOptions{max-height:82%;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#entranceOptions .choice{padding:9px 12px}
+#entranceOptions .choice>span{font-size:clamp(16px,3.9vw,20px)}
 
 /* Full-size alpha-cutout shop merchandise; each gift touches a real altar surface. */
 .altar-gifts{position:absolute;inset:0;z-index:2;pointer-events:none}

@@ -46,6 +46,7 @@ jobs:
           node verify-memorial-walk.mjs
           node verify-memorial-journey.mjs
           node verify-memorial-store.mjs
+          node verify-memorial-communal.mjs
           node verify-temple.mjs
           node verify-christmas.mjs
 

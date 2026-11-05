@@ -4,7 +4,7 @@
   const $=id=>document.getElementById(id);
   let session=null;let busy=false;
   let archivePage=0,archiveFilter='';
-  let requestPage=0,letterPage=0;
+  let requestPage=0,letterPage=0,hallMessagePage=0;
   function notice(txt,error=false){$('notice').textContent=txt;$('notice').style.color=error?'#ffb6a5':'#e9d5b7';}
   function authView(text){$('authMessage').hidden=false;$('authMessage').querySelector('p').textContent=text;$('adminWorkspace').hidden=true;}
   function persist(){if(session)sessionStorage.setItem('hm-owner-session-v1',JSON.stringify(session));}
@@ -619,14 +619,23 @@
     card.appendChild(button('반려','danger',()=>withBusy(()=>patch('hm_memorial_letters',row.id,{status:'rejected'}))));
     return card;
   }
+  function renderHallMessage(row){
+    const card=elem('article','request-card');
+    card.appendChild(elem('p','meta',new Date(row.created_at).toLocaleString('ko-KR')+' · '+row.author_alias));
+    card.appendChild(elem('p','',row.body));
+    card.appendChild(button('공동 추모홀에 공개','',()=>withBusy(()=>patch('hm_memorial_hall_messages',row.id,{status:'approved'}))));
+    card.appendChild(button('반려','danger',()=>withBusy(()=>patch('hm_memorial_hall_messages',row.id,{status:'rejected'}))));
+    return card;
+  }
   async function reload(){
-    const [requests,published,archive,letters,scenes,offerings]=await Promise.all([
+    const [requests,published,archive,letters,scenes,offerings,hallMessages]=await Promise.all([
       request(rest('hm_memorial_requests','?select=*&status=eq.pending&order=created_at.asc&limit=25&offset='+(requestPage*24))),
       request(rest('hm_memorial_public','?select=*&slot_index=not.is.null&order=slot_index.asc&limit=12')),
       request(rest('hm_memorial_public',archiveQueryString())),
       request(rest('hm_memorial_letters','?select=*&status=eq.pending&order=created_at.asc&limit=25&offset='+(letterPage*24))),
       request(rest('hm_memorial_scene_settings','?select=*&order=scene_key.asc')),
-      request(rest('hm_memorial_offerings','?select=memorial_id,flower_kind,created_at&order=created_at.desc&limit=100'))
+      request(rest('hm_memorial_offerings','?select=memorial_id,flower_kind,created_at&order=created_at.desc&limit=100')),
+      request(rest('hm_memorial_hall_messages','?select=id,author_alias,body,created_at&status=eq.pending&order=created_at.asc&limit=25&offset='+(hallMessagePage*24)))
     ]);
     renderSceneSettings(scenes);
     const offeringBox=$('offeringAdminList');offeringBox.replaceChildren();
@@ -653,6 +662,12 @@
       if(!rows.length)box.appendChild(elem('p','empty','해당 항목이 없습니다.'));
       rows.forEach(row=>box.appendChild(render(row)));
     }
+    $('hallMessageAdminPage').textContent=(hallMessagePage+1)+'쪽 · 최대 24건씩';
+    $('hallMessageAdminPrev').disabled=hallMessagePage===0;
+    $('hallMessageAdminNext').disabled=hallMessages.length<=24;
+    const hallBox=$('hallMessageAdminList');hallBox.replaceChildren();
+    if(!hallMessages.length)hallBox.appendChild(elem('p','empty','승인 대기 메시지가 없습니다.'));
+    hallMessages.slice(0,24).forEach(row=>hallBox.appendChild(renderHallMessage(row)));
   }
   $('archiveAdminSearch').addEventListener('submit',event=>{
     event.preventDefault();
@@ -680,6 +695,12 @@
       withBusy(async()=>{});
     });
   }
+  $('hallMessageAdminPrev').addEventListener('click',()=>{
+    if(hallMessagePage>0){hallMessagePage--;withBusy(async()=>{});}
+  });
+  $('hallMessageAdminNext').addEventListener('click',()=>{
+    if(!$('hallMessageAdminNext').disabled){hallMessagePage++;withBusy(async()=>{});}
+  });
   $('reload').addEventListener('click',()=>withBusy(async()=>{notice('목록을 새로고침했습니다.');}));
   async function init(){
     try{
