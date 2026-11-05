@@ -1,5 +1,5 @@
 import { spawn, execFileSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -12,11 +12,13 @@ for (const candidate of [process.env.CHROME_BIN, 'google-chrome', 'chromium', 'c
 if (!browser) throw new Error('Chrome/Chromium is required for real browser validation.');
 
 const dataDir = mkdtempSync(join(tmpdir(), 'haemungi-chrome-'));
-const port = 19381;
+// Let Chromium choose an unused port. A fixed CDP port can collide with
+// another process on shared CI runners and leave Chrome alive but unreachable.
+const devtoolsPortFile = join(dataDir, 'DevToolsActivePort');
 const chrome = spawn(browser, [
   '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
   '--no-first-run', '--no-default-browser-check', '--remote-allow-origins=*',
-  '--remote-debugging-port=' + port, '--user-data-dir=' + dataDir, 'about:blank'
+  '--remote-debugging-port=0', '--user-data-dir=' + dataDir, 'about:blank'
 ], { stdio: 'ignore' });
 
 let ws;
@@ -24,8 +26,12 @@ const pending = new Map();
 let serial = 0;
 try {
   let pages;
-  for (let attempt = 0; attempt < 60; attempt++) {
+  for (let attempt = 0; attempt < 120; attempt++) {
     try {
+      if (!existsSync(devtoolsPortFile)) throw new Error('waiting for DevToolsActivePort');
+      const port = Number(readFileSync(devtoolsPortFile, 'utf8').split('\n')[0]);
+      if (!Number.isInteger(port) || port < 1 || port > 65535)
+        throw new Error('invalid DevToolsActivePort');
       const response = await fetch('http://127.0.0.1:' + port + '/json');
       if (response.ok) {
         pages = await response.json();
@@ -36,7 +42,9 @@ try {
     await sleep(200);
   }
   const target = pages?.find(p => p.type === 'page' && p.webSocketDebuggerUrl);
-  if (!target) throw new Error('Chrome DevTools endpoint was unavailable.');
+  if (!target) throw new Error('Chrome DevTools endpoint was unavailable (dynamic port): ' +
+    JSON.stringify({chromePid:chrome.pid,exitCode:chrome.exitCode,
+      portFileExists:existsSync(devtoolsPortFile)}));
   ws = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolve, reject) => {
     ws.addEventListener('open', resolve, {once:true});
