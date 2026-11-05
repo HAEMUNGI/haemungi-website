@@ -207,8 +207,12 @@ function motionFrame(stamp){
   previousFrame=stamp;
   const next=advancePose({distance,lane},axes(),dt);
   setPose(next);
-  if(tapTarget&&Math.abs(distance-tapTarget.distance)<.025&&Math.abs(lane-tapTarget.lane)<.01)
+  if(tapTarget&&Math.abs(distance-tapTarget.distance)<.025&&Math.abs(lane-tapTarget.lane)<.01){
+    // Land exactly on the tap destination. Otherwise the final .025 units
+    // can be discarded before the 11-unit shore scene threshold is crossed.
+    setPose(tapTarget);
     tapTarget=null;
+  }
   if(hasMotion())frameId=requestAnimationFrame(motionFrame);
   else{stage.classList.remove('is-walking');previousFrame=0;}
 }
