@@ -1,4 +1,4 @@
-// Local-only virtual gifts. No checkout, memorial record, or private visitor data.
+// Free virtual goods. Personal baskets stay local; confirmed altar placements are public.
 export const STORE_PRODUCTS = Object.freeze([
   {id:'bouquet',name:'추모 꽃다발',category:'꽃',description:'정성스럽게 묶은 꽃으로 소중한 마음을 전해요.',x:3,y:30,w:32,h:24},
   {id:'flower-basket',name:'꽃바구니',category:'꽃',description:'화사한 꽃바구니를 추억의 선물로 골라요.',x:2,y:55,w:30,h:24},
@@ -11,6 +11,7 @@ export const STORE_PRODUCTS = Object.freeze([
 ]);
 export const MAX_ITEM_QUANTITY = 20;
 export const MAX_GIFT_BATCHES = 12;
+export const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const productIds = new Set(STORE_PRODUCTS.map(item=>item.id));
 export function cleanQuantity(value){
   const num = Number(value);
@@ -42,6 +43,14 @@ export function cleanGifts(raw){
   return raw.slice(0,MAX_GIFT_BATCHES).flatMap(batch=>{
     if(!batch || !Number.isFinite(Date.parse(batch.createdAt)))return [];
     const items=cleanCart(batch.items);
-    return cartCount(items)>0?[{createdAt:new Date(batch.createdAt).toISOString(),items}]:[];
+    if(cartCount(items)===0)return [];
+    const clean={createdAt:new Date(batch.createdAt).toISOString(),items};
+    if(UUID_PATTERN.test(batch.batchId||''))clean.batchId=batch.batchId;
+    if(UUID_PATTERN.test(batch.placedPetId||'') && Number.isFinite(Date.parse(batch.placedAt))){
+      clean.placedPetId=batch.placedPetId;
+      clean.placedAt=new Date(batch.placedAt).toISOString();
+      clean.placedPetName=String(batch.placedPetName||'').slice(0,60);
+    }
+    return [clean];
   });
 }

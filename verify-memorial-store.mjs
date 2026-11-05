@@ -36,6 +36,13 @@ const batch=makeGiftBatch({'bouquet':2},Date.parse('2026-11-05T00:00:00.000Z'));
 assert.equal(batch.items.bouquet,2);
 assert.equal(cleanGifts([batch])[0].items.bouquet,2);
 assert.deepEqual(cleanGifts([{createdAt:'bad',items:{bouquet:1}}]),[]);
+const batchId='12345678-1234-4123-8123-123456789abc';
+const petId='12345678-1234-4123-8123-abcdeffedcba';
+const placed=cleanGifts([{...batch,batchId,placedPetId:petId,placedPetName:'레오',placedAt:'2026-11-05T12:00:00Z'}])[0];
+assert.equal(placed.batchId,batchId);
+assert.equal(placed.placedPetId,petId);
+assert.equal(placed.placedPetName,'레오');
+assert.equal(cleanGifts([{...batch,placedPetId:'not-a-uuid',placedAt:placed.placedAt}])[0].placedPetId,undefined);
 
 const html=readFileSync('dist/memorial-store.html','utf8');
 const js=readFileSync('dist/memorial-store.js','utf8');
@@ -56,7 +63,27 @@ assert.match(js,/element\('button'/); // No opaque click-only bitmap.
 assert.match(css,/\.store-hotspot:focus-visible/);
 assert.match(css,/aspect-ratio:9\/16/);
 assert.match(css,/prefers-reduced-motion/);
+assert.doesNotMatch(css,/100dvh/);
+assert.match(css,/100svh/);
+assert.match(js,/제례실에 선물 놓기/);
 assert.doesNotMatch(js,/innerHTML|service_role|hm_memorial_requests|contact_email/);
 for(const page of ['dist/memorial.html','dist/memorial-walk.html'])
   assert.match(readFileSync(page,'utf8'),/href="\/memorial-store\.html"/);
+const ritualHtml=readFileSync('dist/memorial.html','utf8');
+const ritualJs=readFileSync('dist/memorial-gifts.js','utf8');
+const memorialJs=readFileSync('dist/memorial.js','utf8');
+const memorialCss=readFileSync('dist/memorial.css','utf8');
+const migration=readFileSync('013_haemungi_memorial_store_gifts.sql','utf8');
+for(const id of ['altarGifts','ritualStoreGifts','pendingStoreGifts','ritualGiftStatus','ritualRecentGifts'])
+  assert.match(ritualHtml,new RegExp(`id="${id}"`));
+assert.match(ritualJs,/hm_memorial_store_gifts/);
+assert.match(ritualJs,/memorial_id:recipient\.id/);
+assert.match(ritualJs,/gift_batch_id:batch\.batchId/);
+assert.match(ritualJs,/renderPending\(\);loadPlaced\(\)/);
+assert.match(memorialJs,/haemungi:ritual-pet-changed/);
+assert.match(memorialCss,/\.altar-gifts\{/);
+assert.match(migration,/enable row level security/);
+assert.match(migration,/for insert to anon,authenticated/);
+assert.doesNotMatch(migration,/drop table|truncate|delete from|alter table public\.hm_memorial_public/);
 console.log('MEMORIAL STORE PASS: original film and JPEGs, 8 hotspots, virtual cart/gift box, accessible choices, memorial navigation.');
+console.log('RITUAL GIFTS PASS: mobile steady sizing, saved gifts preserved, named recipient, guarded server placement, bench art and RLS.');

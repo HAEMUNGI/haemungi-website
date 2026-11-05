@@ -92,7 +92,7 @@
       document.querySelector('[data-skip="' + name + '"]').hidden = true;
       if (name === 'entrance') $('entranceOptions').hidden = true;
       if (name === 'hall') { $('hallSlots').hidden = true; $('hallActions').hidden = true; }
-      if (name === 'ritual') { $('memorialMonitor').hidden = true; $('altarFlowers').hidden = true; $('ritualActions').hidden = true; }
+      if (name === 'ritual') { $('memorialMonitor').hidden = true; $('altarFlowers').hidden = true; $('altarGifts').hidden = true; $('ritualActions').hidden = true; }
     }
     if (route.name === 'story') showStory(route.id);
     if (route.name === 'ritual') refreshPetList();
@@ -116,7 +116,7 @@
       $('hallSlots').hidden = false; $('hallActions').hidden = false; renderSlots();
     }
     if (name === 'ritual') {
-      $('memorialMonitor').hidden = false; $('altarFlowers').hidden = false; $('ritualActions').hidden = false; refreshPetList();
+      $('memorialMonitor').hidden = false; $('altarFlowers').hidden = false; $('altarGifts').hidden = false; $('ritualActions').hidden = false; refreshPetList();
     }
   }
   Object.entries(videos).forEach(([name,v]) => {
@@ -328,6 +328,9 @@
     $('offeringPanel').hidden = !selectedPet;
     updateFlowerButtons();
     refreshOfferings();
+    document.dispatchEvent(new CustomEvent('haemungi:ritual-pet-changed',{
+      detail:selectedPet?{id:selectedPet.id,name:selectedPet.pet_name}:null
+    }));
   }
 
   function offeringDayKey(petId) {

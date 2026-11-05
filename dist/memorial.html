@@ -7,9 +7,10 @@
   <meta name="description" content="별빛 추모관. 별이 된 소중한 친구들의 이름과 기억이 머무르는 공간입니다.">
   <title>별빛 추모관 | 헤뭉이의 작은 세계</title>
   <link rel="preload" as="image" href="/memorial/entrance-daylight.png">
-  <link rel="stylesheet" href="/memorial.css">
+  <link rel="stylesheet" href="/memorial.css?v=20261105-gifts1">
   <script src="/content-config.js" defer></script>
   <script src="/memorial.js" defer></script>
+  <script type="module" src="/memorial-gifts.js?v=20261105-gifts1"></script>
 </head>
 <body>
 <a class="skip-link" href="#memorial-main">본문으로 이동</a>
@@ -56,6 +57,7 @@
       <img id="ritualStill" src="/memorial/ritual-last.jpg" alt="꽃과 은은한 조명이 놓인 제례실, 비어 있는 검은 추모 모니터" hidden>
       <div class="memorial-monitor" id="memorialMonitor" hidden></div>
       <div class="altar-flowers" id="altarFlowers" aria-hidden="true" hidden></div>
+      <div class="altar-gifts" id="altarGifts" aria-hidden="true" hidden></div>
       <div class="film-cover" id="ritualCover"><div class="cover-text"><p>조용한 추모의 시간</p><button id="playRitual" class="primary-btn" type="button">제례실 입장</button></div></div>
       <button class="skip-film" data-skip="ritual" type="button" hidden>영상 건너뛰기</button>
     </div>
@@ -70,6 +72,14 @@
         </div>
         <p class="offering-status" id="offeringStatus" role="status" aria-live="polite"></p>
       </div>
+      <section id="ritualStoreGifts" class="flower-offering ritual-gift-panel" aria-label="편의점 선물 배치" hidden>
+        <h2>선물을 제단에 놓아요</h2>
+        <p id="giftRecipientGuide">친구를 선택하면 준비한 선물을 이곳에 놓을 수 있습니다.</p>
+        <div id="pendingStoreGifts" class="pending-store-gifts"></div>
+        <p id="ritualGiftStatus" class="offering-status" role="status" aria-live="polite"></p>
+        <div id="ritualRecentGifts" class="ritual-recent-gifts" aria-live="polite"></div>
+        <a class="gift-shop-return" href="/memorial-store.html">✿ 별빛 펫 편의점에서 선물 고르기 →</a>
+      </section>
       <div class="action-row"><button class="quiet-btn" type="button" data-go="hall">안식관으로 돌아가기</button><button class="quiet-btn" id="goSelectedStory" type="button" hidden>추억 읽기 →</button></div></div>
   </section>
   <section class="page-screen" data-screen="story" hidden>

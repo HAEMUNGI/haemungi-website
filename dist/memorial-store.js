@@ -134,7 +134,15 @@ function renderGifts(){
     const heading=element('strong',null,`✿ ${new Date(batch.createdAt).toLocaleDateString('ko-KR')}에 담은 선물`);
     const contents=element('p',null,STORE_PRODUCTS.filter(item=>batch.items[item.id])
       .map(item=>`${item.name} ${batch.items[item.id]}개`).join(' · '));
-    row.append(heading,contents);list.append(row);
+    row.append(heading,contents);
+    if(batch.placedAt){
+      row.append(element('span','gift-placed',`✓ ${batch.placedPetName||'선택한 친구'}의 제례실에 놓았습니다.`));
+    }else{
+      const link=element('a','gift-place-link','제례실에 선물 놓기 →');
+      link.href='/memorial.html#ritual';
+      row.append(link);
+    }
+    list.append(row);
   }
 }
 
@@ -164,7 +172,7 @@ $('saveGift').addEventListener('click',()=>{
   if(!batch)return;
   gifts=cleanGifts([batch,...gifts]).slice(0,MAX_GIFT_BATCHES);
   cart={};save();renderCart();renderGifts();
-  announce('선물을 내 가상 선물함에 보관했습니다. 이 브라우저에서 다시 확인할 수 있어요.');
+  announce('선물함에 담았습니다. 아래 ‘제례실에 선물 놓기’를 눌러 친구에게 전달하세요.');
 });
 
 readSaved();renderCatalogue();renderCart();renderGifts();
