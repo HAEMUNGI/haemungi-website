@@ -68,6 +68,7 @@ assert.match(css,/height:calc\(100dvh - 214px\)/); // Coast actions reserve phon
 assert.match(js,/joystick\.addEventListener\('pointerdown'/);
 assert.match(js,/advancePose\(/);
 assert.match(js,/tapDestination\(/);
+assert.match(js,/setPose\(tapTarget\);\s*tapTarget=null;/); // Touch walking must reach the shore boundary exactly.
 assert.match(js,/scene-shore/);
 assert.match(js,/relay\?\.sendMoment\('boat'\)/);
 assert.match(relay,/onMoment/);
