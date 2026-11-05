@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {LAST_STEP,PUBLIC_STAR_PAGE_SIZE,clampStep,sceneForStep,sceneProgress,
   sceneForRelayY,relayYForStep,cleanPublicStar,starPosition,publicStarsUrl} from './dist/memorial-journey-core.mjs';
-import {advancePose,movementScene,movementSceneProgress,tapDestination} from './dist/memorial-walk-motion.mjs';
+import {advancePose,advanceShorePose,movementScene,movementSceneProgress,
+  tapDestination,shoreTapDestination,projectedWalkPosition,pathPoint,shorePoint} from './dist/memorial-walk-motion.mjs';
 
 assert.equal(LAST_STEP,11);
 assert.equal(clampStep(-99),0);
@@ -25,8 +26,27 @@ for(let i=0;i<40;i++)walking=advancePose(walking,{x:.35,y:-.8},.016);
 assert.ok(walking.distance>.5&&walking.distance<1.2); // Continuous movement, no step jumping.
 assert.ok(walking.lane>.5&&walking.lane<.79); // Horizontal steering while walking.
 assert.deepEqual(advancePose({distance:11,lane:.79},{x:1,y:-1},.05),{distance:11,lane:.79});
-assert.deepEqual(tapDestination(2,.5,.67,.2),{distance:3.8,lane:.67});
-assert.deepEqual(tapDestination(2,.5,.32,.9),{distance:.75,lane:.32});
+// Walk targets are screen coordinates, including both depth and lateral lane.
+const gardenNear=tapDestination(0,.5,.55,.90);
+assert.equal(gardenNear.distance,0);
+assert.equal(gardenNear.lane,.5);
+const gardenMid=tapDestination(0,.5,.55,.75);
+assert.ok(gardenMid.distance>2&&gardenMid.distance<4);
+assert.equal(tapDestination(0,.5,.49,.60).distance,6); // Far end triggers trail.
+assert.equal(tapDestination(6,.5,.88,.46).distance,11); // Far end triggers sea.
+assert.ok(tapDestination(0,.5,.8,.7).lane>.5); // Touching the right lane moves right.
+assert.ok(projectedWalkPosition(5.8,.5).y<projectedWalkPosition(1,.5).y);
+assert.ok(pathPoint('trail',1,.5).x>pathPoint('trail',0,.5).x); // The coast path bends right.
+assert.ok(pathPoint('garden',1,.5).scale<pathPoint('garden',0,.5).scale);
+assert.deepEqual(shoreTapDestination(.5,.735),{depth:1,lane:.5});
+assert.equal(shorePoint(1,.5).y,.735);
+let deck={depth:0,lane:.5};
+for(let i=0;i<40;i++)deck=advanceShorePose(deck,{x:0,y:-1},.06);
+assert.equal(deck.depth,1); // The avatar can actually walk to the railing.
+let transition={distance:0,lane:.5};
+for(let i=0;i<500;i++)transition=advancePose(transition,{x:0,y:-1},.04);
+assert.equal(transition.distance,11);
+assert.equal(movementScene(transition.distance),'shore');
 const uid='65123d76-a511-47cb-8125-7d4863eac0ab';
 assert.deepEqual(cleanPublicStar({id:uid,pet_name:' 레오 ',published_at:'2026-11-04T12:00:00Z'}),
   {id:uid,name:'레오',published_at:'2026-11-04T12:00:00Z'});
@@ -50,7 +70,7 @@ const html=readFileSync('dist/memorial-walk.html','utf8');
 const css=readFileSync('dist/memorial-walk.css','utf8');
 const js=readFileSync('dist/memorial-walk.js','utf8');
 const relay=readFileSync('dist/memorial-walk-realtime.mjs','utf8');
-for(const id of ['walkStage','shoreActions','floatBoat',
+for(const id of ['walkStage','shoreActions','floatBoat','walkTarget',
   'morningButton','nightButton','starSky','starActions','nextStars','boatField',
   'walkJoystick','joystickThumb'])
   assert.match(html,new RegExp(`id="${id}"`));
@@ -71,7 +91,12 @@ assert.match(css,/56\.25dvh - 123px/); // Coast actions reserve phone space with
 assert.match(js,/joystick\.addEventListener\('pointerdown'/);
 assert.match(js,/advancePose\(/);
 assert.match(js,/tapDestination\(/);
-assert.match(js,/setPose\(tapTarget\);\s*tapTarget=null;/); // Touch walking must reach the shore boundary exactly.
+assert.match(js,/reached\(next\.distance,tapTarget\.distance/); // End-point snap avoids stopping short.
+assert.match(js,/shoreTapDestination/);
+assert.match(js,/shoreDepth/);
+assert.match(css,/\.walk-target\{/);
+assert.match(css,/\.walk-stage,\.walk-scene-wrap\.has-shore \.walk-stage\{[\s\S]*?width:100%/);
+assert.match(css,/100%\{left:50%;top:var\(--boat-horizon\)/);
 assert.match(js,/scene-shore/);
 assert.match(js,/relay\?\.sendMoment\('boat'\)/);
 assert.match(relay,/onMoment/);

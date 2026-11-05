@@ -7,9 +7,9 @@
   <meta name="description" content="꽃길을 걸어 바닷가 절에 도착하고, 종이배를 띄우고, 별이 된 아이들을 만나며 일출을 바라보는 별빛 추모관의 산책 여정입니다.">
   <title>기억의 산책길 | 별빛 추모관 · 헤뭉이</title>
   <link rel="preload" as="image" type="image/webp" href="/assets/memorial-walk-garden-20261105.webp">
-  <link rel="stylesheet" href="/memorial-walk.css?v=20261105-artwork">
+  <link rel="stylesheet" href="/memorial-walk.css?v=20261105-freewalk2">
   <script src="/content-config.js" defer></script>
-  <script type="module" src="/memorial-walk.js"></script>
+  <script type="module" src="/memorial-walk.js?v=20261105-freewalk2"></script>
 </head>
 <body>
   <a class="skip-link" href="#walk-main">산책길 본문으로 이동</a>
@@ -26,7 +26,7 @@
     </section>
     <div class="walk-layout">
       <section class="walk-scene-wrap" aria-label="꽃길에서 바다까지 이어지는 체험 장면">
-        <div id="walkStage" class="walk-stage scene-garden time-morning" role="group" tabindex="0" aria-label="기억의 산책길. 왼쪽 원형 조이스틱을 움직이거나 길 위를 눌러 걷습니다. 키보드 방향키와 WASD도 사용할 수 있습니다.">
+        <div id="walkStage" class="walk-stage scene-garden time-morning" role="group" tabindex="0" aria-label="기억의 산책길. 길 위 원하는 지점을 누르면 그곳까지 걷고, 멀리 보이는 길 끝에 도착하면 다음 장소로 이동합니다. 조이스틱과 방향키도 사용할 수 있습니다.">
           <div class="scene-art art-garden" aria-hidden="true"></div>
           <div class="scene-art art-trail" aria-hidden="true"></div>
           <div class="scene-art art-shore" aria-hidden="true"></div>
@@ -34,6 +34,7 @@
           <div class="scene-petals" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
           <div id="starSky" class="scene-stars" aria-label="공개된 아이들의 별" hidden></div>
           <div id="boatField" class="boat-field" aria-hidden="true"></div>
+          <span id="walkTarget" class="walk-target" aria-hidden="true" hidden></span>
           <div class="journey-hud">
             <span id="sceneLabel" class="scene-label">01 · 햇살 꽃길</span>
             <span id="sceneStep" class="scene-step">첫 걸음 · 0 / 11</span>
@@ -49,7 +50,7 @@
             <span class="joystick-hint">움직여 걷기</span>
           </div>
         </div>
-        <p id="sceneMessage" class="scene-message" role="status" aria-live="polite">길 위를 누르거나 왼쪽 조이스틱을 움직여 보세요.</p>
+        <p id="sceneMessage" class="scene-message" role="status" aria-live="polite">길 위 원하는 지점을 누르면 그곳까지 걸어갑니다.</p>
         <div id="shoreActions" class="shore-actions" aria-label="바다 체험 선택" hidden>
           <div class="time-choice" role="group" aria-label="바다의 시간 선택">
             <button id="morningButton" type="button" aria-pressed="true">☀ 해돋이</button>
@@ -67,7 +68,7 @@
         <h2>기억을 따라 걷는 시간</h2>
         <p class="panel-lead">꽃길을 걷고, 절의 바닷가에 도착하면 종이배를 띄워 보세요. 밤에는 아이들의 별이, 아침에는 해가 떠오릅니다.</p>
         <ol class="journey-route" aria-label="산책 경로">
-          <li id="routeGarden" class="is-current"><span>01</span><div><strong>꽃빛 산책길</strong><small>걷는 만큼 풍경이 앞으로 다가옵니다.</small></div></li>
+          <li id="routeGarden" class="is-current"><span>01</span><div><strong>꽃빛 산책길</strong><small>멀리 보이는 길 끝까지 걸으면 다음 장소로 이어집니다.</small></div></li>
           <li id="routeTrail"><span>02</span><div><strong>절의 해안 산책로</strong><small>절벽 길과 바다가 펼쳐집니다.</small></div></li>
           <li id="routeShore"><span>03</span><div><strong>바다 쉼터</strong><small>종이배 · 밤하늘 · 일출을 만나세요.</small></div></li>
         </ol>

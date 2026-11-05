@@ -2,7 +2,9 @@ import {clamp,ROOM_COUNT} from './memorial-walk-core.mjs';
 import {MemorialWalkRelay} from './memorial-walk-realtime.mjs';
 import {LAST_STEP,PUBLIC_STAR_PAGE_SIZE,sceneForRelayY,
   relayYForStep,cleanPublicStar,starPosition,publicStarsUrl} from './memorial-journey-core.mjs';
-import {advancePose,limit,movementScene,movementSceneProgress,tapDestination} from './memorial-walk-motion.mjs';
+import {advancePose,advanceShorePose,limit,movementScene,movementSceneProgress,
+  tapDestination,shoreTapDestination,projectedWalkPosition,shorePoint,pathPoint,
+  WALK_PATHS,WALK_SPEED,LANE_SPEED,SHORE_SPEED} from './memorial-walk-motion.mjs?v=20261105-freewalk2';
 
 const $=id=>document.getElementById(id);
 const stage=$('walkStage'),avatarLayer=$('walkAvatars'),self=$('walkSelf');
@@ -11,17 +13,16 @@ const random=new Uint8Array(1);crypto.getRandomValues(random);
 const tone=random[0]%5,visitorId=crypto.randomUUID(); // Anonymous and temporary.
 const requestedRoom=new URLSearchParams(location.search).get('room');
 let seed=/^0[1-8]$/.test(requestedRoom||'')?Number(requestedRoom)-1:random[0]%ROOM_COUNT;
-let distance=0,lane=.5,dayTime='morning',onlineWanted=false,relay=null;
+let distance=0,lane=.5,shoreDepth=0,pendingBoat=false,dayTime='morning',onlineWanted=false,relay=null;
 let peerViews=new Map(),currentPeers=[];
 let starPage=0,starCursors=[null],starNextCursor=null,starStatus='unloaded',starRequest=0;
 
-function setAvatarPosition(node,x,scale=1){
-  const shore=movementScene(distance)==='shore';
-  const visualX=shore?(node.classList.contains('is-self')?.5+(x-.5)*.32:
-    .16+((parseInt(node.dataset.visitorHash||'0',10)%100)/100)*.68):x;
-  node.style.left=(visualX*100).toFixed(2)+'%';
-  node.style.top='80%';
-  node.style.setProperty('--avatar-scale',String(scale));
+function setAvatarPosition(node,x,atDistance=distance,atShoreDepth=shoreDepth){
+  const pos=movementScene(atDistance)==='shore'?
+    shorePoint(atShoreDepth,x):projectedWalkPosition(atDistance,x);
+  node.style.left=(pos.x*100).toFixed(2)+'%';
+  node.style.top=(pos.y*100).toFixed(2)+'%';
+  node.style.setProperty('--avatar-scale',pos.scale.toFixed(3));
 }
 function makeVisitor(visitor){
   const node=document.createElement('div');node.className='walk-avatar';node.dataset.tone=String(visitor.tone);
@@ -41,7 +42,9 @@ function renderPeers(visitors=currentPeers){
     let node=peerViews.get(visitor.id);
     if(!node){node=makeVisitor(visitor);peerViews.set(visitor.id,node);avatarLayer.append(node);}
     node.dataset.visitorHash=String(parseInt(visitor.id.slice(0,8),16)%100);
-    node.dataset.tone=String(visitor.tone);setAvatarPosition(node,visitor.x,.9);
+    node.dataset.tone=String(visitor.tone);
+    const peerDistance=limit(Math.round((.93-visitor.y)/.36*LAST_STEP),0,LAST_STEP);
+    setAvatarPosition(node,visitor.x,peerDistance,.35);
   }
   for(const [id,node] of peerViews)if(!present.has(id)){node.remove();peerViews.delete(id);}
   $('walkCount').textContent='내 화면의 방문자 · '+(present.size+1)+'명';
@@ -84,8 +87,8 @@ function updateJourney(){
   $('sceneLabel').textContent=labels[scene];
   $('sceneStep').textContent=distance<.01?'첫 걸음':'여정 '+Math.round(distance/LAST_STEP*100)+'%';
   $('walkProgress').style.width=(distance/LAST_STEP*100)+'%';
-  $('journeyDescription').textContent=scene==='garden'?'앞으로 걸을수록 꽃길 풍경이 가까워집니다.':
-    scene==='trail'?'절의 해안 산책로를 따라 바다를 향해 걷습니다.':'종이배를 띄우고, 아침과 밤의 바다를 만나 보세요.';
+  $('journeyDescription').textContent=scene==='garden'?'꽃길의 원하는 지점을 터치해 걸어가세요. 길 끝에서 해안길로 이어집니다.':
+    scene==='trail'?'해안 산책로의 오른쪽 위 길 끝까지 걸으면 바다 쉼터로 이어집니다.':'난간에 다가가 종이배를 띄우고 아침과 밤의 바다를 만나 보세요.';
   for(const s of ['Garden','Trail','Shore']){
     const el=$('route'+s),key=s.toLowerCase();
     el.classList.toggle('is-current',key===scene);
@@ -95,23 +98,27 @@ function updateJourney(){
   $('starSky').hidden=scene!=='shore'||dayTime!=='night';
   $('starActions').hidden=scene!=='shore'||dayTime!=='night';
   if(scene==='shore'&&dayTime==='night'&&starStatus==='unloaded')loadStars();
-  if(scene==='garden')announce('길 위를 누르거나 조이스틱으로 천천히 걸어보세요.');
-  if(scene==='trail')announce('절의 해안 산책로에 들어섰어요.');
+  if(scene==='garden')announce('길 위 원하는 지점을 터치하면 그곳까지 걸어갑니다.');
+  if(scene==='trail')announce('오른쪽 위로 이어지는 산책길 끝까지 걸어보세요.');
   if(scene==='shore')announce(dayTime==='night'?'별이 된 아이들의 이름을 찾아보세요.':'바다에 종이배를 띄우거나 일출을 바라보세요.');
-  setAvatarPosition(self,lane,scene==='shore'?1.09:1);
+  setAvatarPosition(self,lane);
   renderPeers();
 }
 let lastPresenceAt=0;
 function setPose(pose){
   const previousScene=movementScene(distance),oldRounded=Math.round(distance);
   distance=limit(pose.distance,0,LAST_STEP);lane=limit(pose.lane,.21,.79);
-  if(previousScene!==movementScene(distance)){updateJourney();}
+  if(previousScene!==movementScene(distance)){
+    if(movementScene(distance)==='shore'){shoreDepth=0;lane=.5;}
+    if(tapTarget){tapTarget=null;hideWalkTarget();}
+    updateJourney();
+  }
   else {
     stage.style.setProperty('--forward',movementSceneProgress(distance).toFixed(3));
     stage.style.setProperty('--camera-pan',((.5-lane)*4).toFixed(2)+'%');
     $('walkProgress').style.width=(distance/LAST_STEP*100)+'%';
     if(oldRounded!==Math.round(distance))$('sceneStep').textContent='여정 '+Math.round(distance/LAST_STEP*100)+'%';
-    setAvatarPosition(self,lane,movementScene(distance)==='shore'?1.09:1);
+    setAvatarPosition(self,lane);
   }
   const now=performance.now();
   if(now-lastPresenceAt>=150){relay?.move(lane,relayYForStep(distance));lastPresenceAt=now;}
@@ -185,40 +192,71 @@ async function loadStars(){
   }
 }
 
-// The stage is a genuinely continuous, two-axis walk surface. No repeated
-// "next step" button is required to traverse the 3 authored environments.
+// Tap a visible point on the actual path, or steer continuously with the stick.
+// The avatar occupies real x/y positions and crosses a scene at the far end.
 const joystick=$('walkJoystick'),thumb=$('joystickThumb');
 let stick={x:0,y:0},stickPointer=null,tapTarget=null,frameId=0,previousFrame=0;
 const keys=new Set();
 const keyAxes={arrowup:'up',w:'up',arrowdown:'down',s:'down',arrowleft:'left',a:'left',arrowright:'right',d:'right'};
+const targetMarker=$('walkTarget');
+function hideWalkTarget(){targetMarker.hidden=true;}
+function showWalkTarget(){
+  if(!tapTarget)return hideWalkTarget();
+  const scene=movementScene(distance);
+  const point=scene==='shore'?shorePoint(tapTarget.depth,tapTarget.lane):
+    pathPoint(scene,(tapTarget.distance-WALK_PATHS[scene].start)/
+      (WALK_PATHS[scene].end-WALK_PATHS[scene].start),tapTarget.lane);
+  targetMarker.style.left=(point.x*100).toFixed(2)+'%';
+  targetMarker.style.top=(point.y*100).toFixed(2)+'%';
+  targetMarker.hidden=false;
+}
 function hasMotion(){return stickPointer!==null||keys.size>0||tapTarget!==null;}
 function axes(){
   if(stickPointer!==null)return stick;
   if(keys.size)return {x:Number(keys.has('right'))-Number(keys.has('left')),
     y:Number(keys.has('down'))-Number(keys.has('up'))};
-  if(tapTarget)return {x:limit((tapTarget.lane-lane)/.15,-1,1),
-    y:limit((distance-tapTarget.distance)/.8,-1,1)};
+  if(tapTarget)return {x:limit((tapTarget.lane-lane)/.12,-1,1),
+    y:limit((movementScene(distance)==='shore'?shoreDepth-tapTarget.depth:
+      distance-tapTarget.distance)/.45,-1,1)};
   return {x:0,y:0};
 }
+function reached(value,target,step){return Math.abs(value-target)<=Math.max(step*1.3,.012);}
 function motionFrame(stamp){
   frameId=0;
   if(!hasMotion()){stage.classList.remove('is-walking');previousFrame=0;return;}
   const dt=previousFrame?Math.min((stamp-previousFrame)/1000,.06):.016;
   previousFrame=stamp;
-  const next=advancePose({distance,lane},axes(),dt);
-  setPose(next);
-  if(tapTarget&&Math.abs(distance-tapTarget.distance)<.025&&Math.abs(lane-tapTarget.lane)<.01){
-    // Land exactly on the tap destination. Otherwise the final .025 units
-    // can be discarded before the 11-unit shore scene threshold is crossed.
-    setPose(tapTarget);
-    tapTarget=null;
+  if(movementScene(distance)==='shore'){
+    const next=advanceShorePose({depth:shoreDepth,lane},axes(),dt);
+    if(tapTarget?.kind==='shore'){
+      if(reached(next.depth,tapTarget.depth,SHORE_SPEED*dt))next.depth=tapTarget.depth;
+      if(reached(next.lane,tapTarget.lane,LANE_SPEED*dt))next.lane=tapTarget.lane;
+    }
+    shoreDepth=next.depth;lane=next.lane;setAvatarPosition(self,lane);
+    if(tapTarget?.kind==='shore'&&shoreDepth===tapTarget.depth&&lane===tapTarget.lane){
+      tapTarget=null;hideWalkTarget();
+      if(pendingBoat){pendingBoat=false;launchBoat();}
+    }
+    const now=performance.now();
+    if(now-lastPresenceAt>=150){relay?.move(lane,relayYForStep(distance));lastPresenceAt=now;}
+  }else{
+    const next=advancePose({distance,lane},axes(),dt);
+    if(tapTarget?.kind==='walk'){
+      if(reached(next.distance,tapTarget.distance,WALK_SPEED*dt))next.distance=tapTarget.distance;
+      if(reached(next.lane,tapTarget.lane,LANE_SPEED*dt))next.lane=tapTarget.lane;
+    }
+    setPose(next);
+    if(tapTarget?.kind==='walk'&&distance===tapTarget.distance&&lane===tapTarget.lane){
+      tapTarget=null;hideWalkTarget();
+    }
   }
   if(hasMotion())frameId=requestAnimationFrame(motionFrame);
   else{stage.classList.remove('is-walking');previousFrame=0;}
 }
 function resumeMotion(){if(!frameId&&hasMotion()){stage.classList.add('is-walking');frameId=requestAnimationFrame(motionFrame);}}
 function stopMotion(){
-  stickPointer=null;stick={x:0,y:0};keys.clear();tapTarget=null;
+  stickPointer=null;stick={x:0,y:0};keys.clear();tapTarget=null;pendingBoat=false;
+  hideWalkTarget();
   thumb.style.transform='translate(0px,0px)';
   if(frameId)cancelAnimationFrame(frameId);
   frameId=0;previousFrame=0;stage.classList.remove('is-walking');
@@ -232,7 +270,7 @@ function aimStick(event){
 }
 joystick.addEventListener('pointerdown',event=>{
   if(stickPointer!==null)return;
-  event.preventDefault();tapTarget=null;stickPointer=event.pointerId;
+  event.preventDefault();tapTarget=null;pendingBoat=false;hideWalkTarget();stickPointer=event.pointerId;
   joystick.setPointerCapture(event.pointerId);aimStick(event);resumeMotion();
 });
 joystick.addEventListener('pointermove',event=>{if(stickPointer===event.pointerId)aimStick(event);});
@@ -246,20 +284,31 @@ joystick.addEventListener('lostpointercapture',releaseStick);
 stage.addEventListener('click',event=>{
   if(event.target.closest('button,a,#walkJoystick,.journey-hud,.scene-message'))return;
   const box=stage.getBoundingClientRect();
-  tapTarget=tapDestination(distance,lane,(event.clientX-box.left)/box.width,
-    (event.clientY-box.top)/box.height);
+  const x=(event.clientX-box.left)/box.width,y=(event.clientY-box.top)/box.height;
+  pendingBoat=false;
+  tapTarget=movementScene(distance)==='shore'?{kind:'shore',...shoreTapDestination(x,y)}:
+    {kind:'walk',...tapDestination(distance,lane,x,y)};
+  showWalkTarget();
   resumeMotion();
 });
 window.addEventListener('keydown',event=>{
   if(event.target.closest?.('input,textarea,select,[contenteditable="true"]'))return;
   const axis=keyAxes[event.key.toLowerCase()];if(!axis)return;
-  event.preventDefault();tapTarget=null;keys.add(axis);resumeMotion();
+  event.preventDefault();tapTarget=null;pendingBoat=false;hideWalkTarget();keys.add(axis);resumeMotion();
 });
 window.addEventListener('keyup',event=>{const axis=keyAxes[event.key.toLowerCase()];if(axis)keys.delete(axis);});
 window.addEventListener('blur',stopMotion);
 $('morningButton').addEventListener('click',()=>setTime('morning'));
 $('nightButton').addEventListener('click',()=>setTime('night'));
-$('floatBoat').addEventListener('click',()=>launchBoat());
+function prepareBoat(){
+  if(movementScene(distance)!=='shore'||pendingBoat)return;
+  if(shoreDepth<.94||Math.abs(lane-.5)>.035){
+    pendingBoat=true;tapTarget={kind:'shore',depth:1,lane:.5};
+    showWalkTarget();resumeMotion();
+    announce('난간 끝으로 다가가 종이배를 띄웁니다.');
+  }else launchBoat();
+}
+$('floatBoat').addEventListener('click',prepareBoat);
 $('nextStars').addEventListener('click',()=>{
   if(starStatus==='loading')return;
   if(starStatus==='error'){loadStars();return;}
