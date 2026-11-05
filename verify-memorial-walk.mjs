@@ -121,6 +121,28 @@ for(const name of ['garden','morning','night']){
   assert.match(css,new RegExp(`memorial-walk-${name}-20261105\\.webp`));
 }
 assert.match(html,/art-shore-night/);
+assert.match(html,/id="shoreCinema"/);
+assert.match(html,/id="shoreSunriseIntro"/);
+assert.match(html,/id="shoreSunriseIdle"/);
+assert.match(html,/id="shoreNightVideo"/);
+assert.match(html,/class="shore-deck"/);
+assert.match(css,/\.shore-deck\{position:absolute/);
+assert.match(css,/\.shore-cinema\{position:absolute/);
+assert.match(js,/startSunriseIdle/);
+assert.match(js,/prefers-reduced-motion: reduce/);
+for(const name of ['temple-sunrise-intro.mp4','temple-sunrise-idle.mp4','temple-starry-ocean.mp4']){
+  const path=`dist/assets/${name}`;
+  const bytes=readFileSync(path);
+  assert.ok(bytes.length>20000&&bytes.length<3_000_000,`${path}: video budget exceeded`);
+  assert.equal(bytes.toString('ascii',4,8),'ftyp',`${path}: invalid MP4`);
+  const moov=bytes.indexOf(Buffer.from('moov'));
+  const mdat=bytes.indexOf(Buffer.from('mdat'));
+  assert.ok(moov>0&&mdat>0&&moov<mdat,`${path}: missing fast-start MP4 index`);
+  assert.match(html,new RegExp(name.replaceAll('.','\\.')));
+}
+const deck=readFileSync('dist/assets/temple-viewing-deck.png');
+assert.equal(deck.toString('hex',0,8),'89504e470d0a1a0a');
+assert.equal(deck[25],6,'viewing-deck image must retain RGBA transparency');
 assert.match(css,/background-size:contain/);
 assert.doesNotMatch(css,/background-size:cover/);
 assert.doesNotMatch(css,/\.scene-(?:garden|trail|shore) \.art-\w+\{transform:.*scale/);

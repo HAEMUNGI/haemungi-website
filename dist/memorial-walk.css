@@ -15,6 +15,12 @@ button{font:inherit;cursor:pointer}a{color:inherit;text-decoration:none}[hidden]
 .art-shore-night{background-image:url('/assets/memorial-walk-night-20261105.webp');opacity:0}
 .scene-trail .art-garden,.scene-shore .art-garden{opacity:0}.scene-trail .art-trail{opacity:1}
 .scene-shore.time-morning .art-shore{opacity:1}.scene-shore.time-night .art-shore-night{opacity:1}.scene-shore .art-trail{opacity:0}
+/* Background movies and the original transparent viewing deck remain independent layers. */
+.shore-cinema{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .45s ease}
+.scene-shore .shore-cinema.is-ready{opacity:1}
+.shore-video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .32s ease}
+.shore-video.is-active{opacity:1}
+.shore-deck{position:absolute;inset:0;z-index:2;width:100%;height:100%;object-fit:contain;pointer-events:none}
 .scene-petals{position:absolute;inset:0;z-index:4;overflow:hidden;pointer-events:none;opacity:1;transition:opacity 800ms}.scene-trail .scene-petals,.scene-shore .scene-petals{opacity:0}
 .scene-petals i{position:absolute;width:12px;height:8px;background:#fff7e2b5;border-radius:80% 15% 80% 15%;box-shadow:0 1px 3px #d89c8c79;animation:petal-fall 10s linear infinite}.scene-petals i:nth-child(1){left:11%;top:-6%;animation-delay:-2s}.scene-petals i:nth-child(2){left:82%;top:-12%;animation-delay:-6s}.scene-petals i:nth-child(3){left:45%;top:-15%;animation-delay:-8s}.scene-petals i:nth-child(4){left:63%;top:-8%;animation-delay:-4s}.scene-petals i:nth-child(5){left:25%;top:-19%;animation-delay:0s}
 @keyframes petal-fall{to{transform:translate(90px,105vh) rotate(540deg)}}

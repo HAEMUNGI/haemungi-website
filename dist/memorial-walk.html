@@ -7,9 +7,9 @@
   <meta name="description" content="꽃길을 걸어 바닷가 절에 도착하고, 종이배를 띄우고, 별이 된 아이들을 만나며 일출을 바라보는 별빛 추모관의 산책 여정입니다.">
   <title>기억의 산책길 | 별빛 추모관 · 헤뭉이</title>
   <link rel="preload" as="image" type="image/webp" href="/assets/memorial-walk-garden-20261105.webp">
-  <link rel="stylesheet" href="/memorial-walk.css?v=20261105-freewalk2">
+  <link rel="stylesheet" href="/memorial-walk.css?v=20261105-living-sea1">
   <script src="/content-config.js" defer></script>
-  <script type="module" src="/memorial-walk.js?v=20261105-freewalk2"></script>
+  <script type="module" src="/memorial-walk.js?v=20261105-living-sea1"></script>
 </head>
 <body>
   <a class="skip-link" href="#walk-main">산책길 본문으로 이동</a>
@@ -31,6 +31,12 @@
           <div class="scene-art art-trail" aria-hidden="true"></div>
           <div class="scene-art art-shore" aria-hidden="true"></div>
           <div class="scene-art art-shore-night" aria-hidden="true"></div>
+          <div id="shoreCinema" class="shore-cinema" aria-hidden="true">
+            <video id="shoreSunriseIntro" class="shore-video" data-src="/assets/temple-sunrise-intro.mp4" preload="none" muted playsinline disablepictureinpicture></video>
+            <video id="shoreSunriseIdle" class="shore-video" data-src="/assets/temple-sunrise-idle.mp4" preload="none" muted playsinline loop disablepictureinpicture></video>
+            <video id="shoreNightVideo" class="shore-video" data-src="/assets/temple-starry-ocean.mp4" preload="none" muted playsinline loop disablepictureinpicture></video>
+            <img class="shore-deck" src="/assets/temple-viewing-deck.png" alt="" loading="lazy" decoding="async">
+          </div>
           <div class="scene-petals" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
           <div id="starSky" class="scene-stars" aria-label="공개된 아이들의 별" hidden></div>
           <div id="boatField" class="boat-field" aria-hidden="true"></div>

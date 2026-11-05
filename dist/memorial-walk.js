@@ -8,6 +8,10 @@ import {advancePose,advanceShorePose,limit,movementScene,movementSceneProgress,
 
 const $=id=>document.getElementById(id);
 const stage=$('walkStage'),avatarLayer=$('walkAvatars'),self=$('walkSelf');
+const shoreCinema=$('shoreCinema');
+const sunriseIntro=$('shoreSunriseIntro'),sunriseIdle=$('shoreSunriseIdle'),nightOcean=$('shoreNightVideo');
+const shoreVideos=[sunriseIntro,sunriseIdle,nightOcean];
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
 const cfg=window.HAEMUNGI_CONTENT_CONFIG||{};
 const random=new Uint8Array(1);crypto.getRandomValues(random);
 const tone=random[0]%5,visitorId=crypto.randomUUID(); // Anonymous and temporary.
@@ -16,6 +20,55 @@ let seed=/^0[1-8]$/.test(requestedRoom||'')?Number(requestedRoom)-1:random[0]%RO
 let distance=0,lane=.5,shoreDepth=0,pendingBoat=false,dayTime='morning',onlineWanted=false,relay=null;
 let peerViews=new Map(),currentPeers=[];
 let starPage=0,starCursors=[null],starNextCursor=null,starStatus='unloaded',starRequest=0;
+let cinemaSerial=0,cinemaMode='off',idleStarted=false;
+
+function prepareShoreVideo(video){
+  if(!video.src){video.src=video.dataset.src;video.load();}
+}
+function stopShoreCinema(){
+  cinemaSerial++;cinemaMode='off';idleStarted=false;
+  shoreCinema.classList.remove('is-ready');
+  for(const video of shoreVideos){video.pause();video.classList.remove('is-active');}
+}
+function startSunriseIdle(){
+  if(idleStarted||cinemaMode!=='morning'||document.hidden)return;
+  idleStarted=true;
+  const serial=cinemaSerial;
+  prepareShoreVideo(sunriseIdle);
+  sunriseIdle.currentTime=0;
+  Promise.resolve(sunriseIdle.play()).then(()=>{
+    if(serial!==cinemaSerial||cinemaMode!=='morning')return;
+    sunriseIdle.classList.add('is-active');
+    sunriseIntro.classList.remove('is-active');
+    window.setTimeout(()=>sunriseIntro.pause(),380);
+  }).catch(()=>{idleStarted=false;/* Keep the final sunrise frame if idle playback is blocked. */});
+}
+function startShoreCinema(){
+  stopShoreCinema();
+  if(movementScene(distance)!=='shore'||reducedMotion.matches||document.hidden)return;
+  cinemaMode=dayTime;
+  const serial=cinemaSerial;
+  const video=dayTime==='night'?nightOcean:sunriseIntro;
+  prepareShoreVideo(video);
+  if(dayTime==='morning')prepareShoreVideo(sunriseIdle);
+  video.currentTime=0;
+  const reveal=()=>{
+    if(serial!==cinemaSerial||cinemaMode!==dayTime)return;
+    video.classList.add('is-active');shoreCinema.classList.add('is-ready');
+  };
+  video.addEventListener('playing',reveal,{once:true});
+  Promise.resolve(video.play()).catch(()=>{/* Static original artwork remains visible. */});
+}
+sunriseIntro.addEventListener('timeupdate',()=>{
+  if(cinemaMode==='morning'&&sunriseIntro.duration>0&&sunriseIntro.currentTime>=sunriseIntro.duration-.35)startSunriseIdle();
+});
+sunriseIntro.addEventListener('ended',startSunriseIdle);
+for(const video of shoreVideos)video.addEventListener('error',()=>{
+  if(video.classList.contains('is-active')){
+    stopShoreCinema(); // The supplied original background remains a readable fallback.
+  }
+});
+reducedMotion.addEventListener?.('change',()=>startShoreCinema());
 
 function setAvatarPosition(node,x,atDistance=distance,atShoreDepth=shoreDepth){
   const pos=movementScene(atDistance)==='shore'?
@@ -81,6 +134,8 @@ function updateJourney(){
   stage.style.setProperty('--forward',p.toFixed(3));
   stage.style.setProperty('--camera-pan',((.5-lane)*4).toFixed(2)+'%');
   stage.dataset.scene=scene;
+  if(scene==='shore'&&cinemaMode==='off')startShoreCinema();
+  else if(scene!=='shore'&&cinemaMode!=='off')stopShoreCinema();
   const titles={garden:'꽃길 끝에서, 바다를 만나요.',trail:'저 멀리, 파도 소리가 들려요.',shore:'이곳에서 마음을 바다에 띄워요.'};
   const labels={garden:'01 · 햇살 꽃길',trail:'02 · 절의 해안 산책로',shore:'03 · 바다 쉼터'};
   $('journeyTitle').textContent=titles[scene];
@@ -126,6 +181,7 @@ function setPose(pose){
 function setTime(next){
   if((next!=='morning'&&next!=='night')||movementScene(distance)!=='shore')return;
   dayTime=next;stage.classList.toggle('time-morning',next==='morning');stage.classList.toggle('time-night',next==='night');
+  startShoreCinema();
   $('morningButton').setAttribute('aria-pressed',String(next==='morning'));
   $('nightButton').setAttribute('aria-pressed',String(next==='night'));
   $('starSky').hidden=next!=='night';$('starActions').hidden=next!=='night';
@@ -332,9 +388,15 @@ $('walkShare').addEventListener('click',async()=>{
   }catch(err){if(err?.name!=='AbortError')$('walkStatus').textContent='주소창의 링크를 직접 공유해 주세요.';}
 });
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){relay?.stop();if(onlineWanted)$('walkStatus').textContent='잠시 연결을 쉬고 있습니다.';}
-  else if(onlineWanted)newRelay();
+  if(document.hidden){relay?.stop();shoreVideos.forEach(video=>video.pause());if(onlineWanted)$('walkStatus').textContent='잠시 연결을 쉬고 있습니다.';}
+  else {
+    if(onlineWanted)newRelay();
+    if(movementScene(distance)==='shore'){
+      if(cinemaMode==='off')startShoreCinema();
+      else (shoreVideos.find(video=>video.classList.contains('is-active'))||sunriseIntro).play().catch(()=>{});
+    }
+  }
 });
-window.addEventListener('pagehide',()=>relay?.stop());
+window.addEventListener('pagehide',()=>{relay?.stop();shoreVideos.forEach(video=>video.pause());});
 self.dataset.tone=String(tone);
 setAvatarPosition(self,lane);showStatus('solo','',-1);updateJourney();
