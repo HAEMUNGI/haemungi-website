@@ -80,10 +80,23 @@ assert.match(ritualJs,/hm_memorial_store_gifts/);
 assert.match(ritualJs,/memorial_id:recipient\.id/);
 assert.match(ritualJs,/gift_batch_id:batch\.batchId/);
 assert.match(ritualJs,/renderPending\(\);loadPlaced\(\)/);
+for(const product of STORE_PRODUCTS){
+  const asset=`dist/memorial/store-products/${product.id}.webp`;
+  const bytes=readFileSync(asset);
+  assert.equal(bytes.toString('ascii',0,4),'RIFF',`${asset} is not a WebP`);
+  assert.equal(bytes.toString('ascii',8,12),'WEBP',`${asset} is not a WebP`);
+  assert.ok(bytes.length>5_000&&bytes.length<128_000,`${asset} should be a compact real artwork cutout`);
+}
+assert.match(ritualJs,/\/memorial\/store-products\//);
+assert.doesNotMatch(ritualJs,/svgFor|const artwork=|\.innerHTML=/);
+assert.match(memorialCss,/\.altar-gift img\{/);
+assert.match(memorialCss,/var\(--gift-x\)/);
+assert.match(memorialCss,/var\(--gift-y\)/);
+assert.doesNotMatch(memorialCss,/\.altar-gift svg\{/);
 assert.match(memorialJs,/haemungi:ritual-pet-changed/);
 assert.match(memorialCss,/\.altar-gifts\{/);
 assert.match(migration,/enable row level security/);
 assert.match(migration,/for insert to anon,authenticated/);
 assert.doesNotMatch(migration,/drop table|truncate|delete from|alter table public\.hm_memorial_public/);
 console.log('MEMORIAL STORE PASS: original film and JPEGs, 8 hotspots, virtual cart/gift box, accessible choices, memorial navigation.');
-console.log('RITUAL GIFTS PASS: mobile steady sizing, saved gifts preserved, named recipient, guarded server placement, bench art and RLS.');
+console.log('RITUAL GIFTS PASS: 8 transparent shop-art products, anchored altar surfaces, mobile steady sizing, saved gifts, named recipient, guarded server placement and RLS.');

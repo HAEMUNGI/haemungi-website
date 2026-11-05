@@ -67,12 +67,14 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .film-frame{width:min(100%,480px,55svh)}
 @media(max-width:540px){.film-frame{width:min(100%,55svh)}}
 
-/* New gifts rest on the front wooden altar; original film and portrait remain unchanged. */
-.altar-gifts{position:absolute;z-index:2;left:32%;top:61.35%;width:36%;height:7.1%;display:flex;align-items:flex-end;justify-content:center;gap:0;pointer-events:none}
-.altar-gift{position:relative;flex:0 1 20%;height:100%;display:flex;align-items:flex-end;justify-content:center;filter:drop-shadow(0 2px 2px #53331e63);transform-origin:50% 100%}
-.altar-gift svg{display:block;width:100%;height:100%;overflow:visible}
-.altar-gift:nth-child(2n){transform:rotate(-4deg)}.altar-gift:nth-child(3n){transform:rotate(4deg)}
-.altar-gift.just-placed{animation:flower-land .75s ease-out both}
+/* Full-size alpha-cutout shop merchandise; each gift touches a real altar surface. */
+.altar-gifts{position:absolute;inset:0;z-index:2;pointer-events:none}
+.altar-gift{position:absolute;left:var(--gift-x);top:var(--gift-y);width:var(--gift-width);height:auto;display:block;transform:translate(-50%,-100%);transform-origin:50% 100%;filter:drop-shadow(0 2px 2px #39230f72)}
+.altar-gift img{display:block;width:100%;height:auto;object-fit:contain}
+.altar-gift[data-surface="shelf"]{z-index:1;filter:drop-shadow(0 1px 1px #39230f63)}
+.altar-gift[data-surface="table"]{z-index:2}
+.altar-gift.just-placed{animation:gift-arrive .65s ease-out both}
+@keyframes gift-arrive{from{opacity:0;transform:translate(-50%,-112%) scale(.96)}to{opacity:1;transform:translate(-50%,-100%) scale(1)}}
 .ritual-gift-panel{margin-top:12px}.pending-store-gifts{display:grid;gap:8px}.pending-gift-row{display:grid;gap:7px;padding:11px;border:1px solid #ead6b7;border-radius:10px;background:#fffdfa}.pending-gift-row strong{font-size:12px}.pending-gift-row button{min-height:38px;border:1px solid #ab8057;background:#926743;color:#fffdf8;border-radius:9px;font-weight:700;font-size:12px}.pending-gift-row button:disabled{opacity:.6}.pending-gift-empty{font-size:12px;color:#8b735c;margin:4px 0}.ritual-recent-gifts{border-top:1px solid #e8d8c2;margin-top:13px;padding-top:10px;font-size:11px;color:#796148}.ritual-recent-gifts p{margin:4px 0}.gift-shop-return{display:block;margin-top:14px;padding:10px;text-align:center;border-radius:9px;border:1px solid #ddc4a2;background:#fff9f0;color:#704f31;font-size:12px;font-weight:700}
 @media(prefers-reduced-motion:reduce){.altar-gift.just-placed{animation:none}}
 

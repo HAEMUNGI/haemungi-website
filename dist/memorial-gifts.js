@@ -12,17 +12,17 @@ const layer=$('altarGifts'),panel=$('ritualStoreGifts'),pending=$('pendingStoreG
 const status=$('ritualGiftStatus'),recent=$('ritualRecentGifts');
 let pet=null,loadingSequence=0,placing=false;
 
-const artwork={
-  bouquet:`<path d="M22 69 12 42 42 42 35 69Z" fill="#e9c6a7" stroke="#bd977b"/><path d="M27 52 21 20M30 54 36 16M31 54 43 28" stroke="#6b8e63" stroke-width="2.5"/><g fill="#f4c6cf" stroke="#fff8ec" stroke-width="1"><circle cx="20" cy="23" r="10"/><circle cx="36" cy="17" r="11"/><circle cx="43" cy="29" r="9"/><circle cx="25" cy="33" r="9"/></g><g fill="#dfb35d"><circle cx="20" cy="23" r="3"/><circle cx="36" cy="17" r="3"/><circle cx="43" cy="29" r="3"/></g>`,
-  'flower-basket':`<path d="M10 37Q12 16 30 16T50 37" fill="none" stroke="#a77748" stroke-width="4"/><path d="M9 42 14 66Q30 74 46 66L51 42Z" fill="#c7945e" stroke="#805c3d" stroke-width="2"/><path d="M13 50H47M16 59H44M24 43V68M36 43V68" stroke="#e8bd86" stroke-width="2"/><g fill="#f3bdd0" stroke="#ffe7e4"><circle cx="18" cy="36" r="10"/><circle cx="31" cy="30" r="12"/><circle cx="43" cy="37" r="9"/></g><g fill="#e8ce71"><circle cx="18" cy="36" r="3"/><circle cx="31" cy="30" r="3"/><circle cx="43" cy="37" r="3"/></g>`,
-  cake:`<ellipse cx="30" cy="66" rx="26" ry="5" fill="#d8c5b1"/><path d="M11 43H49V64H11Z" fill="#f5c7b7" stroke="#d7a58e"/><path d="M11 45Q17 52 23 45T35 45T49 45V55H11Z" fill="#fff7e6"/><rect x="18" y="29" width="24" height="15" rx="3" fill="#f7e5cb"/><path d="M18 32Q22 38 27 32T36 32T42 32" fill="none" stroke="#de9e96" stroke-width="3"/><path d="M30 20V29" stroke="#a56a51" stroke-width="2"/><path d="M30 16Q24 23 30 25Q36 21 30 16" fill="#e2aa52"/>`,
-  treats:`<path d="M14 23 46 23 50 66Q30 73 10 66Z" fill="#f5c68d" stroke="#aa7952" stroke-width="2"/><path d="M14 23 21 15H39L46 23" fill="#eac19b"/><path d="M14 34H46" stroke="#e2a15d" stroke-width="3"/><path d="M26 43Q17 38 19 47Q22 52 30 57Q38 52 41 47Q42 39 34 43Q30 37 26 43" fill="#fff7e8"/><circle cx="25" cy="45" r="2" fill="#a77a5d"/><circle cx="35" cy="45" r="2" fill="#a77a5d"/>`,
-  drinks:`<path d="M13 24 25 16 42 24V69H13Z" fill="#e9f3e2" stroke="#7e9a81" stroke-width="2"/><path d="M13 24H42L30 32H13Z" fill="#fff9e4"/><path d="M30 32V69" stroke="#a2c3a2" stroke-width="2"/><path d="M21 20V10H31" stroke="#f6a9aa" stroke-width="3" fill="none"/><ellipse cx="23" cy="50" rx="8" ry="11" fill="#b9d49f"/><path d="M18 51Q23 43 28 51" fill="none" stroke="#f9f4e2" stroke-width="2"/>`,
-  fruit:`<path d="M7 51Q30 75 53 51Z" fill="#dbab79" stroke="#9d704f" stroke-width="2"/><path d="M7 51Q30 57 53 51" fill="none" stroke="#f5ddbb" stroke-width="3"/><circle cx="19" cy="43" r="11" fill="#e9a39c"/><circle cx="34" cy="42" r="11" fill="#efcc79"/><circle cx="44" cy="47" r="8" fill="#c7d69d"/><path d="M19 32Q25 27 28 33M34 31Q40 27 42 32" fill="none" stroke="#70855b" stroke-width="3"/>`,
-  toys:`<g fill="#dfb78f" stroke="#a98262" stroke-width="1.5"><circle cx="17" cy="25" r="9"/><circle cx="43" cy="25" r="9"/><ellipse cx="30" cy="54" rx="17" ry="18"/><circle cx="30" cy="33" r="18"/></g><ellipse cx="30" cy="40" rx="10" ry="7" fill="#fff0df"/><circle cx="24" cy="31" r="2.2" fill="#523a32"/><circle cx="36" cy="31" r="2.2" fill="#523a32"/><path d="M26 39Q30 43 34 39" fill="none" stroke="#805643" stroke-width="2"/><path d="M22 53 30 60 38 53" fill="#eea4ae"/>`,
-  'gift-box':`<rect x="11" y="34" width="38" height="34" rx="3" fill="#e9afa9" stroke="#a96e6b" stroke-width="2"/><rect x="8" y="29" width="44" height="10" rx="2" fill="#f6c7b3" stroke="#a96e6b" stroke-width="2"/><path d="M27 29V68H34V29" fill="#f9e0a7"/><path d="M30 29Q10 26 17 17Q23 11 30 29Q40 9 46 17Q54 27 30 29" fill="#f9e0a7" stroke="#bb955b" stroke-width="2"/>`
+// Percent coordinates refer to the immutable 9:16 ritual-room photograph.
+// The first three gifts rest on the front wooden table, with overflow on the
+// rear stone shelf. Objects remain anchored when the mobile address bar moves.
+const placementSlots={
+  1:[[50,68.55]],
+  2:[[43.2,68.55],[56.8,68.55]],
+  3:[[39.5,68.55],[50,68.55],[60.5,68.55]],
+  4:[[39.5,68.55],[50,68.55],[60.5,68.55],[41.5,61.25]],
+  5:[[39.5,68.55],[50,68.55],[60.5,68.55],[41.5,61.25],[58.5,61.25]]
 };
-const svgFor=id=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 80" aria-hidden="true">${artwork[id]||''}</svg>`;
+const productWidths={bouquet:12.2,'flower-basket':13.4,cake:12.6,treats:12.1,drinks:10.3,fruit:13,toys:12.9,'gift-box':11.7};
 const el=(tag,cls,text)=>{
   const node=document.createElement(tag);
   if(cls)node.className=cls;
@@ -128,9 +128,18 @@ async function loadPlaced(animateBatchId=''){
     const gifts=(Array.isArray(rows)?rows:[]).filter(row=>products.has(row.product_id)&&
       Number.isInteger(row.quantity)&&row.quantity>0&&row.quantity<=20);
     const visible=gifts.slice(0,5).reverse();
-    for(const row of visible){
+    const slots=placementSlots[visible.length]||[];
+    for(const [index,row] of visible.entries()){
       const item=el('span','altar-gift'+(row.gift_batch_id===animateBatchId?' just-placed':''));
-      item.innerHTML=svgFor(row.product_id);layer.append(item);
+      const [x,y]=slots[index];
+      item.style.setProperty('--gift-x',x+'%');
+      item.style.setProperty('--gift-y',y+'%');
+      item.style.setProperty('--gift-width',(index<3?productWidths[row.product_id]:productWidths[row.product_id]*.78)+'%');
+      item.dataset.surface=index<3?'table':'shelf';
+      const img=el('img');
+      img.src='/memorial/store-products/'+row.product_id+'.webp';
+      img.alt='';img.decoding='async';
+      item.append(img);layer.append(item);
     }
     recent.replaceChildren();
     if(!gifts.length){recent.append(el('p',null,'아직 제단에 놓인 편의점 선물이 없습니다.'));return;}
