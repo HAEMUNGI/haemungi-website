@@ -111,6 +111,19 @@ assert.match(css,/max-width:460px/);
 assert.match(js,/visibilitychange/);
 assert.match(js,/pagehide/);
 assert.ok(existsSync('dist/memorial/spring-garden-20261104.jpg'));
+// The three supplied memorial artworks are full-frame optimized WebP assets.
+for(const name of ['garden','morning','night']){
+  const filename=`dist/assets/memorial-walk-${name}-20261105.webp`;
+  const asset=readFileSync(filename);
+  assert.equal(asset.toString('ascii',0,4),'RIFF',filename);
+  assert.equal(asset.toString('ascii',8,12),'WEBP',filename);
+  assert.ok(asset.length<300_000,`${filename}: unexpectedly large`);
+  assert.match(css,new RegExp(`memorial-walk-${name}-20261105\\.webp`));
+}
+assert.match(html,/art-shore-night/);
+assert.match(css,/background-size:contain/);
+assert.doesNotMatch(css,/background-size:cover/);
+assert.doesNotMatch(css,/\.scene-(?:garden|trail|shore) \.art-\w+\{transform:.*scale/);
 assert.match(readFileSync('dist/memorial.html','utf8'),/href="\/memorial-walk\.html"/);
 assert.match(readFileSync('dist/memorial-archive.html','utf8'),/href="\/memorial-walk\.html"/);
 for(const file of ['dist/memorial-walk.js','dist/memorial-walk-realtime.mjs']){

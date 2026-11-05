@@ -8,17 +8,13 @@ button{font:inherit;cursor:pointer}a{color:inherit;text-decoration:none}[hidden]
 .walk-main{width:min(1250px,100%);margin:auto;padding:19px clamp(10px,3vw,32px) 50px}.journey-intro{text-align:center;padding:0 0 16px}.journey-intro p{font-size:10px;letter-spacing:.16em;color:#aa8b62;margin:0}.journey-intro h1{font:700 clamp(24px,3vw,33px) 'Gowun Batang',serif;margin:5px 0;color:#6b4635;word-break:keep-all}.journey-intro span{font-size:11px;color:#896f59;line-height:1.6}
 .walk-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,345px);align-items:start;gap:21px}.walk-scene-wrap{min-width:0;display:flex;justify-content:center}
 .walk-stage{--forward:0;position:relative;isolation:isolate;width:100%;height:min(81dvh,910px);min-height:590px;overflow:hidden;overflow:clip;border-radius:24px;border:6px solid #fffdf9;box-shadow:0 24px 65px #7151302b;background:#e1e9db;touch-action:pan-y;user-select:none}
-.scene-art{position:absolute;inset:-3%;background-repeat:no-repeat;background-position:center center;background-size:cover;transition:opacity 950ms ease,transform 1100ms cubic-bezier(.2,.7,.1,1),filter 1300ms ease;will-change:transform;pointer-events:none}
-.art-garden{background-image:url('/memorial/spring-garden-20261104.jpg');transform:scale(calc(1.015 + var(--forward)*.31)) translateY(calc(var(--forward)*-4%))}
-.art-trail{background-image:url('/assets/temple-trail.webp');opacity:0;transform:scale(1.02)}
-.art-shore{background-image:url('/assets/temple-rest.webp');opacity:0;transform:scale(1.02)}
-.scene-trail .art-garden,.scene-shore .art-garden{opacity:0}.scene-trail .art-trail{opacity:1;transform:scale(calc(1.015 + var(--forward)*.22)) translateY(calc(var(--forward)*-3%))}
-.scene-shore .art-shore{opacity:1;transform:scale(1.045) translateY(-1%)}.scene-shore .art-trail{opacity:0}
-.scene-night-wash{position:absolute;inset:0;background:linear-gradient(180deg,#061526c9 0%,#09233ebb 47%,#123754aa 68%,#0a1d30be 100%);opacity:0;transition:opacity 2.5s ease;pointer-events:none;z-index:2}.scene-shore.time-night .scene-night-wash{opacity:1}
-.scene-shore.time-night .art-shore{filter:brightness(.36) saturate(.63) hue-rotate(155deg)}
-.scene-sun{position:absolute;z-index:3;left:19%;top:43%;width:30%;aspect-ratio:1;transform:translate(-50%,50%) scale(.65);border-radius:50%;background:radial-gradient(circle,#ffeda0 0%,#ffd789a8 9%,#ffcf6550 23%,#ffa64a00 67%);opacity:0;pointer-events:none;transition:opacity 2.5s ease,transform 8s ease;filter:blur(3px)}
-.scene-shore.time-morning .scene-sun{opacity:.9;transform:translate(-50%,-47%) scale(1.6)}
-.scene-sea-glow{position:absolute;inset:42% 43% 8% 0%;z-index:3;background:linear-gradient(177deg,#f8e0a700 0%,#ffe6a451 47%,#fff0bb00 95%);clip-path:polygon(39% 0,65% 0,100% 100%,2% 100%);opacity:0;transition:opacity 2.5s ease;pointer-events:none}.scene-shore.time-morning .scene-sea-glow{opacity:1}
+.scene-art{position:absolute;inset:0;background-repeat:no-repeat;background-position:center;background-size:contain;transition:opacity 950ms ease;pointer-events:none}
+.art-garden{background-image:url('/assets/memorial-walk-garden-20261105.webp')}
+.art-trail{background-image:url('/assets/temple-trail.webp');opacity:0}
+.art-shore{background-image:url('/assets/memorial-walk-morning-20261105.webp');opacity:0}
+.art-shore-night{background-image:url('/assets/memorial-walk-night-20261105.webp');opacity:0}
+.scene-trail .art-garden,.scene-shore .art-garden{opacity:0}.scene-trail .art-trail{opacity:1}
+.scene-shore.time-morning .art-shore{opacity:1}.scene-shore.time-night .art-shore-night{opacity:1}.scene-shore .art-trail{opacity:0}
 .scene-petals{position:absolute;inset:0;z-index:4;overflow:hidden;pointer-events:none;opacity:1;transition:opacity 800ms}.scene-trail .scene-petals,.scene-shore .scene-petals{opacity:0}
 .scene-petals i{position:absolute;width:12px;height:8px;background:#fff7e2b5;border-radius:80% 15% 80% 15%;box-shadow:0 1px 3px #d89c8c79;animation:petal-fall 10s linear infinite}.scene-petals i:nth-child(1){left:11%;top:-6%;animation-delay:-2s}.scene-petals i:nth-child(2){left:82%;top:-12%;animation-delay:-6s}.scene-petals i:nth-child(3){left:45%;top:-15%;animation-delay:-8s}.scene-petals i:nth-child(4){left:63%;top:-8%;animation-delay:-4s}.scene-petals i:nth-child(5){left:25%;top:-19%;animation-delay:0s}
 @keyframes petal-fall{to{transform:translate(90px,105vh) rotate(540deg)}}
@@ -46,9 +42,7 @@ footer{text-align:center;border-top:1px solid #eadac9;padding:20px;font-size:10p
 /* Immersive free-walk controls: let the artwork breathe, especially on phones. */
 .walk-stage{--camera-pan:0%;touch-action:pan-y}
 .walk-avatar.is-self{transition:left 80ms linear,top 120ms linear,opacity .4s}
-.scene-garden .art-garden{transform:translateX(var(--camera-pan)) scale(calc(1.055 + var(--forward)*.28)) translateY(calc(var(--forward)*-3%))}
-.scene-trail .art-trail{transform:translateX(var(--camera-pan)) scale(calc(1.065 + var(--forward)*.22)) translateY(calc(var(--forward)*-2%))}
-.scene-shore .art-shore{transform:translateX(var(--camera-pan)) scale(1.075) translateY(-1%)}
+/* Full illustrations remain fixed while the walking avatar and stage transitions move. */
 .journey-hud{top:12px;left:14px;right:14px;grid-template-columns:auto auto;justify-content:space-between;align-items:center}
 .scene-label,.scene-step{background:#fff9e9ce;backdrop-filter:blur(12px);font-size:10px;box-shadow:none;padding:7px 11px;border:1px solid #fffdf3a0}
 .journey-progress{grid-column:1/-1;background:#ffffff6b;height:3px}
@@ -106,4 +100,34 @@ footer{text-align:center;border-top:1px solid #eadac9;padding:20px;font-size:10p
   .time-choice button,.boat-action{width:auto;min-height:40px;padding:9px 12px;font-size:11px;border-radius:11px}
   .star-actions{max-width:none}
   .walk-scene-wrap .scene-message{font-size:10px;min-height:17px}
+}
+
+/* The supplied artworks are portrait (roughly 9:16). Never crop to fill a wide box. */
+.walk-stage{
+  width:min(100%,calc(56.25dvh - 87px),512px);
+  height:auto;min-height:0;aspect-ratio:9 / 16;
+}
+.walk-stage.scene-garden{background:#dce8d3}
+.walk-stage.scene-trail{background:#d4ddd3}
+.walk-stage.scene-shore.time-morning{background:#9bc8e8}
+.walk-stage.scene-shore.time-night{background:#08144c}
+/* Keep the entire garden, sea, balcony, constellations and horizon visible. */
+.walk-stage .scene-art{inset:0;background-size:contain;background-position:center;transform:none;filter:none}
+/* The paper boat now crosses the actual sea in both newly supplied views. */
+.scene-shore.time-morning{--boat-horizon:57%}
+.scene-shore.time-night{--boat-horizon:64%}
+.paper-boat{left:50%;top:70%}
+@keyframes boat-voyage{
+  0%{left:50%;top:70%;transform:translate(-50%,0) scale(1) rotate(-4deg);opacity:1}
+  12%{transform:translate(-50%,-5px) scale(.9) rotate(3deg)}
+  35%{left:50%;top:65%;transform:translate(-50%,0) scale(.62) rotate(-3deg);opacity:1}
+  68%{left:50%;top:var(--boat-horizon);transform:translate(-50%,-4px) scale(.3) rotate(2deg);opacity:.87}
+  100%{left:50%;top:var(--boat-horizon);transform:translate(-50%,0) scale(.025);opacity:0}
+}
+@media(max-width:820px){
+  .walk-stage{width:min(100%,calc(56.25dvh - 87px),512px);height:auto;min-height:0}
+}
+@media(max-width:460px){
+  .walk-stage{width:min(100%,calc(56.25dvh - 75px));height:auto;min-height:0}
+  .walk-scene-wrap.has-shore .walk-stage{width:min(100%,calc(56.25dvh - 123px));height:auto;min-height:0}
 }
