@@ -3,9 +3,13 @@ name: HAEMUNGI Cloudflare Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
   workflow_dispatch:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
 
 permissions:
   contents: read
@@ -39,18 +43,43 @@ jobs:
           node verify-temple.mjs
           node verify-christmas.mjs
 
+      # Cache only derivatives keyed by all eight immutable WebP masters and the renderer.
+      # Original artworks and the on-site warm colour treatment remain unchanged.
+      - name: Reuse verified warm Christmas JPEG derivatives
+        id: warm-jpeg-cache
+        uses: actions/cache@v5
+        with:
+          path: dist/assets/christmas-*.jpg
+          key: haemungi-warm-jpegs-v1-${{ hashFiles('dist/assets/christmas-*.webp', 'build-christmas-warm.sh', 'verify-christmas-decode.sh') }}
+
       - name: Decode all eight Christmas WebP images (pixel-level QA)
+        if: steps.warm-jpeg-cache.outputs.cache-hit != 'true'
         run: bash verify-christmas-decode.sh
 
       - name: Build warm JPEG variants from the 8 original Christmas paintings
+        if: steps.warm-jpeg-cache.outputs.cache-hit != 'true'
         run: bash build-christmas-warm.sh
+
+      - name: Check the eight original-composition JPEGs are ready to deploy
+        run: |
+          test "$(find dist/assets -maxdepth 1 -type f -name 'christmas-*.jpg' | wc -l)" -eq 8
+          for jpg in dist/assets/christmas-*.jpg; do test -s "$jpg"; done
+
+      # Successful browser QA is content-addressed. Any change to the scene,
+      # painting or test automatically invalidates the cached pass marker.
+      - name: Reuse an unchanged Christmas scene browser QA pass
+        id: christmas-qa-cache
+        uses: actions/cache@v5
+        with:
+          path: .ci-cache/christmas-browser-pass
+          key: haemungi-christmas-qa-v1-${{ hashFiles('dist/christmas.html', 'dist/christmas.js', 'dist/christmas.css', 'dist/assets/christmas-*.webp', 'build-christmas-warm.sh', 'verify-christmas-browser.mjs') }}
 
       - name: Probe live artwork integrity (PR diagnostic)
         if: github.event_name == 'pull_request'
         run: bash verify-christmas-live.sh
 
       - name: Test Chromium rendering of Christmas Village scenes (PR)
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.christmas-qa-cache.outputs.cache-hit != 'true'
         run: |
           python3 -m http.server 18763 --bind 127.0.0.1 --directory dist >/tmp/haemungi-warm-preview.log 2>&1 &
           preview_pid=$!
@@ -87,5 +116,11 @@ jobs:
         run: bash verify-christmas-jpeg-live.sh
 
       - name: Test Chromium rendering of published Christmas Village scenes
-        if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'
+        if: github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true' && steps.christmas-qa-cache.outputs.cache-hit != 'true'
         run: node verify-christmas-browser.mjs
+
+      - name: Remember successful Christmas browser QA for unchanged scene assets
+        if: success() && steps.christmas-qa-cache.outputs.cache-hit != 'true' && (github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && steps.cloudflare.outputs.ready == 'true'))
+        run: |
+          mkdir -p .ci-cache
+          printf 'Christmas real Chromium scene QA passed for this source hash.\n' > .ci-cache/christmas-browser-pass
