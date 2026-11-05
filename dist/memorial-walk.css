@@ -190,3 +190,46 @@ footer{text-align:center;border-top:1px solid #eadac9;padding:20px;font-size:10p
   .joystick-thumb{width:32px;height:32px}
   .joystick-hint{font-size:9px}
 }
+
+/* Approved needle-felt mini-me visitors: 2-frame footfalls, depth and direction. */
+.walk-avatar.has-felt{width:min(15%,76px);height:auto;aspect-ratio:4 / 5;filter:drop-shadow(0 2px 3px #4b342a50)}
+.walk-avatar.has-felt .avatar-art{position:absolute;inset:0;transform-origin:50% 88%}
+.walk-avatar.has-felt .avatar-felt-main,.walk-avatar.has-felt .avatar-felt-alt{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;transform-origin:50% 60%}
+.walk-avatar.has-felt .avatar-felt-alt{opacity:0}
+.walk-avatar.has-felt[data-facing="left"] .avatar-felt-main,.walk-avatar.has-felt[data-facing="left"] .avatar-felt-alt{transform:scaleX(-1)}
+.walk-avatar.has-felt .avatar-shadow{left:17%;bottom:1%;width:66%;height:6%;border:0;background:#5945323b;filter:blur(3px)}
+.walk-avatar.has-felt .avatar-label{top:-22px;font-size:11px;max-width:128px;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 8px #66533e25}
+.walk-stage.is-walking .walk-avatar.is-self.has-felt .avatar-art{animation:felt-mini-bob .36s ease-in-out infinite alternate}
+.walk-stage.is-walking .walk-avatar.is-self.has-felt .avatar-felt-alt{animation:felt-mini-step .36s steps(1,end) infinite}
+@keyframes felt-mini-bob{from{transform:translateY(1px) rotate(-2deg)}to{transform:translateY(-2px) rotate(2deg)}}
+@keyframes felt-mini-step{0%,49.99%{opacity:0}50%,100%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.walk-stage.is-walking .walk-avatar.is-self.has-felt .avatar-art,.walk-stage.is-walking .walk-avatar.is-self.has-felt .avatar-felt-alt{animation:none!important}}
+
+/* Translucent glass entry: selection is local and never sent to Realtime. */
+.walk-identity-dialog{width:min(530px,calc(100vw - 24px));max-height:calc(100svh - 28px);padding:0;border:1px solid #fffefaed;border-radius:24px;background:linear-gradient(145deg,#fffaf1e8,#f6e6d8e0 58%,#fffdf5df);color:#554030;box-shadow:0 28px 90px #2c1d1670,inset 0 1px 0 #fff;backdrop-filter:blur(24px) saturate(135%);-webkit-backdrop-filter:blur(24px) saturate(135%);overflow:auto}
+.walk-identity-dialog::backdrop{background:#30251b74;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.walk-identity-form{padding:25px clamp(16px,4vw,32px) 28px;text-align:center}
+.identity-eyebrow{margin:0;color:#a67e62;letter-spacing:.17em;font-size:10px;font-weight:700}
+.walk-identity-form h2{font:700 clamp(21px,4.4vw,27px)/1.38 'Gowun Batang',serif;color:#55382d;margin:8px 0 6px;word-break:keep-all}
+.walk-identity-form>p:not(.identity-eyebrow):not(.identity-error):not(.identity-privacy){margin:0 0 16px;color:#806c5c;font-size:12px}
+.walk-gender-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;border:0;margin:8px 0 17px;padding:0;min-width:0}
+.walk-gender-choices legend{font-size:12px;font-weight:700;text-align:left;margin-bottom:8px}
+.felt-choice{position:relative;display:flex;align-items:center;flex-direction:column;justify-content:center;gap:6px;min-width:0;padding:9px 7px 12px;border:2px solid #fefbf1c9;border-radius:17px;background:#fffefa8d;box-shadow:0 4px 19px #9d745d20;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease}
+.felt-choice:hover{background:#fffdf6db;transform:translateY(-2px)}
+.felt-choice input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.felt-choice:focus-within{outline:3px solid #ba8b60;outline-offset:2px}
+.felt-choice:has(input:checked){background:#fff4e6e9;border-color:#b68760;box-shadow:0 0 0 3px #dbb58a45,0 6px 22px #9d745d27}
+.felt-choice strong{font-size:13px;color:#634b39}
+.felt-portrait{display:grid;place-items:end center;width:100%;height:165px;overflow:hidden}
+.felt-portrait img{display:block;width:100%;height:100%;object-fit:contain;object-position:bottom center}
+.walk-nickname-label{display:block;text-align:left;font-weight:700;font-size:12px;margin-bottom:7px}
+.walk-nickname-input{width:100%;height:45px;border:1px solid #cfad92;background:#fffefaec;border-radius:11px;padding:0 13px;font:500 14px 'Noto Sans KR',sans-serif;color:#4b382b;outline:none}
+.walk-nickname-input:focus{border-color:#aa7c57;box-shadow:0 0 0 3px #d9b99455}
+.identity-error{min-height:17px;color:#9a473a;font-size:11px;margin:7px 0}
+.identity-privacy{font-size:10px;line-height:1.65;color:#877362;margin:1px 0 14px}
+.walk-enter-btn{width:100%;min-height:47px;border:1px solid #9b7157;border-radius:12px;background:linear-gradient(135deg,#9b7258,#80604f);box-shadow:0 6px 18px #71513e3e;color:#fffdf8;font-weight:700;font-size:15px}
+.walk-enter-btn:hover{background:linear-gradient(135deg,#a87b60,#8e6853)}
+.walk-customize{display:block;width:100%;margin:8px 0 0;padding:10px 12px;border:1px solid #dcc7b1;border-radius:11px;background:#fffaf4c7;color:#806047;font-size:12px;font-weight:700}
+.walk-customize:hover{background:#fff0df}
+@media(max-width:460px){.walk-identity-form{padding:20px 15px 22px}.felt-portrait{height:137px}.walk-identity-form h2{font-size:20px}.walk-gender-choices{gap:9px}.felt-choice{padding:6px 5px 9px}}
+@media(prefers-reduced-motion:reduce){.felt-choice{transition:none}}

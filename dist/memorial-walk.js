@@ -5,6 +5,8 @@ import {LAST_STEP,PUBLIC_STAR_PAGE_SIZE,sceneForRelayY,
 import {advancePose,advanceShorePose,limit,movementScene,movementSceneProgress,
   tapDestination,shoreTapDestination,projectedWalkPosition,shorePoint,pathPoint,
   WALK_PATHS,WALK_SPEED,LANE_SPEED,SHORE_SPEED} from './memorial-walk-motion.mjs?v=20261105-freewalk2';
+import {WALK_IDENTITY_KEY,FELT_AVATARS,cleanWalkIdentity,cleanWalkNickname,
+  genderForTone} from './memorial-walk-identity.mjs';
 
 const $=id=>document.getElementById(id);
 const stage=$('walkStage'),avatarLayer=$('walkAvatars'),self=$('walkSelf');
@@ -14,7 +16,12 @@ const shoreVideos=[sunriseIntro,sunriseIdle,nightOcean];
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
 const cfg=window.HAEMUNGI_CONTENT_CONFIG||{};
 const random=new Uint8Array(1);crypto.getRandomValues(random);
-const tone=random[0]%5,visitorId=crypto.randomUUID(); // Anonymous and temporary.
+const visitorId=crypto.randomUUID(); // Anonymous and temporary.
+function savedIdentity(){
+  try{return cleanWalkIdentity(JSON.parse(localStorage.getItem(WALK_IDENTITY_KEY)||'null'));}
+  catch{return null;}
+}
+let identity=savedIdentity(),tone=identity?FELT_AVATARS[identity.gender].tone:random[0]%2;
 const requestedRoom=new URLSearchParams(location.search).get('room');
 let seed=/^0[1-8]$/.test(requestedRoom||'')?Number(requestedRoom)-1:random[0]%ROOM_COUNT;
 let distance=0,lane=.5,shoreDepth=0,pendingBoat=false,dayTime='morning',onlineWanted=false,relay=null;
@@ -77,13 +84,23 @@ function setAvatarPosition(node,x,atDistance=distance,atShoreDepth=shoreDepth){
   node.style.top=(pos.y*100).toFixed(2)+'%';
   node.style.setProperty('--avatar-scale',pos.scale.toFixed(3));
 }
+function applyFeltAvatar(node,gender,nickname){
+  const assets=FELT_AVATARS[gender]||FELT_AVATARS.male;
+  node.classList.add('has-felt');node.dataset.gender=gender;
+  node.querySelector('.avatar-felt-main').src=assets.idle;
+  node.querySelector('.avatar-felt-alt').src=assets.step;
+  node.querySelector('.avatar-label').textContent=nickname;
+}
 function makeVisitor(visitor){
-  const node=document.createElement('div');node.className='walk-avatar';node.dataset.tone=String(visitor.tone);
-  for(const name of ['avatar-shadow','avatar-head','avatar-body','avatar-scarf','avatar-label']){
-    const part=document.createElement('span');part.className=name;
-    if(name==='avatar-label')part.textContent='방문 별';
-    node.appendChild(part);
+  const node=document.createElement('div');node.className='walk-avatar has-felt';node.dataset.tone=String(visitor.tone);
+  const shadow=document.createElement('span');shadow.className='avatar-shadow';node.append(shadow);
+  const art=document.createElement('span');art.className='avatar-art';
+  for(const name of ['avatar-felt-main','avatar-felt-alt']){
+    const img=document.createElement('img');img.className=name;img.alt='';img.decoding='async';art.append(img);
   }
+  node.append(art);
+  const label=document.createElement('span');label.className='avatar-label';node.append(label);
+  applyFeltAvatar(node,genderForTone(visitor.tone),'방문 별');
   return node;
 }
 function renderPeers(visitors=currentPeers){
@@ -96,12 +113,48 @@ function renderPeers(visitors=currentPeers){
     if(!node){node=makeVisitor(visitor);peerViews.set(visitor.id,node);avatarLayer.append(node);}
     node.dataset.visitorHash=String(parseInt(visitor.id.slice(0,8),16)%100);
     node.dataset.tone=String(visitor.tone);
+    if(node.dataset.gender!==genderForTone(visitor.tone))
+      applyFeltAvatar(node,genderForTone(visitor.tone),'방문 별');
     const peerDistance=limit(Math.round((.93-visitor.y)/.36*LAST_STEP),0,LAST_STEP);
     setAvatarPosition(node,visitor.x,peerDistance,.35);
   }
   for(const [id,node] of peerViews)if(!present.has(id)){node.remove();peerViews.delete(id);}
   $('walkCount').textContent='내 화면의 방문자 · '+(present.size+1)+'명';
 }
+const identityDialog=$('walkIdentityDialog');
+const identityForm=$('walkIdentityForm');
+function openIdentityDialog(){
+  stopMotion();
+  for(const radio of identityForm.querySelectorAll('[name="walkGender"]'))
+    radio.checked=identity?.gender===radio.value;
+  $('walkNickname').value=identity?.nickname||'';
+  $('walkIdentityError').textContent='';
+  if(!identityDialog.open){
+    if(typeof identityDialog.showModal==='function')identityDialog.showModal();
+    else identityDialog.setAttribute('open','');
+  }
+}
+identityForm.addEventListener('submit',event=>{
+  event.preventDefault();
+  const gender=identityForm.elements.namedItem('walkGender')?.value;
+  const nickname=cleanWalkNickname($('walkNickname').value);
+  const selected=cleanWalkIdentity({gender,nickname});
+  if(!selected){
+    $('walkIdentityError').textContent=!gender?'남성 또는 여성 미니미를 선택해 주세요.':'닉네임을 입력해 주세요.';
+    (!gender?identityForm.querySelector('input[name="walkGender"]'):$('walkNickname')).focus();
+    return;
+  }
+  identity=selected;tone=FELT_AVATARS[selected.gender].tone;
+  self.dataset.tone=String(tone);
+  applyFeltAvatar(self,selected.gender,selected.nickname);
+  try{localStorage.setItem(WALK_IDENTITY_KEY,JSON.stringify(selected));}
+  catch{/* The active walk still works if the browser blocks local storage. */}
+  if(typeof identityDialog.close==='function')identityDialog.close();
+  else identityDialog.removeAttribute('open');
+  if(onlineWanted)newRelay();
+  announce(selected.nickname+'님, 별빛 산책길에 오신 것을 환영해요.');
+});
+$('walkCustomize').addEventListener('click',openIdentityDialog);
 function showStatus(state,_,roomIndex){
   const copy={solo:'혼자 조용히 둘러볼 수 있습니다.',connecting:'다른 방문자와 이어지는 중입니다…',
     online:'같은 길에 있는 다른 방문자를 볼 수 있습니다.',
@@ -282,8 +335,11 @@ function motionFrame(stamp){
   if(!hasMotion()){stage.classList.remove('is-walking');previousFrame=0;return;}
   const dt=previousFrame?Math.min((stamp-previousFrame)/1000,.06):.016;
   previousFrame=stamp;
+  const vector=axes();
+  if(vector.x>.15)self.dataset.facing='right';
+  else if(vector.x<-.15)self.dataset.facing='left';
   if(movementScene(distance)==='shore'){
-    const next=advanceShorePose({depth:shoreDepth,lane},axes(),dt);
+    const next=advanceShorePose({depth:shoreDepth,lane},vector,dt);
     if(tapTarget?.kind==='shore'){
       if(reached(next.depth,tapTarget.depth,SHORE_SPEED*dt))next.depth=tapTarget.depth;
       if(reached(next.lane,tapTarget.lane,LANE_SPEED*dt))next.lane=tapTarget.lane;
@@ -296,7 +352,7 @@ function motionFrame(stamp){
     const now=performance.now();
     if(now-lastPresenceAt>=150){relay?.move(lane,relayYForStep(distance));lastPresenceAt=now;}
   }else{
-    const next=advancePose({distance,lane},axes(),dt);
+    const next=advancePose({distance,lane},vector,dt);
     if(tapTarget?.kind==='walk'){
       if(reached(next.distance,tapTarget.distance,WALK_SPEED*dt))next.distance=tapTarget.distance;
       if(reached(next.lane,tapTarget.lane,LANE_SPEED*dt))next.lane=tapTarget.lane;
@@ -348,6 +404,7 @@ stage.addEventListener('click',event=>{
   resumeMotion();
 });
 window.addEventListener('keydown',event=>{
+  if(identityDialog.open)return;
   if(event.target.closest?.('input,textarea,select,[contenteditable="true"]'))return;
   const axis=keyAxes[event.key.toLowerCase()];if(!axis)return;
   event.preventDefault();tapTarget=null;pendingBoat=false;hideWalkTarget();keys.add(axis);resumeMotion();
@@ -398,5 +455,7 @@ document.addEventListener('visibilitychange',()=>{
   }
 });
 window.addEventListener('pagehide',()=>{relay?.stop();shoreVideos.forEach(video=>video.pause());});
+applyFeltAvatar(self,identity?.gender||genderForTone(tone),identity?.nickname||'나');
 self.dataset.tone=String(tone);
 setAvatarPosition(self,lane);showStatus('solo','',-1);updateJourney();
+if(!identity)openIdentityDialog();

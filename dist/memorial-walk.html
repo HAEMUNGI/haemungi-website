@@ -7,9 +7,11 @@
   <meta name="description" content="꽃길을 걸어 바닷가 절에 도착하고, 종이배를 띄우고, 별이 된 아이들을 만나며 일출을 바라보는 별빛 추모관의 산책 여정입니다.">
   <title>기억의 산책길 | 별빛 추모관 · 헤뭉이</title>
   <link rel="preload" as="image" type="image/webp" href="/assets/memorial-walk-garden-20261105.webp">
-  <link rel="stylesheet" href="/memorial-walk.css?v=20261105-living-sea1">
+  <link rel="preload" as="image" type="image/webp" href="/assets/avatars/felt-male-idle.webp">
+  <link rel="preload" as="image" type="image/webp" href="/assets/avatars/felt-female-idle.webp">
+  <link rel="stylesheet" href="/memorial-walk.css?v=20261106-felt1">
   <script src="/content-config.js" defer></script>
-  <script type="module" src="/memorial-walk.js?v=20261105-living-sea1"></script>
+  <script type="module" src="/memorial-walk.js?v=20261106-felt1"></script>
 </head>
 <body>
   <a class="skip-link" href="#walk-main">산책길 본문으로 이동</a>
@@ -18,6 +20,31 @@
     <div class="walk-wordmark">✧ 기억의 산책길 <small>STARLIGHT MEMORY JOURNEY</small></div>
     <a href="/temple.html#trail" class="book-link">마음쉼터 지도 ↗</a>
   </header>
+  <dialog id="walkIdentityDialog" class="walk-identity-dialog" aria-labelledby="walkIdentityTitle" aria-describedby="walkIdentityDescription">
+    <form id="walkIdentityForm" class="walk-identity-form" novalidate>
+      <p class="identity-eyebrow">HAEMUNGI · STARLIGHT WORLD</p>
+      <h2 id="walkIdentityTitle">별빛 산책길에 오신 것을 환영해요</h2>
+      <p id="walkIdentityDescription">함께 걸을 양모펠트 미니미를 선택하고 이름을 붙여 주세요.</p>
+      <fieldset class="walk-gender-choices">
+        <legend>나의 아바타 선택</legend>
+        <label class="felt-choice">
+          <input type="radio" name="walkGender" value="male" required>
+          <span class="felt-portrait"><img src="/assets/avatars/felt-male-idle.webp" alt="파란 후드의 남성 양모펠트 아바타" width="400" height="500"></span>
+          <strong>남성 미니미</strong>
+        </label>
+        <label class="felt-choice">
+          <input type="radio" name="walkGender" value="female" required>
+          <span class="felt-portrait"><img src="/assets/avatars/felt-female-idle.webp" alt="분홍 카디건의 여성 양모펠트 아바타" width="400" height="500"></span>
+          <strong>여성 미니미</strong>
+        </label>
+      </fieldset>
+      <label class="walk-nickname-label" for="walkNickname">산책길에서 사용할 닉네임</label>
+      <input id="walkNickname" class="walk-nickname-input" type="text" name="walkNickname" placeholder="예: 별빛산책자" maxlength="12" autocomplete="off" spellcheck="false" required>
+      <p id="walkIdentityError" class="identity-error" role="status" aria-live="polite"></p>
+      <p class="identity-privacy">닉네임과 아바타 선택은 내 브라우저에만 저장됩니다. 닉네임은 다른 방문자에게 전송하지 않습니다.</p>
+      <button type="submit" class="walk-enter-btn">✧ 별빛 세계에 입장하기</button>
+    </form>
+  </dialog>
   <main id="walk-main" class="walk-main">
     <section class="journey-intro" aria-label="산책 소개">
       <p>소중한 기억과 함께 걷는 길</p>
@@ -47,8 +74,10 @@
             <div class="journey-progress"><span id="walkProgress"></span></div>
           </div>
           <div id="walkAvatars" class="walk-avatars" aria-hidden="true">
-            <div id="walkSelf" class="walk-avatar is-self" data-tone="0">
-              <span class="avatar-shadow"></span><span class="avatar-head"></span><span class="avatar-body"></span><span class="avatar-scarf"></span><span class="avatar-label">나</span>
+            <div id="walkSelf" class="walk-avatar is-self has-felt" data-tone="0" data-gender="male">
+              <span class="avatar-shadow"></span>
+              <span class="avatar-art"><img class="avatar-felt-main" src="/assets/avatars/felt-male-idle.webp" alt=""><img class="avatar-felt-alt" src="/assets/avatars/felt-male-step.webp" alt=""></span>
+              <span class="avatar-label">나</span>
             </div>
           </div>
           <div id="walkJoystick" class="walk-joystick" role="group" aria-label="드래그해서 원하는 방향으로 걷기">
@@ -88,6 +117,7 @@
           <button id="walkChangeRoom" type="button" class="walk-secondary" hidden>다른 꽃길</button>
           <button id="walkShare" type="button" class="walk-secondary">같은 길 초대</button>
         </div>
+        <button id="walkCustomize" type="button" class="walk-customize">✿ 내 미니미 · 닉네임 바꾸기</button>
         <p class="walk-note">함께 걷기는 소규모 시범 기능입니다. 임시 아바타 위치와 종이배 띄우기 신호만 공유합니다. 이름·사진·추모 내용은 실시간 채널로 보내지 않습니다.</p>
         <nav class="walk-destinations" aria-label="관련 장소">
           <a href="/temple.html#trail">절의 해안 산책로 보기</a>
