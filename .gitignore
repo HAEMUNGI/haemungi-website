@@ -8,3 +8,6 @@
 node_modules/
 *.log
 .DS_Store
+
+# Restored byte-for-byte from two tracked build parts before tests and deployment.
+dist/memorial/store-entry.mp4

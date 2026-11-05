@@ -80,6 +80,7 @@ footer{text-align:center;border-top:1px solid #eadac9;padding:20px;font-size:10p
   .joystick-thumb{width:34px;height:34px}
   .joystick-hint{font-size:9px}
 }
+.walk-destinations a:last-child{grid-column:1/-1;background:#fff1e7;border-color:#e8bfab;color:#825442;font-weight:700}
 @media(prefers-reduced-motion:reduce){.walk-stage.is-walking .avatar-head,.walk-stage.is-walking .avatar-body,.walk-stage.is-walking .avatar-body:before,.walk-stage.is-walking .avatar-body:after{animation:none!important}}
 
 /* Sea interactions belong underneath the image, as quiet outlined controls. */

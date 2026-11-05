@@ -28,6 +28,11 @@ jobs:
       - name: Checkout public website source
         uses: actions/checkout@v6
 
+      - name: Restore exact approved pet store film from lossless upload parts
+        run: |
+          cat media-source/memorial-store/entry-00.bin media-source/memorial-store/entry-01.bin > dist/memorial/store-entry.mp4
+          echo '1d85d7a9e70ffe813b4c8c42f8ac8801d1ebd3f29b0d2cdf2cbcc4f34052c604  dist/memorial/store-entry.mp4' | sha256sum -c -
+
       - name: Verify website, languages, and analytics privacy
         run: |
           node verify-haemungi.mjs
@@ -40,6 +45,7 @@ jobs:
           node verify-memorial-scale.cjs
           node verify-memorial-walk.mjs
           node verify-memorial-journey.mjs
+          node verify-memorial-store.mjs
           node verify-temple.mjs
           node verify-christmas.mjs
 

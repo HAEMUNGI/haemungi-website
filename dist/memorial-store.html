@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fff9ef">
+  <meta name="description" content="별빛 펫 편의점. 꽃, 꽃바구니, 간식, 장난감을 골라 무료 가상 선물함에 담는 따뜻한 추모 체험입니다.">
+  <title>별빛 펫 편의점 | 헤뭉이 별빛 추모공원</title>
+  <link rel="preload" as="image" href="/memorial/store-corridor.jpg">
+  <link rel="stylesheet" href="/memorial-store.css?v=20261105-1">
+  <script type="module" src="/memorial-store.js?v=20261105-1"></script>
+</head>
+<body>
+  <a href="#storeMain" class="skip-link">편의점 본문으로 이동</a>
+  <header class="store-topbar">
+    <a href="/memorial.html#entrance" aria-label="별빛 추모관으로 돌아가기">← 별빛 추모공원</a>
+    <strong>✿ 별빛 펫 편의점 <small>STARLIGHT PET STORE</small></strong>
+    <a href="/memorial-walk.html">산책길 ↗</a>
+  </header>
+  <main id="storeMain">
+    <div class="store-heading">
+      <span>MEMORY GIFT SHOP</span>
+      <h1>그리운 마음을 고르는 작은 가게</h1>
+      <p>꽃다발과 간식, 장난감과 선물을 천천히 둘러보세요.</p>
+    </div>
+    <div class="store-layout">
+      <section class="store-experience" aria-label="편의점 입장 영상과 매장 상품 선택">
+        <div class="store-stage" id="storeStage">
+          <video id="storeFilm" poster="/memorial/store-corridor.jpg" preload="metadata" playsinline disablepictureinpicture aria-label="별빛 펫 편의점의 복도 측면 입구부터 내부를 둘러보고 점원의 인사를 듣는 약 10초 입장 영상">
+            <source src="/memorial/store-entry.mp4" type="video/mp4">
+          </video>
+          <img id="storeStill" src="/memorial/store-interior.jpg" alt="별빛 펫 편의점 내부 전경. 왼쪽에는 꽃다발과 꽃바구니, 가운데에는 케이크·인형·선물 상자, 오른쪽에는 간식·음료·과일과 계산대가 진열되어 있습니다." hidden>
+          <div id="storeHotspots" class="store-hotspots" aria-label="매장 물건을 눌러 상품 선택" hidden></div>
+          <div id="storeCover" class="store-cover">
+            <div class="store-welcome">
+              <span>✧ STARLIGHT MEMORIAL</span>
+              <p>별빛 펫 편의점으로 오세요.</p>
+              <button id="enterStore" class="primary-action" type="button">편의점에 들어가기</button>
+              <small>누르면 약 10초간 매장을 둘러봅니다. 소리가 재생될 수 있어요.</small>
+            </div>
+          </div>
+          <button id="skipStore" class="skip-action" type="button" hidden>영상 건너뛰기</button>
+        </div>
+        <div class="store-below">
+          <p id="storeStatus" role="status" aria-live="polite">입장 영상을 보거나 아래 ‘바로 상품 보기’를 선택하세요.</p>
+          <div class="store-film-actions">
+            <button id="viewProducts" type="button">바로 상품 보기</button>
+            <button id="replayStore" type="button" hidden>↻ 매장 다시 둘러보기</button>
+          </div>
+        </div>
+        <p class="store-tap-hint">상품 화면에서는 그림 속 꽃·케이크·장난감·간식 등을 직접 눌러 선택할 수 있어요. 키보드로도 선택 가능합니다.</p>
+      </section>
+      <aside class="store-sidebar" aria-label="선택 상품과 장바구니">
+        <section class="store-paper selected-product" id="selectionPanel">
+          <span class="section-eyebrow">YOUR PICK</span>
+          <h2>어떤 선물을 고를까요?</h2>
+          <p id="selectedDescription">매장 속 원하는 물건이나 아래 상품 목록을 눌러주세요.</p>
+          <div id="quantityControls" class="quantity-controls" hidden>
+            <label for="productQuantity">수량</label>
+            <button id="decreaseQuantity" type="button" aria-label="수량 하나 줄이기">−</button>
+            <input id="productQuantity" type="number" inputmode="numeric" min="1" max="20" value="1">
+            <button id="increaseQuantity" type="button" aria-label="수량 하나 늘리기">+</button>
+          </div>
+          <button id="addToCart" class="primary-action" type="button" disabled>무료 장바구니에 담기</button>
+        </section>
+        <section class="store-paper" aria-label="무료 장바구니">
+          <div class="side-title"><h2>장바구니</h2><span id="cartCount">0개</span></div>
+          <div id="cartList" class="cart-list" aria-live="polite"><p class="empty-note">아직 담은 물건이 없습니다.</p></div>
+          <p class="cart-price">총 결제금액 <strong>0원</strong> <small>가상 선물 체험</small></p>
+          <div class="cart-actions">
+            <button id="saveGift" class="primary-action" type="button" disabled>내 선물함에 보관하기</button>
+            <button id="clearCart" class="quiet-action" type="button" disabled>장바구니 비우기</button>
+          </div>
+        </section>
+        <section class="store-paper gift-box" aria-label="내 선물함">
+          <div class="side-title"><h2>내 선물함</h2><span id="giftCount">0묶음</span></div>
+          <div id="giftList" class="gift-list"><p class="empty-note">담아 둔 선물이 여기에 표시됩니다.</p></div>
+          <p class="gift-disclaimer">무료 가상 선물함이며 이 브라우저에만 저장됩니다. 실제 배송·결제나 특정 반려동물의 추모 기록 등록은 이루어지지 않습니다.</p>
+        </section>
+      </aside>
+    </div>
+    <section class="product-directory" aria-label="모든 가상 상품">
+      <div class="directory-heading"><span>STORE COLLECTION</span><h2>매장의 여덟 가지 선물</h2></div>
+      <div id="productDirectory" class="product-directory-grid"></div>
+    </section>
+  </main>
+  <footer>© HAEMUNGI · 일현 조성훈 <span>소중한 기억에 따뜻한 선물을.</span></footer>
+</body>
+</html>
