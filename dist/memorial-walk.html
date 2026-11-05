@@ -26,7 +26,7 @@
     </section>
     <div class="walk-layout">
       <section class="walk-scene-wrap" aria-label="꽃길에서 바다까지 이어지는 체험 장면">
-        <div id="walkStage" class="walk-stage scene-garden time-morning" role="group" tabindex="0" aria-label="기억의 산책길. 앞으로 걷기 버튼이나 위쪽 화살표 키로 이동합니다.">
+        <div id="walkStage" class="walk-stage scene-garden time-morning" role="group" tabindex="0" aria-label="기억의 산책길. 왼쪽 원형 조이스틱을 움직이거나 길 위를 눌러 걷습니다. 키보드 방향키와 WASD도 사용할 수 있습니다.">
           <div class="scene-art art-garden" aria-hidden="true"></div>
           <div class="scene-art art-trail" aria-hidden="true"></div>
           <div class="scene-art art-shore" aria-hidden="true"></div>
@@ -46,24 +46,21 @@
               <span class="avatar-shadow"></span><span class="avatar-head"></span><span class="avatar-body"></span><span class="avatar-scarf"></span><span class="avatar-label">나</span>
             </div>
           </div>
-          <div id="sceneMessage" class="scene-message" role="status" aria-live="polite">꽃길을 따라 천천히 걸어보세요.</div>
-          <div id="shoreActions" class="shore-actions" hidden>
-            <div class="time-choice" role="group" aria-label="바다의 시간 선택">
-              <button id="morningButton" type="button" aria-pressed="true">☀ 아침 · 해돋이</button>
-              <button id="nightButton" type="button" aria-pressed="false">✧ 밤 · 아이들의 별</button>
-            </div>
-            <button id="floatBoat" type="button" class="boat-action">⌁ 종이배 띄우기</button>
-            <div id="starActions" class="star-actions" hidden>
-              <button id="nextStars" type="button" disabled>다음 별자리 보기</button>
-              <a href="/memorial-archive.html">아이 이름 검색 ↗</a>
-            </div>
+          <div id="walkJoystick" class="walk-joystick" role="group" aria-label="드래그해서 원하는 방향으로 걷기">
+            <div class="joystick-track"><div id="joystickThumb" class="joystick-thumb" aria-hidden="true">✧</div></div>
+            <span class="joystick-hint">움직여 걷기</span>
           </div>
-          <div class="walk-controls">
-            <div class="walk-controls-main">
-              <button type="button" id="walkBack" class="back-step" aria-label="이전 풍경으로 걷기">← 뒤로</button>
-              <button type="button" id="walkForward" class="forward-step">앞으로 걷기 <span>↑</span></button>
-            </div>
-            <p id="walkHint">앞으로 6걸음 · 절의 해안 산책로</p>
+        </div>
+        <p id="sceneMessage" class="scene-message" role="status" aria-live="polite">길 위를 누르거나 왼쪽 조이스틱을 움직여 보세요.</p>
+        <div id="shoreActions" class="shore-actions" aria-label="바다 체험 선택" hidden>
+          <div class="time-choice" role="group" aria-label="바다의 시간 선택">
+            <button id="morningButton" type="button" aria-pressed="true">☀ 해돋이</button>
+            <button id="nightButton" type="button" aria-pressed="false">✧ 밤하늘</button>
+          </div>
+          <button id="floatBoat" type="button" class="boat-action">⌁ 종이배 띄우기</button>
+          <div id="starActions" class="star-actions" hidden>
+            <button id="nextStars" type="button" disabled>다음 별자리 보기</button>
+            <a href="/memorial-archive.html">아이 이름 검색 ↗</a>
           </div>
         </div>
       </section>
