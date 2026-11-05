@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync,statSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import {cleanPetQuery,photoForPublicPet,formatRemaining,isRoomEligible} from './dist/memorial-communal-core.mjs';
 
 const read=path=>readFileSync(path,'utf8');
@@ -23,11 +24,20 @@ assert.match(css,/\.temporary-monitor\{position:absolute;left:18%;top:31\.1%;wid
 for(const name of ['communal-hall.mp4','communal-hall-poster.webp','communal-hall-final.webp']){
   assert.ok(statSync('dist/memorial/'+name).size>60000,'Missing or empty '+name);
 }
-const video=JSON.parse(execFileSync('ffprobe',['-v','error','-show_entries',
-  'format=duration:stream=width,height','-of','json','dist/memorial/communal-hall.mp4'],{encoding:'utf8'}));
-assert.ok(Math.abs(Number(video.format.duration)-10)<.2,'Video must run for 10 seconds');
-assert.equal(video.streams.find(s=>s.width)?.width,720);
-assert.equal(video.streams.find(s=>s.height)?.height,1280);
+const originalFilm=readFileSync('dist/memorial/communal-hall.mp4');
+assert.equal(createHash('sha256').update(originalFilm).digest('hex'),
+  '8df5f8fbab2d40d493e0245ef5e8a47e60ee6746efb50e5ae48083d1b163bbd2',
+  'The exact original approved 10-second film must be deployed');
+try{
+  const video=JSON.parse(execFileSync('ffprobe',['-v','error','-show_entries',
+    'format=duration:stream=width,height','-of','json','dist/memorial/communal-hall.mp4'],{encoding:'utf8'}));
+  assert.ok(Math.abs(Number(video.format.duration)-10)<.2,'Video must run for 10 seconds');
+  assert.equal(video.streams.find(s=>s.width)?.width,720);
+  assert.equal(video.streams.find(s=>s.height)?.height,1280);
+}catch(error){
+  if(error.code!=='ENOENT')throw error;
+  console.log('ffprobe unavailable: byte-exact verified 10-second film hash used instead.');
+}
 assert.equal(cleanPetQuery('<script>레오_%'), 'script레오');
 assert.equal(formatRemaining(600000),'10:00');
 assert.equal(formatRemaining(-2000),'00:00');
