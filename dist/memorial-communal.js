@@ -182,9 +182,13 @@ async function refreshAvailability(){
   status('roomAvailability','이용 가능 여부를 확인합니다…');
   try{
     const response=await bookingRPC('status');
-    if(response.status==='available')status('roomAvailability','현재 비어 있습니다. 지금 10분 이용을 예약할 수 있어요.');
-    else if(response.status==='occupied')status('roomAvailability','다른 가족이 이용 중입니다. 종료까지 약 '+formatRemaining(Date.parse(response.expires_at)-Date.now())+' 남았습니다.');
-    else if(response.status==='active')status('roomAvailability','현재 예약하신 임시 제례실이 있습니다.');
+    if(response.status==='available'){
+      const others=Number(response.rooms_in_use);
+      const count=Number.isFinite(others)?`현재 ${others}개의 방에서 추모 중입니다. `:'';
+      status('roomAvailability',count+'독립 임시 제례실을 바로 배정받아 10분간 이용할 수 있습니다.');
+    }
+    else if(response.status==='occupied')status('roomAvailability','현재 모든 임시 제례실이 이용 중입니다. 약 '+formatRemaining(Date.parse(response.expires_at)-Date.now())+' 후 다시 확인해 주세요.');
+    else if(response.status==='active')status('roomAvailability','이미 이용 중인 임시 제례실이 있습니다. 남은 시간 동안 다시 입장할 수 있습니다.');
     else status('roomAvailability','예약 상태를 확인할 수 없습니다.');
     reserve.disabled=!isRoomEligible(selectedPet)||!['available','active'].includes(response.status);
     reserve.textContent=response.status==='active'?'현재 예약한 제례실로 돌아가기':'선택한 아이와 10분 보내기';
@@ -208,10 +212,14 @@ function startRitual(row,result){
     status('reservationStatus','이용 시간이 끝났습니다. 예약 상태를 확인해 주세요.');return;
   }
   booking={id:row.id,expires};
+  const roomKey=String(result.room_key||'');
+  const roomNumber=roomKey==='shared'?'001':/^room-[0-9]{4}$/.test(roomKey)?String(Number(roomKey.slice(5))).padStart(3,'0'):'';
+  status('ritualRoomLabel',roomNumber?'별빛 임시 제례실 '+roomNumber+'호':'나만의 임시 제례실');
   const img=$('temporaryPetPhoto');img.src=photo(row);img.alt=row.pet_name+'의 공개 추모 사진';
   $('temporaryPetName').textContent=row.pet_name;
   $('temporaryPetDates').textContent=[row.born_on,row.passed_on].filter(Boolean).join(' ~ ');
   status('ritualSubtitle',row.pet_name+'에게 전하는 조용한 인사');
+  status('ritualStatus','10분 후 자동으로 이용이 종료됩니다. 다른 가족의 공간과 독립적으로 이용합니다.');
   $('kioskDialog').close();$('hallView').hidden=true;$('ritualView').hidden=false;
   window.scrollTo({top:0,behavior:'instant'});
   if(interval)clearInterval(interval);
@@ -254,7 +262,7 @@ $('reserveRoom').addEventListener('click',async()=>{
       const pet=response.memorial_id===selectedPet.id?selectedPet:await fetchPetById(response.memorial_id);
       startRitual(pet,response);
     }else if(response.status==='occupied'){
-      status('reservationStatus','다른 가족이 먼저 예약했습니다. 잠시 후 다시 확인해 주세요.');
+      status('reservationStatus','현재 모든 임시 제례실이 사용 중입니다. 잠시 후 다시 확인해 주세요.');
     }else if(response.status==='not_eligible'){
       status('reservationStatus','전용 제례실이 없는 공개 승인 기록만 예약할 수 있습니다.');
     }else status('reservationStatus','예약 정보를 확인해 주세요.');
