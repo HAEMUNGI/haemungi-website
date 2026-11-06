@@ -11,7 +11,8 @@ assert.match(migration,/alter column slot_index drop not null/,'legacy twelve-sl
 assert.match(migration,/owner_consent_verified=true/,'owner consent RLS must remain enforced');
 assert.match(migration,/hm_memorial_public_recent_seek_idx/,'seek index required');
 assert.match(migration,/thumbs\//,'private admin-only thumbnail uploads required');
-assert.match(publicJs,/slot_index=not\.is\.null/,'12-slot visualizer must not query all records');
+assert.match(publicJs,/slot_index=gte\./,'wing visualizer must query only a bounded range');
+assert.match(publicJs,/slot_index=lte\./,'wing visualizer upper bound must be present');
 assert.match(publicJs,/id=eq\./,'individual public story must load by ID');
 assert.match(adminJs,/publish\(row,null,consent\.checked\)/,'archive approval must be distinct from hall assignment');
 assert.match(adminJs,/uploadListThumbnail\(blob\)/,'published records require list thumbnail');

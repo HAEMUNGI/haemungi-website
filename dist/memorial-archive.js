@@ -80,7 +80,7 @@
       $('archivePrev').disabled=page===0;
       $('archiveNext').disabled=!nextCursor;
       $('archiveStatus').textContent=query?'「'+query+'」 검색 결과 · '+visible.length+'명 표시':
-        '공개 승인된 친구 '+visible.length+'명을 이 페이지에 표시합니다.';
+        '공개된 친구 '+visible.length+'명을 이 페이지에 표시합니다.';
     }catch(err){
       if(seq!==sequence)return;
       render([]);$('archiveStatus').textContent=err.message;

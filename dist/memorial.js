@@ -12,6 +12,7 @@
   const coordsX = [15,45,80];
   const coordsY = [24,41,60,78];
   let publicPets = [];
+  let activeWing = 1, wingSummary = [], wingStates = new Map();
   let selectedPet = null;
   let activeScreen = 'entrance';
   let played = new Set();
@@ -129,6 +130,10 @@
   $('visitHall').addEventListener('click', () => go('hall'));
   $('visitRitual').addEventListener('click', () => go('ritual'));
   $('openApplication').addEventListener('click', () => go('apply'));
+  $('hallWing').addEventListener('change', () => {
+    activeWing = Number($('hallWing').value)||1;
+    refreshPets();
+  });
   document.querySelectorAll('[data-skip]').forEach(b => b.addEventListener('click', () => finishFilm(b.dataset.skip)));
   document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
   window.addEventListener('hashchange', () => routeTo(currentRoute()));
@@ -256,7 +261,7 @@
   function renderSlots() {
     const box = $('hallSlots');box.replaceChildren();
     for (let row = 0; row < coordsY.length; row++) for (let col = 0; col < coordsX.length; col++) {
-      const slot = row*3 + col + 1;
+      const slot = (activeWing-1)*12 + row*3 + col + 1;
       const pet = publicPets.find(p => p.slot_index === slot);
       const openPet = () => { selectedPet=pet;go('story:'+pet.id); };
       const source = pet && publicPhoto(pet.photo_path);
@@ -282,18 +287,57 @@
       const b = document.createElement('button');
       b.type = 'button'; b.className='plaque';b.style.left=coordsX[col]+'%';b.style.top=coordsY[row]+'%';
       b.dataset.empty = String(!pet);
-      b.dataset.pending = String(!pet && slot === 1);
+      const reserved=wingStates.get(slot)==='pending';
+      b.dataset.pending = String(!pet && (reserved || slot === 1));
       b.textContent = pet ? pet.pet_name : '';
-      b.setAttribute('aria-label', pet ? String(slot).padStart(3,'0')+'호 · '+pet.pet_name+' 추억 보기' : slot === 1 ? '001호 · 등록 준비 중' : String(slot).padStart(3,'0')+'호 · 빈자리 등록 신청');
-      b.addEventListener('click', () => { if(pet){openPet();} else if(slot===1){$('hallGuide').textContent='001호는 첫 친구를 위한 준비 중인 자리입니다.';} else {go('apply');} });
+      b.setAttribute('aria-label', pet ? String(slot).padStart(3,'0')+'호 · '+pet.pet_name+' 추억 보기' :
+        reserved ? String(slot).padStart(3,'0')+'호 · 관리자 승인 대기' :
+        slot === 1 ? '001호 · 첫 친구의 자리' : String(slot).padStart(3,'0')+'호 · 빈자리 명패 신청');
+      b.addEventListener('click', () => {
+        if(pet){openPet();return;}
+        if(reserved){$('hallGuide').textContent='해당 호수는 다른 친구의 승인 대기 중입니다.';return;}
+        if(slot===1){$('hallGuide').textContent='001호는 첫 친구의 자리입니다.';return;}
+        go('apply');window.HAEMUNGI_MEMORIAL_SELECT_PLAQUE?.(slot);
+      });
       box.appendChild(b);
     }
+  }
+  async function refreshWings() {
+    try {
+      const response=await fetch(api+'/rest/v1/rpc/hm_memorial_wings',{
+        method:'POST',headers:{apikey:key,'Content-Type':'application/json'},body:'{}',cache:'no-store'});
+      if(!response.ok)return;
+      const rows=await response.json();if(!Array.isArray(rows)||!rows.length)return;
+      wingSummary=rows;
+      const select=$('hallWing');select.replaceChildren();
+      for(const wing of rows){
+        const opt=document.createElement('option');opt.value=String(wing.wing_number);
+        opt.textContent='제'+wing.wing_number+'관 · '+String((wing.wing_number-1)*12+1).padStart(3,'0')+'~'+String(wing.wing_number*12).padStart(3,'0')+'호';
+        select.appendChild(opt);
+      }
+      if(!rows.some(w=>w.wing_number===activeWing))activeWing=1;
+      select.value=String(activeWing);
+      showWingOccupancy();
+    }catch(_){/* keep the first wing available */}
+  }
+  function showWingOccupancy(){
+    const wing=wingSummary.find(w=>w.wing_number===activeWing);
+    $('hallOccupancy').textContent=wing?
+      '제'+activeWing+'관 · 배정 '+wing.occupied+'호 / 승인 대기 '+wing.pending+'호 / 신청 가능 '+wing.available+'호':
+      '현재 구역의 자리 현황을 확인 중입니다.';
   }
   async function refreshPets() {
     try {
       // Only the twelve physical niches belong in this scene. Never fetch the full archive.
-      const rows = await restGET('hm_memorial_public?select=id,slot_index,pet_name,born_on,passed_on,story,farewell,photo_path,published_at,frame_style,frame_focus_x,frame_focus_y,frame_corners,frame_fit,frame_mat_color&slot_index=not.is.null&order=slot_index.asc&limit=12');
+      const first=(activeWing-1)*12+1,last=activeWing*12;
+      const rows = await restGET('hm_memorial_public?select=id,slot_index,pet_name,born_on,passed_on,story,farewell,photo_path,published_at,frame_style,frame_focus_x,frame_focus_y,frame_corners,frame_fit,frame_mat_color&slot_index=gte.'+first+'&slot_index=lte.'+last+'&order=slot_index.asc&limit=12');
       publicPets = Array.isArray(rows) ? rows : [];
+      try{
+        const response=await fetch(api+'/rest/v1/rpc/hm_memorial_slot_status',{
+          method:'POST',headers:{apikey:key,'Content-Type':'application/json'},
+          body:JSON.stringify({p_wing:activeWing}),cache:'no-store'});
+        if(response.ok)wingStates=new Map((await response.json()).map(row=>[row.slot_index,row.state]));
+      }catch(_){wingStates=new Map();}
       if (selectedPet) selectedPet = publicPets.find(x=>x.id===selectedPet.id) || selectedPet;
       if (!$('hallSlots').hidden) renderSlots();
       refreshPetList();
@@ -454,38 +498,13 @@
       form.reset();status.textContent='편지가 접수되었습니다. 관리자 확인 후 공개됩니다.';
     }catch(err){status.textContent=err.message;}finally{btn.disabled=false;}
   });
-  $('applicationForm').addEventListener('submit',async event=>{
+  // Registration is handled exclusively by memorial-registration.js: free immediately,
+  // or authenticated, admin-approved plaques. Never fall back to a misleading legacy queue.
+  $('applicationForm').addEventListener('submit',event=>{
     event.preventDefault();
-    const form=event.currentTarget,btn=$('submitApplication'),status=$('applicationStatus');
-    const f=new FormData(form),file=f.get('photo');
-    if(String(f.get('website')||'').trim())return;
-    if(!(file instanceof File)||!file.size){status.textContent='사진 한 장을 선택해주세요.';return;}
-    const ext=({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'})[file.type];
-    if(!ext||file.size>5*1024*1024){status.textContent='JPG·PNG·WebP 파일을 5MB 이하로 선택해주세요.';return;}
-    if(!f.get('consent_declaration')){status.textContent='등록 권한 및 보관 동의를 확인해주세요.';return;}
-    btn.disabled=true;status.textContent='사진과 신청서를 안전하게 접수하고 있습니다…';
-    try{
-      if(!ready)throw new Error('신청 시스템 연결 설정을 확인해주세요.');
-      const id=crypto.randomUUID(),path='incoming/'+id+'.'+ext;
-      const upload=await fetch(api+'/storage/v1/object/hm-memorial-inbox/'+path,{method:'POST',
-        headers:{apikey:key,'Content-Type':file.type,'x-upsert':'false'},body:file});
-      if(!upload.ok)throw new Error('사진 업로드에 실패했습니다. ('+upload.status+')');
-      await restPOST('hm_memorial_requests',{
-        id,pet_name:String(f.get('pet_name')||'').trim(),photo_path:path,
-        born_on:f.get('born_on')||null,passed_on:f.get('passed_on')||null,
-        story:String(f.get('story')||'').trim(),farewell:String(f.get('farewell')||'').trim(),
-        contact_email:String(f.get('contact_email')||'').trim(),
-        requested_visibility:String(f.get('requested_visibility')||'public'),
-        consent_declaration:true,status:'pending'
-      });
-      const prev=$('applicationCard');prev.replaceChildren();
-      const img=el('img');img.src=URL.createObjectURL(file);img.alt='신청 사진 미리보기';prev.appendChild(img);
-      prev.appendChild(el('h3','',String(f.get('pet_name')||'')));
-      prev.appendChild(el('p','','신청이 접수되었습니다. 이 카드는 신청자에게 보여주는 미리보기이며 아직 공개되지 않았습니다.'));
-      prev.hidden=false;form.reset();status.textContent='신청이 접수되었습니다. 관리자 확인 후 공개 여부가 결정됩니다.';
-    }catch(err){status.textContent=err.message;}finally{btn.disabled=false;}
+    $('applicationStatus').textContent='등록 화면을 불러오는 중 문제가 발생했습니다. 새로고침해주세요.';
   });
   routeTo(currentRoute());
-  refreshPets();
+  refreshWings().then(refreshPets);
   refreshSceneArt();
 })();
