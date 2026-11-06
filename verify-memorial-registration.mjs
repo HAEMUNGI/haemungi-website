@@ -28,6 +28,8 @@ assert.match(register,/compressImage\(file\)/,'WebP optimization');
 assert.match(register,/memorial-self-register/,'Server-side public registration');
 assert.match(register,/session_token/,'Authenticated plaque submission');
 assert.match(register,/hm_memorial_request_archive_plaque/,'No duplicate photo for archive upgrade');
+assert.match(register,/sequence!==slotLoadSeq/,'Concurrent slot loads must not duplicate controls');
+assert.match(register,/skipWingLoad:true/,'Selecting a plaque must not launch duplicate wing fetches');
 assert.match(sql,/mem_requests_owner_apply/,'Owner insert RLS');
 assert.match(sql,/hm_memorial_pending_requested_slot_unique/,'Pending slot uniqueness');
 assert.match(sql,/hm_memorial_wings\(/,'Expandable wing availability');
