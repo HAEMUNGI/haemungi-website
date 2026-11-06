@@ -5,7 +5,7 @@
   const $=id=>document.getElementById(id);
   const form=$('applicationForm');
   const sessionKey='hm-memorial-visitor-v1';
-  let visitor=null,selectedSlot=null,wings=[],busy=false;
+  let visitor=null,selectedSlot=null,wings=[],busy=false,wingLoadSeq=0,slotLoadSeq=0;
   const status=(message)=>{$('applicationStatus').textContent=message;};
   const authStatus=(message)=>{$('visitorAuthStatus').textContent=message;};
   const tier=()=>form.querySelector('input[name="registration_tier"]:checked')?.value||'archive';
@@ -36,8 +36,10 @@
       method:'POST',headers:headers(jwt),body:JSON.stringify(params)});
   }
   async function loadWings(){
+    const sequence=++wingLoadSeq;
     try {
       const response=await callRPC('hm_memorial_wings');
+      if(sequence!==wingLoadSeq)return;
       wings=Array.isArray(response)?response:[];
       const select=$('plaqueWing'),prior=Number(select.value)||1;
       select.replaceChildren();
@@ -51,11 +53,13 @@
     }catch(err){$('plaqueSlotStatus').textContent='구역 정보를 불러오지 못했습니다. '+err.message;}
   }
   async function loadSlots(){
+    const sequence=++slotLoadSeq;
     const wing=Number($('plaqueWing').value)||1,container=$('plaqueSlotPicker');
     selectedSlot=null;container.replaceChildren();
     $('plaqueSlotStatus').textContent='호수별 자리를 확인하고 있습니다…';
     try{
       const rows=await callRPC('hm_memorial_slot_status',{p_wing:wing});
+      if(sequence!==slotLoadSeq)return;
       if(!Array.isArray(rows)||rows.length!==12)throw new Error('자리 정보를 다시 불러와주세요.');
       const available=rows.filter(r=>r.state==='available').length;
       for(const row of rows){
@@ -72,18 +76,18 @@
         container.appendChild(button);
       }
       $('plaqueSlotStatus').textContent=`제${wing}관 · 신청 가능한 자리 ${available}개 · 배정/승인 대기 자리는 선택할 수 없습니다.`;
-    }catch(err){$('plaqueSlotStatus').textContent=err.message;}
+    }catch(err){if(sequence===slotLoadSeq)$('plaqueSlotStatus').textContent=err.message;}
   }
   $('plaqueWing').addEventListener('change',loadSlots);
 
-  function setTier(){
+  function setTier(options={}){
     const plaque=tier()==='plaque';$('plaqueApplication').hidden=!plaque;
     $('submitApplication').textContent=plaque?'안식관 명패 승인 신청하기':'무료 기록 바로 공개하기';
     $('photoPolicy').textContent=plaque?'JPG·PNG·WebP / 5MB 이하 · 관리자 승인 전 사진 비공개':'JPG·PNG·WebP / 5MB 이하 · 한 장을 압축하여 바로 공개';
     $('applyExplanation').textContent=plaque?
       '로그인 후 신청하면 선택한 자리가 승인 대기로 표시됩니다. 관리자가 확인한 뒤 같은 사진으로 명패가 공개됩니다.':
       '등록 직후 기록관에서 이름을 검색할 수 있습니다. 개인정보가 공개되지 않도록 내용을 확인해주세요.';
-    if(plaque)loadWings();
+    if(plaque&&!options.skipWingLoad)loadWings();
   }
   form.querySelectorAll('input[name="registration_tier"]').forEach(r=>r.addEventListener('change',setTier));
 
@@ -159,7 +163,7 @@
   });
   window.HAEMUNGI_MEMORIAL_SELECT_PLAQUE=async slot=>{
     const radio=form.querySelector('input[name="registration_tier"][value="plaque"]');
-    radio.checked=true;setTier();
+    radio.checked=true;setTier({skipWingLoad:true});
     const expectedWing=Math.floor((slot-1)/12)+1;
     await loadWings();
     $('plaqueWing').value=String(expectedWing);
