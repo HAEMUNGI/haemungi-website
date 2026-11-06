@@ -34,3 +34,7 @@ body{background:linear-gradient(180deg,#fffaf3,#f5ebdd);color:#493629}
 @media(max-width:420px){.archive-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.archive-card-body{padding:11px}.archive-card h2{font-size:17px}.archive-search-row{flex-wrap:wrap}.archive-search-row input{flex-basis:100%}.archive-search-row button{flex:1}.archive-photo{aspect-ratio:1/1}.wordmark{font-size:16px}.top-action{padding:9px 7px;font-size:11px}.home-link{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.archive-card{transition:none}.archive-card:hover{transform:none}}
 .archive-milestone{font-size:11px;color:#92643d;background:#f8ebdb;border-radius:8px;padding:7px 8px;margin:0 0 10px;line-height:1.5}
+.archive-top-actions{display:flex;align-items:center;gap:7px}
+.archive-login-link{padding:9px 12px;border:1px solid #d4baa0;border-radius:30px;background:#fffaf2;color:#76553a;font-size:12px;font-weight:700;white-space:nowrap}
+.archive-login-link:hover{background:#f2e5d3}
+@media(max-width:540px){.archive-top-actions{gap:5px}.archive-login-link,.archive-top-actions .top-action{padding:8px 7px;font-size:10px}}

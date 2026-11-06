@@ -140,3 +140,30 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .anniversary-item small{font-size:11px;color:#ae784d}
 .anniversary-panel .anniversary-note{font-size:11px;color:#92795d;margin:13px 0 0;line-height:1.55}
 @media(max-width:470px){.anniversary-panel{padding:14px 10px}.anniversary-panel .anniversary-grid{grid-template-columns:1fr 1fr}.anniversary-item strong{font-size:11px}}
+
+/* Visitor sign-in is accessible from every memorial screen without entering the application form. */
+.top-actions{display:flex;align-items:center;gap:8px}
+.top-login{min-height:36px;padding:8px 13px;border:1px solid #cbb399;border-radius:30px;background:#fffaf2;color:#76553a;font-size:12px;font-weight:700;white-space:nowrap}
+.top-login:hover,.top-login:focus-visible{background:#f2e5d3;border-color:#aa875f}
+.visitor-login-dialog{width:min(92vw,445px);max-height:min(92svh,740px);padding:0;border:1px solid #e4d0b4;border-radius:22px;background:#fffaf2;color:#48352b;box-shadow:0 28px 90px #24180d61;overflow:auto}
+.visitor-login-dialog::backdrop{background:#251f1c99;backdrop-filter:blur(4px)}
+.visitor-login-card{position:relative;padding:clamp(22px,5vw,32px);font-family:'Noto Sans KR',sans-serif}
+.visitor-login-close{position:absolute;right:16px;top:15px;width:36px;height:36px;border:1px solid #d6c1a6;border-radius:50%;background:#fffefd;color:#735742;font-size:25px;line-height:1}
+.visitor-login-eyebrow{margin:0 0 6px;font-size:10px;letter-spacing:.15em;color:#ae8a65}
+.visitor-login-card h2{margin:0 0 8px;font:700 clamp(23px,5vw,28px)/1.3 'Gowun Batang',serif;color:#5c4332}
+.visitor-login-intro{margin:0 28px 20px 0;font-size:12px;line-height:1.7;color:#87715f}
+#quickLoginForm{display:grid;gap:8px}
+#quickLoginForm[hidden],#quickAccountArea[hidden]{display:none!important}
+#quickLoginForm label{font-size:12px;font-weight:700;color:#594433;margin-top:6px}
+#quickLoginForm input{display:block;width:100%;height:45px;padding:10px 13px;border:1px solid #ddcdbb;border-radius:11px;background:#fff;color:#433126;font-size:14px;outline-offset:2px}
+#quickLoginForm input:focus{border-color:#b99069}
+.visitor-login-buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:5px}
+.visitor-login-buttons button,.visitor-account button{min-height:43px;padding:9px 10px;border:1px solid #9f7953;border-radius:11px;background:#a47d57;color:white;font-size:13px;font-weight:700}
+.visitor-login-buttons .visitor-signup,.visitor-account .visitor-signup{background:#fffaf2;border-color:#d7c2ab;color:#6d503a}
+.visitor-login-status{min-height:18px;margin:4px 0 0;color:#76543a;font-size:12px;line-height:1.55;overflow-wrap:anywhere}
+.visitor-login-help,.visitor-login-footer{margin:10px 0 0;color:#947d69;font-size:11px;line-height:1.7}
+.visitor-login-footer{border-top:1px solid #e8dacc;padding-top:15px;margin-top:17px}
+.visitor-account{display:grid;gap:10px}
+.visitor-account p{margin:0 0 8px;padding:13px;border-radius:10px;background:#f3e9d9;color:#69503b;font-size:13px;overflow-wrap:anywhere}
+@media(max-width:540px){.topbar{gap:5px;padding:0 9px}.top-actions{gap:5px}.top-login,.top-action{padding:8px 9px;font-size:10px}.visitor-login-card{padding:23px 20px}}
+@media(max-width:355px){.top-login,.top-action{padding:7px 6px;font-size:9px}.wordmark{font-size:14px}.wordmark small{font-size:6px}}

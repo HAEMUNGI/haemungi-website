@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import {Script} from 'node:vm';
 
 const read=(path)=>readFileSync(path,'utf8');
-const html=read('dist/memorial.html'),archive=read('dist/memorial-archive.html');
+const html=read('dist/memorial.html'),archive=read('dist/memorial-archive.html'),kiosk=read('dist/memorial-communal.html');
 const main=read('dist/memorial.js'),register=read('dist/memorial-registration.js');
 const admin=read('dist/memorial-admin.js'),sql=read('016_haemungi_memorial_public_registration.sql');
 const edge=read('supabase/functions/memorial-self-register/index.ts');
@@ -13,6 +13,19 @@ for(const id of ['hallWing','hallOccupancy','plaqueApplication','plaqueWing','pl
   'visitorPassword','visitorLogin','visitorSignup','visitorLogout','upgradeArchiveBox',
   'myArchiveRecords','upgradeArchive','applicationForm'])
   assert(html.includes(`id="${id}"`),`Missing UI control: ${id}`);
+for(const id of ['openVisitorLogin','visitorLoginDialog','closeVisitorLogin','quickLoginForm',
+  'quickLoginEmail','quickLoginPassword','quickLoginSubmit','quickSignup','quickLoginStatus',
+  'quickAccountArea','quickAccountEmail','quickManageMemories','quickLogout'])
+  assert(html.includes(`id="${id}"`),`Missing accessible entrance login: ${id}`);
+assert.match(html,/aria-haspopup="dialog"/,'Header must identify the sign-in dialog');
+assert.match(register,/loginDialog\.showModal\(\)/,'Header login opens a dedicated dialog');
+assert.match(register,/authenticate\(false,\{email,password\}\)/,'Quick login must reuse existing Supabase Auth');
+assert.match(register,/authenticate\(true,\{email,password\}\)/,'Quick signup must reuse existing account flow');
+assert.match(register,/location\.hash='#apply'/,'Signed-in user can navigate to plaque records');
+assert.match(register,/logout\?scope=local/,'Sign-out attempts local session revocation');
+assert.match(register,/get\('login'\)==='1'/,'Deep link must open the login dialog');
+assert.match(archive,/memorial\.html\?login=1#entrance/,'Archive exposes a login entry');
+assert.match(kiosk,/memorial\.html\?login=1#entrance/,'Communal kiosk exposes a login entry');
 for(const file of ['memorial-registration.js','memorial-privacy.html'])
   assert(html.includes('/'+file),`Missing published resource: ${file}`);
 assert.match(html,/value="archive" checked/,'Archive-first, no admin approval');

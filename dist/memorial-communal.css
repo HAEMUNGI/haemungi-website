@@ -36,3 +36,5 @@ footer{text-align:center;border-top:1px solid #ead6ca;padding:15px;color:#a08071
 .kiosk-memory-date{font-size:11px;color:#8e6b50;background:#fff0de;padding:5px 7px;border-radius:8px;margin-top:6px;line-height:1.45}
 .reservation-choice .kiosk-memory-date{display:block;margin:10px 0 3px}
 .kiosk-empty-register{display:inline-block;margin:9px 0;padding:9px 12px;border:1px solid #d5b99f;border-radius:11px;background:#fff5e9;font-size:12px;color:#754f38;text-decoration:none}
+.kiosk-account-link{margin-top:18px!important;border-top:1px solid #e6d6c9;padding-top:16px!important}
+.kiosk-account-link a{display:inline-block;color:#916247;font-weight:700;text-decoration:underline;text-underline-offset:3px}

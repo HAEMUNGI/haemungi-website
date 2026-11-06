@@ -7,11 +7,11 @@
   <meta name="description" content="별빛 추모관. 별이 된 소중한 친구들의 이름과 기억이 머무르는 공간입니다.">
   <title>별빛 추모관 | 헤뭉이의 작은 세계</title>
   <link rel="preload" as="image" href="/memorial/entrance-daylight.png">
-  <link rel="stylesheet" href="/memorial.css?v=20261107-entry3">
+  <link rel="stylesheet" href="/memorial.css?v=20261107-login1">
   <script src="/content-config.js" defer></script>
   <script src="/memorial-anniversaries.js?v=20261107-calendar1" defer></script>
   <script src="/memorial.js?v=20261107-entry2" defer></script>
-  <script src="/memorial-registration.js?v=20261107-calendar1" defer></script>
+  <script src="/memorial-registration.js?v=20261107-login1" defer></script>
   <script type="module" src="/memorial-gifts.js?v=20261105-gifts2"></script>
 </head>
 <body>
@@ -19,7 +19,10 @@
 <header class="topbar">
   <a class="home-link" href="/#home" aria-label="헤뭉이 홈페이지로 돌아가기">← <span>헤뭉이의 작은 세계</span></a>
   <div class="wordmark"><span class="mark">✧</span> 별빛 추모관 <small>STARLIGHT MEMORIAL</small></div>
-  <button class="top-action" id="openApplication" type="button">친구 등록하기</button>
+  <div class="top-actions">
+    <button class="top-login" id="openVisitorLogin" type="button" aria-haspopup="dialog" aria-controls="visitorLoginDialog">로그인</button>
+    <button class="top-action" id="openApplication" type="button">친구 등록하기</button>
+  </div>
 </header>
 <main id="memorial-main">
   <section class="stage-screen" data-screen="entrance">
@@ -152,5 +155,31 @@
     </div>
   </section>
 </main>
+<dialog id="visitorLoginDialog" class="visitor-login-dialog" aria-labelledby="visitorLoginHeading">
+  <div class="visitor-login-card">
+    <button id="closeVisitorLogin" class="visitor-login-close" type="button" aria-label="로그인 창 닫기">×</button>
+    <p class="visitor-login-eyebrow">STARLIGHT MEMBERS</p>
+    <h2 id="visitorLoginHeading">다시 만나서 반가워요</h2>
+    <p class="visitor-login-intro">안식관 명패 신청과 내 기록 확인을 위한 회원 로그인입니다.</p>
+    <form id="quickLoginForm">
+      <label for="quickLoginEmail">이메일</label>
+      <input id="quickLoginEmail" name="email" type="email" maxlength="254" autocomplete="email" required placeholder="이메일 주소">
+      <label for="quickLoginPassword">비밀번호</label>
+      <input id="quickLoginPassword" name="password" type="password" minlength="8" autocomplete="current-password" required placeholder="8자 이상">
+      <p id="quickLoginStatus" class="visitor-login-status" role="status" aria-live="polite"></p>
+      <div class="visitor-login-buttons">
+        <button id="quickLoginSubmit" type="submit">로그인</button>
+        <button id="quickSignup" class="visitor-signup" type="button">계정 만들기</button>
+      </div>
+      <p class="visitor-login-help">계정을 만들면 확인 메일이 발송됩니다. 이메일 인증 후 로그인해주세요.</p>
+    </form>
+    <div id="quickAccountArea" class="visitor-account" hidden>
+      <p id="quickAccountEmail"></p>
+      <button id="quickManageMemories" type="button">내 기록 · 명패 신청 확인하기</button>
+      <button id="quickLogout" class="visitor-signup" type="button">로그아웃</button>
+    </div>
+    <p class="visitor-login-footer">별들의 기록은 로그인 없이도 무료로 남길 수 있습니다.</p>
+  </div>
+</dialog>
 <footer class="footer">© HAEMUNGI · 일현 조성훈 <span>소중한 친구들의 기억을 존중합니다.</span></footer>
 </body></html>
