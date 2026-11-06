@@ -152,6 +152,22 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .visitor-login-eyebrow{margin:0 0 6px;font-size:10px;letter-spacing:.15em;color:#ae8a65}
 .visitor-login-card h2{margin:0 0 8px;font:700 clamp(23px,5vw,28px)/1.3 'Gowun Batang',serif;color:#5c4332}
 .visitor-login-intro{margin:0 28px 20px 0;font-size:12px;line-height:1.7;color:#87715f}
+.social-login-stack{display:grid;gap:10px;margin:15px 0 8px}
+.plaque-social-login{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+.social-login-button{display:flex;justify-content:center;align-items:center;gap:9px;min-height:46px;padding:9px 12px;border:1px solid #d8c7b5;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:filter .15s ease,transform .15s ease}
+.social-login-button.kakao{background:#fee500;color:#292217;border-color:#f6d901}
+.social-login-button.google{background:#fff;color:#514438;border-color:#d5c8bc}
+.social-login-button span{font-weight:900;font-size:15px}
+.social-login-button:not(:disabled):hover{filter:brightness(.97);transform:translateY(-1px)}
+.social-login-button:disabled{cursor:not-allowed;opacity:.5}
+.social-login-status{font-size:11px;line-height:1.6;color:#876b54;margin:4px 0 12px}
+.login-separator{text-align:center;position:relative;margin:18px 0 10px;font-size:11px;color:#8a7a68}
+.login-separator:before{position:absolute;z-index:0;content:'';height:1px;left:0;right:0;top:50%;background:#e9d9c8}
+.login-separator span{position:relative;background:#fffaf2;padding:0 10px}
+.account-link-notice{font-size:11px!important;line-height:1.65;background:#fbf4e9!important;padding:10px!important}
+.account-link-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.account-link-actions button:disabled{opacity:.5;cursor:not-allowed}
+.social-login-stack[hidden],.plaque-social-login[hidden],.login-separator[hidden],.account-link-actions[hidden]{display:none!important}
 #quickLoginForm{display:grid;gap:8px}
 #quickLoginForm[hidden],#quickAccountArea[hidden]{display:none!important}
 #quickLoginForm label{font-size:12px;font-weight:700;color:#594433;margin-top:6px}
@@ -166,4 +182,5 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .visitor-account{display:grid;gap:10px}
 .visitor-account p{margin:0 0 8px;padding:13px;border-radius:10px;background:#f3e9d9;color:#69503b;font-size:13px;overflow-wrap:anywhere}
 @media(max-width:540px){.topbar{gap:5px;padding:0 9px}.top-actions{gap:5px}.top-login,.top-action{padding:8px 9px;font-size:10px}.visitor-login-card{padding:23px 20px}}
+@media(max-width:360px){.plaque-social-login{grid-template-columns:1fr}}
 @media(max-width:355px){.top-login,.top-action{padding:7px 6px;font-size:9px}.wordmark{font-size:14px}.wordmark small{font-size:6px}}

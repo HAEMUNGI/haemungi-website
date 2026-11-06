@@ -7,11 +7,11 @@
   <meta name="description" content="별빛 추모관. 별이 된 소중한 친구들의 이름과 기억이 머무르는 공간입니다.">
   <title>별빛 추모관 | 헤뭉이의 작은 세계</title>
   <link rel="preload" as="image" href="/memorial/entrance-daylight.png">
-  <link rel="stylesheet" href="/memorial.css?v=20261107-login1">
+  <link rel="stylesheet" href="/memorial.css?v=20261107-social1">
   <script src="/content-config.js" defer></script>
   <script src="/memorial-anniversaries.js?v=20261107-calendar1" defer></script>
   <script src="/memorial.js?v=20261107-entry2" defer></script>
-  <script src="/memorial-registration.js?v=20261107-login1" defer></script>
+  <script src="/memorial-registration.js?v=20261107-social1" defer></script>
   <script type="module" src="/memorial-gifts.js?v=20261105-gifts2"></script>
 </head>
 <body>
@@ -119,7 +119,7 @@
       <form id="applicationForm">
         <fieldset class="registration-tiers"><legend>등록 방식 선택</legend>
           <label class="radio-label"><input type="radio" name="registration_tier" value="archive" checked><span><strong>별들의 기록 · 무료</strong><small>로그인이나 관리자 승인 없이 바로 기록관에 공개됩니다.</small></span></label>
-          <label class="radio-label"><input type="radio" name="registration_tier" value="plaque"><span><strong>안식관 명패 · 무료 신청</strong><small>이메일 계정 로그인 → 빈 호수 선택 → 관리자 승인 후 명패 배정</small></span></label>
+          <label class="radio-label"><input type="radio" name="registration_tier" value="plaque"><span><strong>안식관 명패 · 무료 신청</strong><small>회원 로그인 → 빈 호수 선택 → 관리자 승인 후 명패 배정</small></span></label>
         </fieldset>
         <section class="plaque-application" id="plaqueApplication" hidden aria-label="안식관 명패 신청">
           <h2>안식관 자리 선택</h2>
@@ -127,7 +127,11 @@
           <div id="plaqueSlotPicker" class="plaque-slot-picker" role="group" aria-label="명패 자리 선택"></div>
           <p id="plaqueSlotStatus" class="hint" role="status">빈자리를 확인하고 있습니다…</p>
           <h2>신청자 로그인</h2>
-          <p class="hint">아래에서 이메일과 비밀번호로 계정을 만든 뒤, 받은 인증 메일을 확인하고 로그인해주세요. 신청자 이메일과 로그인 이메일은 같아야 합니다.</p>
+          <p class="hint">카카오·구글 간편 로그인 또는 이메일 로그인을 선택할 수 있습니다. 명패 신청에는 확인된 계정 이메일이 필요합니다.</p>
+          <div class="plaque-social-login" id="plaqueSocialLogin">
+            <button class="social-login-button kakao" id="plaqueKakaoLogin" type="button" disabled><span aria-hidden="true">●</span> 카카오로 시작하기</button>
+            <button class="social-login-button google" id="plaqueGoogleLogin" type="button" disabled><span aria-hidden="true">G</span> Google로 시작하기</button>
+          </div>
           <label>로그인 비밀번호<input id="visitorPassword" type="password" minlength="8" autocomplete="current-password" placeholder="8자 이상"></label>
           <div class="auth-actions"><button id="visitorLogin" type="button">로그인</button><button id="visitorSignup" type="button">계정 만들기</button><button id="visitorLogout" type="button" hidden>로그아웃</button></div>
           <p id="visitorAuthStatus" class="form-status" role="status">명패를 신청하려면 로그인해주세요.</p>
@@ -161,6 +165,12 @@
     <p class="visitor-login-eyebrow">STARLIGHT MEMBERS</p>
     <h2 id="visitorLoginHeading">다시 만나서 반가워요</h2>
     <p class="visitor-login-intro">안식관 명패 신청과 내 기록 확인을 위한 회원 로그인입니다.</p>
+    <div class="social-login-stack" id="visitorSocialLogin" aria-label="간편 로그인 선택">
+      <button class="social-login-button kakao" id="oauthKakao" type="button" disabled><span aria-hidden="true">●</span> 카카오로 시작하기</button>
+      <button class="social-login-button google" id="oauthGoogle" type="button" disabled><span aria-hidden="true">G</span> Google로 시작하기</button>
+    </div>
+    <p class="social-login-status" id="oauthAvailability" role="status">간편 로그인 연결 상태를 확인하고 있습니다…</p>
+    <p class="login-separator" id="loginEmailSeparator"><span>또는 이메일로 로그인</span></p>
     <form id="quickLoginForm">
       <label for="quickLoginEmail">이메일</label>
       <input id="quickLoginEmail" name="email" type="email" maxlength="254" autocomplete="email" required placeholder="이메일 주소">
@@ -176,6 +186,11 @@
     <div id="quickAccountArea" class="visitor-account" hidden>
       <p id="quickAccountEmail"></p>
       <button id="quickManageMemories" type="button">내 기록 · 명패 신청 확인하기</button>
+      <p class="account-link-notice">기존 기록을 유지하려면 로그인된 상태에서 다른 로그인 방법을 연결하세요. 연결된 계정은 하나의 회원으로 관리됩니다.</p>
+      <div class="account-link-actions" id="accountLinkActions">
+        <button id="linkKakao" class="visitor-signup" type="button" disabled>카카오 계정 연결</button>
+        <button id="linkGoogle" class="visitor-signup" type="button" disabled>Google 계정 연결</button>
+      </div>
       <button id="quickLogout" class="visitor-signup" type="button">로그아웃</button>
     </div>
     <p class="visitor-login-footer">별들의 기록은 로그인 없이도 무료로 남길 수 있습니다.</p>

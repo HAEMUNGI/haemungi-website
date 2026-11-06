@@ -5,12 +5,15 @@
   const $=id=>document.getElementById(id);
   const form=$('applicationForm');
   const sessionKey='hm-memorial-visitor-v1';
+  const oauthKey='hm-memorial-oauth-pkce-v1';
+  const socialEnabled={kakao:false,google:false};
   let visitor=null,selectedSlot=null,wings=[],busy=false,wingLoadSeq=0,slotLoadSeq=0;
   const status=(message)=>{$('applicationStatus').textContent=message;};
   const authStatus=(message)=>{$('visitorAuthStatus').textContent=message;};
   const quickStatus=(message)=>{$('quickLoginStatus').textContent=message;};
   const tier=()=>form.querySelector('input[name="registration_tier"]:checked')?.value||'archive';
   const headers=(jwt)=>({apikey:key,...(jwt?{Authorization:'Bearer '+jwt}:{}),'Content-Type':'application/json'});
+  const verifiedEmail=()=>visitor?.user?.email_confirmed_at?String(visitor.user.email||'').toLowerCase():'';
 
   async function jsonFetch(url,opts={}) {
     const response=await fetch(url,{cache:'no-store',...opts});
@@ -102,19 +105,37 @@
     if(password.length<8)throw new Error('비밀번호는 8자 이상 입력해주세요.');
     return password;
   }
+  function renderSocialOptions(){
+    const logged=!!visitor?.access_token;
+    $('visitorSocialLogin').hidden=logged;
+    $('plaqueSocialLogin').hidden=logged;
+    $('loginEmailSeparator').hidden=logged;
+    $('accountLinkActions').hidden=!logged;
+    $('oauthAvailability').hidden=logged;
+    for(const [provider,ids] of Object.entries({
+      kakao:['oauthKakao','plaqueKakaoLogin','linkKakao'],
+      google:['oauthGoogle','plaqueGoogleLogin','linkGoogle']
+    }))for(const id of ids)$(id).disabled=!socialEnabled[provider]||busy;
+  }
   function renderVisitor(){
     const logged=!!visitor?.access_token;
     $('visitorLogin').hidden=logged;$('visitorSignup').hidden=logged;$('visitorLogout').hidden=!logged;
     $('upgradeArchiveBox').hidden=!logged;
     $('openVisitorLogin').textContent=logged?'내 계정':'로그인';
     $('quickLoginForm').hidden=logged;$('quickAccountArea').hidden=!logged;
-    $('quickAccountEmail').textContent=logged?'로그인됨 · '+(visitor.user?.email||'이메일 계정'):'';
-    form.elements.contact_email.readOnly=logged;
+    $('quickAccountEmail').textContent=logged?'로그인됨 · '+(visitor.user?.email||'이메일 정보 없음'):'';
+    form.elements.contact_email.readOnly=logged&&!!verifiedEmail();
     if(logged){
-      form.elements.contact_email.value=visitor.user?.email||form.elements.contact_email.value;
-      authStatus('로그인됨: '+(visitor.user?.email||'이메일 계정')+' · 명패 신청 가능');
-      loadOwnedArchives();
-    }else{authStatus('명패 신청 시 신청자 이메일과 비밀번호로 로그인해주세요.');}
+      if(verifiedEmail()){
+        form.elements.contact_email.value=verifiedEmail();
+        authStatus('로그인됨: '+verifiedEmail()+' · 명패 신청 가능');
+        loadOwnedArchives();
+      }else{
+        authStatus('로그인했지만 확인된 이메일이 없어 명패 신청은 아직 할 수 없습니다. 이메일 로그인 또는 고객지원 문의를 이용해주세요.');
+        $('myArchiveRecords').replaceChildren();
+      }
+    }else{authStatus('명패 신청 시 카카오·구글 또는 이메일로 로그인해주세요.');}
+    renderSocialOptions();
   }
   async function authenticate(signup=false,credentials=null){
     if(busy)return;
@@ -177,6 +198,87 @@
     if(password.length<8){quickStatus('비밀번호는 8자 이상 입력해주세요.');return;}
     authenticate(true,{email,password});
   });
+  // The code-verifier never leaves this tab; the authorization code is exchanged once.
+  const base64url=bytes=>btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  const oauthRedirect=()=>location.origin+'/memorial.html?memorial_oauth=1';
+  async function startSocialLogin(provider,link=false){
+    if(busy)return;
+    if(!socialEnabled[provider]){quickStatus('현재 '+(provider==='kakao'?'카카오':'Google')+' 로그인 연결이 준비되지 않았습니다. 이메일 로그인을 이용해주세요.');return;}
+    busy=true;renderSocialOptions();
+    try{
+      if(!crypto?.subtle||!crypto?.getRandomValues)throw new Error('보안 연결(HTTPS)에서만 간편 로그인을 사용할 수 있습니다.');
+      const verifier=base64url(crypto.getRandomValues(new Uint8Array(32)));
+      const challenge=base64url(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier))));
+      const pending={provider,verifier,mode:link?'link':'signin',ownerId:link?visitor?.user?.id:null,started:Date.now()};
+      if(link&&!pending.ownerId)throw new Error('기존 계정으로 먼저 로그인해주세요.');
+      sessionStorage.setItem(oauthKey,JSON.stringify(pending));
+      const url=new URL(api+(link?'/auth/v1/user/identities/authorize':'/auth/v1/authorize'));
+      url.searchParams.set('provider',provider);
+      url.searchParams.set('redirect_to',oauthRedirect());
+      url.searchParams.set('code_challenge',challenge);
+      url.searchParams.set('code_challenge_method','s256');
+      if(link){
+        url.searchParams.set('skip_http_redirect','true');
+        const answer=await jsonFetch(url.toString(),{headers:headers(await visitorToken())});
+        if(!answer.url||!/^https:\/\//i.test(answer.url))throw new Error('계정 연결 주소를 확인할 수 없습니다.');
+        location.assign(answer.url);
+      }else location.assign(url.toString());
+    }catch(err){
+      sessionStorage.removeItem(oauthKey);
+      quickStatus('연결하지 못했습니다. '+err.message);
+      authStatus('간편 로그인 연결 오류: '+err.message);
+    }finally{busy=false;renderSocialOptions();}
+  }
+  $('oauthKakao').addEventListener('click',()=>startSocialLogin('kakao'));
+  $('oauthGoogle').addEventListener('click',()=>startSocialLogin('google'));
+  $('plaqueKakaoLogin').addEventListener('click',()=>startSocialLogin('kakao'));
+  $('plaqueGoogleLogin').addEventListener('click',()=>startSocialLogin('google'));
+  $('linkKakao').addEventListener('click',()=>startSocialLogin('kakao',true));
+  $('linkGoogle').addEventListener('click',()=>startSocialLogin('google',true));
+  async function checkSocialProviders(){
+    try{
+      const data=await jsonFetch(api+'/auth/v1/settings',{headers:headers()});
+      for(const provider of ['kakao','google'])socialEnabled[provider]=data.external?.[provider]===true;
+      const available=['kakao','google'].filter(provider=>socialEnabled[provider]);
+      $('oauthAvailability').textContent=available.length===2?'카카오·Google 간편 로그인을 사용할 수 있습니다.':
+        available.length===1?(available[0]==='kakao'?'카카오':'Google')+' 로그인을 사용할 수 있습니다. 다른 간편 로그인은 연결 준비 중입니다.':
+        '간편 로그인 제공자 설정이 아직 완료되지 않았습니다. 이메일 로그인은 계속 이용할 수 있습니다.';
+    }catch(_){$('oauthAvailability').textContent='간편 로그인 연결 상태를 확인하지 못했습니다. 이메일 로그인은 계속 이용할 수 있습니다.';}
+    renderSocialOptions();
+  }
+  async function completeSocialLogin(){
+    const current=new URL(location.href);
+    if(current.searchParams.get('memorial_oauth')!=='1')return;
+    let succeeded=false;
+    try{
+      const pending=JSON.parse(sessionStorage.getItem(oauthKey)||'null');
+      if(!pending||!['kakao','google'].includes(pending.provider)||!['link','signin'].includes(pending.mode)||
+         typeof pending.verifier!=='string'||Date.now()-pending.started>10*60*1000||pending.started>Date.now()+60000)
+        throw new Error('로그인 요청이 만료되었습니다. 같은 기기에서 다시 시도해주세요.');
+      if(current.searchParams.get('error'))
+        throw new Error(current.searchParams.get('error_description')||'간편 로그인이 취소되었거나 허용되지 않았습니다.');
+      const code=current.searchParams.get('code');
+      if(!code)throw new Error('인증 결과에 필요한 코드가 없습니다.');
+      const data=await jsonFetch(api+'/auth/v1/token?grant_type=pkce',{
+        method:'POST',headers:headers(),body:JSON.stringify({auth_code:code,code_verifier:pending.verifier})});
+      if(!data.access_token||!data.user?.id)throw new Error('계정 인증이 완료되지 않았습니다.');
+      if(pending.mode==='link'&&(!pending.ownerId||data.user.id!==pending.ownerId))
+        throw new Error('기존 회원과 다른 계정이 반환되어 연결을 중단했습니다. 고객지원에 문의해주세요.');
+      visitor={...data,expires_at:Math.floor(Date.now()/1000)+(data.expires_in||3600)};
+      persistVisitor();renderVisitor();
+      quickStatus(pending.mode==='link'?'기존 회원 계정에 로그인 방법이 연결되었습니다.':
+        verifiedEmail()?'간편 로그인되었습니다. 기존 신청 내역은 동일한 회원 계정에서 유지됩니다.':
+        '간편 로그인되었습니다. 명패 신청에는 확인된 이메일이 필요하므로 이메일 로그인이나 고객지원 문의를 이용해주세요.');
+      succeeded=true;
+    }catch(err){quickStatus('간편 로그인에 실패했습니다. '+err.message);authStatus(err.message);}
+    finally{
+      sessionStorage.removeItem(oauthKey);
+      for(const param of ['memorial_oauth','code','error','error_code','error_description','state'])current.searchParams.delete(param);
+      history.replaceState(null,'',current.pathname+current.search+'#entrance');
+      if(succeeded)location.hash='#apply';
+      if(!loginDialog.open)loginDialog.showModal();
+    }
+  }
   $('quickManageMemories').addEventListener('click',()=>{
     const radio=form.querySelector('input[name="registration_tier"][value="plaque"]');
     radio.checked=true;setTier();loginDialog.close();
@@ -263,8 +365,8 @@
       if(isPlaque){
         if(!selectedSlot)throw new Error('안식관 명패를 신청할 호수를 먼저 선택해주세요.');
         const jwt=await visitorToken();
-        if(visitor?.user?.email?.toLowerCase()!==email)throw new Error('로그인 계정과 신청자 이메일이 달라요.');
-        if(!visitor.user?.email_confirmed_at)throw new Error('이메일 인증 후 신청할 수 있습니다.');
+        if(!verifiedEmail())throw new Error('확인된 이메일이 없는 계정입니다. 이메일로 로그인하거나 고객지원에 문의해주세요.');
+        if(verifiedEmail()!==email)throw new Error('확인된 계정 이메일과 신청자 이메일이 달라요.');
         data.set('session_token',jwt);
       }
       busy=true;$('submitApplication').disabled=true;
@@ -306,5 +408,7 @@
     if(raw){visitor=JSON.parse(raw);if(!visitor?.access_token)visitor=null;}
   }catch(_){visitor=null;}
   renderVisitor();setTier();
+  completeSocialLogin();
+  checkSocialProviders();
   if(new URLSearchParams(location.search).get('login')==='1'&&!loginDialog.open)loginDialog.showModal();
 })();

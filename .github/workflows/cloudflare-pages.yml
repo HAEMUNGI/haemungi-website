@@ -43,6 +43,7 @@ jobs:
           node verify-story-seo.mjs
           node verify-memorial.mjs
           node verify-memorial-registration.mjs
+          node verify-memorial-social-auth.mjs
           node verify-memorial-entry-and-dates.cjs
           node verify-memorial-communal-elastic.mjs
           node verify-memorial-scale.cjs
