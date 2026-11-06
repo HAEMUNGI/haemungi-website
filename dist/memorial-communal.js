@@ -70,7 +70,7 @@ $('hallTour').addEventListener('error',finishTour);
 $('skipTour').addEventListener('click',finishTour);
 
 function switchTab(tab){
-  if(!['message','search','reservation'].includes(tab))return;
+  if(!['message','search','reservation','register'].includes(tab))return;
   activeTab=tab;
   for(const button of document.querySelectorAll('[data-kiosk-tab]')){
     button.setAttribute('aria-selected',String(button.dataset.kioskTab===tab));
@@ -128,7 +128,11 @@ $('hallMessageForm').addEventListener('submit',async event=>{
 
 function displaySearchResults(rows){
   const box=$('petSearchResults');box.replaceChildren();
-  if(!rows.length){box.appendChild(node('p','empty-hint','해당 이름의 공개된 기록을 찾지 못했습니다.'));return;}
+  if(!rows.length){
+    box.appendChild(node('p','empty-hint','해당 이름의 공개된 기록을 찾지 못했습니다.'));
+    const link=node('a','kiosk-empty-register','아직 등록하지 않았다면 기록 남기기 →');
+    link.href='/memorial.html#apply';box.appendChild(link);return;
+  }
   for(const pet of rows){
     const button=node('button','pet-card');button.type='button';
     button.setAttribute('aria-pressed',String(selectedPet?.id===pet.id));
@@ -138,6 +142,8 @@ function displaySearchResults(rows){
     }else button.appendChild(node('span','empty-hint','사진이 없습니다.'));
     button.appendChild(node('strong','',pet.pet_name));
     button.appendChild(node('small','',isRoomEligible(pet)?'임시 제례실 이용 가능':'전용 안식 공간이 있는 아이'));
+    const memory=window.HAEMUNGI_MEMORIAL_DATES?.calculate(pet);
+    if(memory?.summary)button.appendChild(node('span','kiosk-memory-date',memory.summary));
     button.addEventListener('click',()=>{
       selectedPet=pet;
       for(const card of box.querySelectorAll('button'))card.setAttribute('aria-pressed',String(card===button));
@@ -171,6 +177,8 @@ function updateReservationChoice(){
   const src=photo(selectedPet);
   if(src){const img=node('img');img.src=src;img.alt=selectedPet.pet_name+' 사진';box.appendChild(img);}
   box.appendChild(node('strong','',selectedPet.pet_name));
+  const calendar=window.HAEMUNGI_MEMORIAL_DATES?.calculate(selectedPet);
+  if(calendar?.summary)box.appendChild(node('span','kiosk-memory-date',calendar.summary));
   if(isRoomEligible(selectedPet))box.appendChild(node('small','','전용 공간이 없는 아이 · 임시 제례실 이용 가능'));
   else{
     box.appendChild(node('small','','이 아이는 이미 전용 공간이 마련되어 있습니다.'));
@@ -218,7 +226,10 @@ function startRitual(row,result){
   const img=$('temporaryPetPhoto');img.src=photo(row);img.alt=row.pet_name+'의 공개 추모 사진';
   $('temporaryPetName').textContent=row.pet_name;
   $('temporaryPetDates').textContent=[row.born_on,row.passed_on].filter(Boolean).join(' ~ ');
-  status('ritualSubtitle',row.pet_name+'에게 전하는 조용한 인사');
+  const memory=window.HAEMUNGI_MEMORIAL_DATES?.calculate(row);
+  status('ritualSubtitle',memory?.since!=null?
+    row.pet_name+' · 별이 된 지 '+memory.since.toLocaleString('ko-KR')+'일':
+    row.pet_name+'에게 전하는 조용한 인사');
   status('ritualStatus','10분 후 자동으로 이용이 종료됩니다. 다른 가족의 공간과 독립적으로 이용합니다.');
   $('kioskDialog').close();$('hallView').hidden=true;$('ritualView').hidden=false;
   window.scrollTo({top:0,behavior:'instant'});

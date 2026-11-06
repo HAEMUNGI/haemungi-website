@@ -212,7 +212,7 @@
       onePhoto(file);
       if(!data.get('consent_declaration'))throw new Error('공개 및 보관 동의를 확인해주세요.');
       if(data.get('born_on')&&data.get('passed_on')&&data.get('born_on')>data.get('passed_on'))
-        throw new Error('처음 만난 날과 별이 된 날의 순서를 확인해주세요.');
+        throw new Error('태어난 날과 별이 된 날의 순서를 확인해주세요.');
       const email=readEmail(),isPlaque=tier()==='plaque';
       if(isPlaque){
         if(!selectedSlot)throw new Error('안식관 명패를 신청할 호수를 먼저 선택해주세요.');

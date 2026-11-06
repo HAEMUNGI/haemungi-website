@@ -7,10 +7,11 @@
   <meta name="description" content="별빛 추모관. 별이 된 소중한 친구들의 이름과 기억이 머무르는 공간입니다.">
   <title>별빛 추모관 | 헤뭉이의 작은 세계</title>
   <link rel="preload" as="image" href="/memorial/entrance-daylight.png">
-  <link rel="stylesheet" href="/memorial.css?v=20261107-register1">
+  <link rel="stylesheet" href="/memorial.css?v=20261107-entry2">
   <script src="/content-config.js" defer></script>
-  <script src="/memorial.js?v=20261107-register1" defer></script>
-  <script src="/memorial-registration.js?v=20261107-register1" defer></script>
+  <script src="/memorial-anniversaries.js?v=20261107-calendar1" defer></script>
+  <script src="/memorial.js?v=20261107-entry2" defer></script>
+  <script src="/memorial-registration.js?v=20261107-calendar1" defer></script>
   <script type="module" src="/memorial-gifts.js?v=20261105-gifts2"></script>
 </head>
 <body>
@@ -29,16 +30,19 @@
       <div class="film-cover" id="entranceCover">
         <div class="cover-text"><span aria-hidden="true">✧</span><p>소중한 친구를 기억하는 길</p><button id="playEntrance" class="primary-btn" type="button">추모관에 입장하기</button></div>
       </div>
-      <div class="film-options" id="entranceOptions" hidden>
-        <p class="options-label">어느 공간을 방문하시겠습니까?</p>
-        <button id="visitHall" class="choice" type="button"><span>안식관</span><small>친구들의 이름을 만나는 곳</small></button>
-        <button id="visitRitual" class="choice" type="button"><span>제례실</span><small>조용히 추억을 나누는 곳</small></button>
-        <a class="choice" href="/memorial-communal.html?tour=1"><span>🌈 별빛 공동 추모홀</span><small>공동 추모 · 아이 검색 · 10분 임시 제례실</small></a>
-        <a class="choice" href="/memorial-archive.html"><span>별들의 기록</span><small>더 많은 친구들의 소중한 추억 찾기</small></a>
-        <a class="choice" href="mailto:say3589@naver.com?subject=HAEMUNGI%20Memory%20Room%20Inquiry"><span>✧ 후원 추억의 방</span><small>후원자 프리미엄 공간 · 별도 문의 후 안내 및 배정</small></a>
-        <a class="choice" href="/memorial-walk.html"><span>함께 걷는 꽃길</span><small>햇살 아래 천천히 걷는 작은 산책 공간</small></a>
-        <a class="choice" href="/memorial-store.html"><span>별빛 펫 편의점</span><small>꽃과 간식, 선물을 고르는 작은 가게</small></a>
-        <a class="choice" href="/memorial-adoption.html"><span>🐾 유기견 통합 게시판 홀</span><small>유기동물 보호 · 입양 · 전국 보호센터 안내</small></a>
+      <div class="film-options" id="entranceOptions" aria-label="별빛 추모관 공간 선택" hidden>
+        <div class="options-heading"><span>STARLIGHT MEMORIAL</span><p class="options-label">마음이 향하는 곳으로</p></div>
+        <div class="options-grid">
+          <button id="visitHall" class="choice" type="button"><span class="choice-icon" aria-hidden="true">⌂</span><span>안식관</span><small>이름과 명패</small></button>
+          <button id="visitRitual" class="choice" type="button"><span class="choice-icon" aria-hidden="true">✿</span><span>제례실</span><small>조용한 추모</small></button>
+          <a class="choice" href="/memorial-communal.html?tour=1"><span class="choice-icon" aria-hidden="true">✧</span><span>공동 추모홀</span><small>함께 기억하기</small></a>
+          <a class="choice" href="/memorial-archive.html"><span class="choice-icon" aria-hidden="true">☆</span><span>별들의 기록</span><small>이름으로 찾아보기</small></a>
+          <a class="choice" href="mailto:say3589@naver.com?subject=HAEMUNGI%20Memory%20Room%20Inquiry"><span class="choice-icon" aria-hidden="true">◇</span><span>후원 추억의 방</span><small>별도 문의 · 프리미엄</small></a>
+          <a class="choice" href="/memorial-walk.html"><span class="choice-icon" aria-hidden="true">❀</span><span>함께 걷는 꽃길</span><small>기억의 산책길</small></a>
+          <a class="choice" href="/memorial-store.html"><span class="choice-icon" aria-hidden="true">♧</span><span>별빛 펫 편의점</span><small>꽃과 작은 선물</small></a>
+          <a class="choice" href="/memorial-adoption.html"><span class="choice-icon" aria-hidden="true">♡</span><span>유기견 안내관</span><small>보호 · 입양 정보</small></a>
+        </div>
+        <button class="options-register" type="button" data-go="apply"><span aria-hidden="true">＋</span><strong>우리 아이 기억 남기기</strong><small>무료 기록 · 안식관 명패 신청</small></button>
       </div>
       <button class="skip-film" data-skip="entrance" type="button" hidden>영상 건너뛰기</button>
     </div>
@@ -133,7 +137,8 @@
         </section>
         <label>친구의 이름 <span class="req">필수</span><input name="pet_name" maxlength="60" required placeholder="소중한 친구의 이름"></label>
         <label>사진 한 장 <span class="req">필수</span><input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required><small id="photoPolicy">JPG·PNG·WebP / 최대 5MB · 사진 한 장을 최적화하여 바로 공개</small></label>
-        <div class="field-grid"><label>처음 만난 날 <input name="born_on" type="date"></label><label>별이 된 날 <input name="passed_on" type="date"></label></div>
+        <div class="field-grid"><label>태어난 날 · 생일 <small>알고 계신 경우에만 입력해주세요.</small><input name="born_on" type="date"></label><label>별이 된 날 <small>49재와 기일을 계산하는 날짜입니다.</small><input name="passed_on" type="date"></label></div>
+        <p class="hint">기억 달력은 한국 시간 기준으로 표시됩니다. 49재는 별이 된 날을 첫날로 세며, 실제 추모 일정은 가족의 방식에 따라 달라질 수 있습니다.</p>
         <label>친구를 소개하는 짧은 이야기 <span class="req">필수</span><textarea name="story" required maxlength="900" rows="5" placeholder="함께했던 일상과 특별한 순간을 소개해주세요."></textarea></label>
         <label>헤뭉이에게 하고 싶은 말 <textarea name="farewell" maxlength="500" rows="3" placeholder="헤뭉이에게 전하고 싶은 말을 남겨주세요."></textarea></label>
         <label>신청자 이메일 <span class="req">필수</span><input name="contact_email" type="email" required maxlength="254" autocomplete="email" placeholder="본인 확인과 등록 문의를 위한 이메일"></label>

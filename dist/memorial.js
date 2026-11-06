@@ -466,6 +466,31 @@
     box.appendChild(el('h1','',pet.pet_name));
     const date=[pet.born_on,pet.passed_on].filter(Boolean).join(' ~ ');
     if(date)box.appendChild(el('p','dates',date));
+    const memoryDates=window.HAEMUNGI_MEMORIAL_DATES;
+    if(memoryDates){
+      const calendar=memoryDates.calculate(pet);
+      if(calendar.events.length){
+        const panel=el('section','anniversary-panel');
+        panel.setAttribute('aria-label','아이의 기억 달력');
+        panel.appendChild(el('h2','','✧ 우리 아이의 기억 달력'));
+        if(calendar.since!==null)panel.appendChild(el('p','anniversary-elapsed',
+          '별이 된 지 '+calendar.since.toLocaleString('ko-KR')+'일'));
+        const grid=el('div','anniversary-grid');
+        for(const event of calendar.events){
+          const item=el('div','anniversary-item');
+          item.appendChild(el('strong','',event.label));
+          item.appendChild(el('span','',event.date));
+          item.appendChild(el('small','',event.note));
+          grid.appendChild(item);
+        }
+        panel.appendChild(grid);
+        if(!calendar.hasBirthday)panel.appendChild(el('p','anniversary-note',
+          '생일을 등록하지 않아 생일 일정은 표시하지 않습니다.'));
+        panel.appendChild(el('p','anniversary-note',
+          '한국 시간 기준 · 49재는 별이 된 날을 첫날로 계산한 참고일입니다. 실제 추모 일정은 가족의 방식에 따라 다를 수 있습니다.'));
+        box.appendChild(panel);
+      }
+    }
     const src=publicPhoto(pet.photo_path);
     if(src){const img=el('img','portrait');img.src=src;img.alt=pet.pet_name+'의 모습';img.loading='lazy';box.appendChild(img);}
     box.appendChild(el('p','',pet.story||''));

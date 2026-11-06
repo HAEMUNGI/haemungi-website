@@ -57,6 +57,8 @@
       const body=el('div','archive-card-body');
       body.appendChild(el('h2','',row.pet_name));
       body.appendChild(el('p','archive-dates',[row.born_on,row.passed_on].filter(Boolean).join(' ~ ')||'함께한 시간을 기억합니다.'));
+      const summary=window.HAEMUNGI_MEMORIAL_DATES?.calculate(row).summary;
+      if(summary)body.appendChild(el('p','archive-milestone',summary));
       body.appendChild(el('span','archive-open','추억 읽기 →'));
       link.append(photo,body);card.appendChild(link);grid.appendChild(card);
     }
