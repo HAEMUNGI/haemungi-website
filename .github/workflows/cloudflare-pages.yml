@@ -42,12 +42,14 @@ jobs:
           node verify-playground.mjs
           node verify-story-seo.mjs
           node verify-memorial.mjs
+          node verify-memorial-registration.mjs
+          node verify-memorial-entry-and-dates.cjs
+          node verify-memorial-communal-elastic.mjs
           node verify-memorial-scale.cjs
           node verify-memorial-walk.mjs
           node verify-memorial-journey.mjs
           node verify-memorial-store.mjs
           node verify-memorial-communal.mjs
-          node verify-memorial-adoption.mjs
           node verify-temple.mjs
           node verify-christmas.mjs
 

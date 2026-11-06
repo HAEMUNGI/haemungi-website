@@ -36,7 +36,7 @@ assert.match(communal,/room_key/);
 assert.match(communal,/rooms_in_use/);
 assert.match(communal,/setInterval\(checkRemaining,1000\)/);
 assert.match(memorial,/후원 추억의 방은 별도 문의/);
-assert.match(memorial,/후원자 프리미엄 공간 · 별도 문의/);
+assert.match(memorial,/별도 문의 · 프리미엄/);
 assert.match(archive,/후원 추억의 방/);
 assert.match(memorial,/mailto:say3589@naver\.com/);
 assert.doesNotMatch(communal,/service_role|private\/incoming/i);

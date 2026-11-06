@@ -91,3 +91,50 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .premium-inquiry{margin:20px 0 26px;padding:18px;border:1px solid #e8d8b7;background:#fffaf0;border-radius:16px}.premium-inquiry h2{margin:0 0 8px;font-size:clamp(18px,3.8vw,22px);color:#66533b}.premium-inquiry p{margin:0 0 14px;line-height:1.7;color:#685e51}.premium-inquiry .quiet-btn{display:inline-flex;align-items:center;min-height:42px}
 .registration-tiers{background:#fffaf0}.registration-tiers .radio-label{padding:10px 0;align-items:center}.registration-tiers strong{display:block;color:#57412c;font-size:14px}.registration-tiers small{display:block;color:#786a57;font-size:12px;font-weight:400;margin-top:3px}.plaque-application{margin:18px 0 24px;padding:18px;border:1px solid #d9c4a2;border-radius:12px;background:#fff9ed}.plaque-application h2{font:700 18px 'Gowun Batang',serif;color:#60482e}.plaque-app-select select,.archive-upgrade select,.wing-navigation select{width:100%;padding:11px;background:#fffdf7;border:1px solid #c6ad82;border-radius:8px;color:#584632;font-size:13px}.plaque-slot-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}.plaque-slot{min-height:52px;border:1px solid #a89264;border-radius:8px;background:#fef4de;color:#654c2b;font-size:12px}.plaque-slot:disabled{opacity:.6;background:#eee5d6;color:#827464}.plaque-slot[data-state=pending]:disabled{background:#eadac2}.plaque-slot[aria-pressed=true]{background:#d4eddf;color:#285947;border:2px solid #4b896e;font-weight:700}.auth-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.auth-actions button,.archive-upgrade button{padding:10px 15px;border:1px solid #a99269;border-radius:8px;background:#fff8e8;color:#594126;font-size:13px}.archive-upgrade{padding:12px;margin:16px 0;border:1px solid #d7bd91;border-radius:10px}.archive-upgrade summary{cursor:pointer;color:#56402a;font-weight:700;font-size:13px}.archive-upgrade select{margin:12px 0}.wing-navigation{display:grid;grid-template-columns:auto minmax(170px,1fr);gap:8px 10px;align-items:center;margin-bottom:11px}.wing-navigation label{font-size:13px;color:#f1ddbf}.wing-navigation select{background:#312d28;color:#fff4db}.wing-navigation span{grid-column:1/-1;text-align:center;font-size:12px;color:#c9bda9}.plaque-application[hidden],.archive-upgrade[hidden]{display:none!important}
 @media(max-width:420px){.plaque-application{padding:12px}.plaque-slot{font-size:11px;padding:7px 3px}.wing-navigation{grid-template-columns:1fr}}
+
+/* The entrance stays a single, non-scrolling destination map within the film. */
+#entranceOptions{
+  position:absolute;inset:5% 5.5% 5%;transform:none;max-height:none;overflow:hidden;
+  display:flex;flex-direction:column;gap:clamp(6px,1.1svh,11px);
+  padding:clamp(10px,2.4vw,17px);
+  border-radius:22px;border:1px solid #fffef2;
+  background:linear-gradient(148deg,#fffaf1f4,#f6ead8ee 65%,#f2e4d0ed);
+  box-shadow:0 16px 48px #55412f55,inset 0 0 0 1px #c9ae8b7d;
+  backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);
+  color:#533b2b;text-align:center;
+}
+#entranceOptions .options-heading{flex:none;line-height:1.25}
+#entranceOptions .options-heading>span{font:600 clamp(8px,2vw,10px) 'Noto Sans KR',sans-serif;letter-spacing:.17em;color:#a68b6c}
+#entranceOptions .options-label{margin:4px 0 0;font:700 clamp(18px,4.5vw,24px)/1.2 'Gowun Batang',serif;color:#57402c}
+#entranceOptions .options-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:clamp(5px,1vw,9px);flex:1 1 0;min-height:0}
+#entranceOptions .choice{min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  padding:4px 2px;border-radius:13px;border:1px solid #d8c0a0;background:rgba(255,255,255,.75);color:#573f2c;
+  box-shadow:0 3px 10px #916e3d0c;transition:background .17s ease,border-color .17s ease,transform .17s ease}
+#entranceOptions .choice:hover,#entranceOptions .choice:focus-visible{background:#fff7e6;border-color:#b99561;transform:translateY(-1px)}
+#entranceOptions .choice-icon{font:400 clamp(14px,4vw,23px)/1.2 'Gowun Batang',serif;color:#a07746;margin-bottom:clamp(0px,.4vh,4px)}
+#entranceOptions .choice>span:not(.choice-icon){font:700 clamp(12px,3.3vw,17px)/1.28 'Gowun Batang',serif;word-break:keep-all}
+#entranceOptions .choice small{font:400 clamp(9px,2.3vw,11px)/1.28 'Noto Sans KR',sans-serif;color:#94775c;word-break:keep-all;margin-top:3px}
+#entranceOptions .options-register{display:flex;flex:none;align-items:center;justify-content:center;gap:7px;min-height:clamp(42px,6.7svh,58px);
+  border-radius:14px;border:1px solid #a87c4c;background:linear-gradient(120deg,#9a754c,#b38c5c);color:#fffaf0;
+  box-shadow:0 6px 15px #75513238;white-space:nowrap;padding:6px 8px}
+#entranceOptions .options-register>span{font-size:23px;font-weight:300;line-height:1}
+#entranceOptions .options-register strong{font:700 clamp(12px,3.4vw,17px) 'Gowun Batang',serif}
+#entranceOptions .options-register small{font-size:clamp(8px,2.2vw,10px);opacity:.86}
+#entranceOptions .options-register:hover{background:linear-gradient(120deg,#856039,#a07843)}
+@media(max-width:420px){#entranceOptions{inset:4.5% 4.5%;padding:10px;gap:7px}#entranceOptions .choice{border-radius:10px}#entranceOptions .options-register{gap:4px;flex-wrap:wrap}#entranceOptions .options-register small{width:100%;margin-top:-5px}}
+@media(max-height:610px){#entranceOptions{inset:3% 4%;gap:4px;padding:8px;border-radius:13px}#entranceOptions .choice small{font-size:9px;margin-top:0}#entranceOptions .choice-icon{font-size:13px}#entranceOptions .options-heading>span{font-size:8px}#entranceOptions .options-label{font-size:16px}#entranceOptions .options-register{min-height:39px}}
+@media(prefers-reduced-motion:reduce){#entranceOptions .choice{transition:none;transform:none!important}}
+
+/* A private-feeling date card; all dates come only from guardian-entered fields. */
+.anniversary-panel{margin:19px auto 24px;padding:18px;border:1px solid #e0caa6;border-radius:18px;
+  background:linear-gradient(145deg,#fffefa,#f5ead8);text-align:left;color:#5b432e}
+.anniversary-panel h2{font:700 21px 'Gowun Batang',serif;margin:0 0 8px;color:#68472e}
+.anniversary-panel .anniversary-elapsed{font:700 18px 'Gowun Batang',serif;color:#916539;margin:5px 0 13px}
+.anniversary-panel .anniversary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.anniversary-panel .anniversary-item{border:1px solid #e6d7bc;border-radius:12px;background:#fffdf7;padding:10px 7px;text-align:center;min-width:0}
+.anniversary-item strong,.anniversary-item span,.anniversary-item small{display:block}
+.anniversary-item strong{font-size:12px;line-height:1.5;word-break:keep-all}
+.anniversary-item span{font-size:12px;color:#876c50;margin:5px 0}
+.anniversary-item small{font-size:11px;color:#ae784d}
+.anniversary-panel .anniversary-note{font-size:11px;color:#92795d;margin:13px 0 0;line-height:1.55}
+@media(max-width:470px){.anniversary-panel{padding:14px 10px}.anniversary-panel .anniversary-grid{grid-template-columns:1fr 1fr}.anniversary-item strong{font-size:11px}}
