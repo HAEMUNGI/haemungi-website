@@ -9,7 +9,7 @@
   <link rel="preload" as="image" href="/memorial/communal-hall-poster.webp">
   <link rel="stylesheet" href="/memorial-communal.css?v=20261106-hall1">
   <script src="/content-config.js" defer></script>
-  <script type="module" src="/memorial-communal.js?v=20261106-hall1"></script>
+  <script type="module" src="/memorial-communal.js?v=20261107-elastic1"></script>
 </head>
 <body>
   <a class="skip-link" href="#hallMain">본문으로 이동</a>
@@ -28,7 +28,7 @@
       <div class="hall-actions" id="hallActions" hidden><p>사진 속 오른쪽 키오스크를 눌러 추모 메시지를 남기거나 소중한 아이를 찾아보세요.</p><button type="button" id="openKiosk">✧ 공동 추모 키오스크 열기</button><button type="button" class="light-button" id="replayTour">10초 공간 다시 보기</button></div>
     </section>
     <section id="ritualView" hidden aria-labelledby="ritualTitle">
-      <div class="communal-heading"><p>이 순간을 위해 준비한 작은 공간</p><h1 id="ritualTitle">임시 제례실</h1><p id="ritualSubtitle">소중한 아이를 기억하는 10분</p></div>
+      <div class="communal-heading"><p id="ritualRoomLabel">이 순간을 위해 준비한 작은 공간</p><h1 id="ritualTitle">임시 제례실</h1><p id="ritualSubtitle">소중한 아이를 기억하는 10분</p></div>
       <div class="temporary-scene" id="temporaryScene">
         <img src="/memorial/ritual-last.jpg" alt="따뜻한 원목으로 꾸며진 별빛 제례실" class="temporary-background">
         <div class="temporary-monitor" id="temporaryMonitor"><img id="temporaryPetPhoto" alt="선택한 아이의 추모 사진"><div class="temporary-photo-meta"><strong id="temporaryPetName"></strong><small id="temporaryPetDates"></small></div></div>
@@ -48,7 +48,7 @@
         <form id="petSearchForm" class="search-form"><label>아이 이름<input id="petSearchInput" name="name" maxlength="60" required placeholder="이름을 입력하세요"></label><button type="submit">검색</button></form>
         <p id="petSearchStatus" role="status"></p><div id="petSearchResults" class="pet-results"></div>
       </section>
-      <section data-kiosk-panel="reservation" hidden><h3>10분 임시 제례실 예약</h3><p class="kiosk-help">별들의 기록에는 있지만 전용 제례실이 없는 아이를 위한 공간입니다. 하나의 방을 함께 사용하며, 서버 기준 최대 10분 후 자동 종료됩니다.</p><div id="reservationChoice" class="reservation-choice">먼저 ‘아이 찾기’에서 사진을 선택해 주세요.</div><p id="roomAvailability" role="status"></p><button type="button" id="reserveRoom" disabled>선택한 아이와 10분 보내기</button><button type="button" class="light-button" id="checkAvailability">이용 가능 여부 새로고침</button><p id="reservationStatus" role="status"></p></section>
+      <section data-kiosk-panel="reservation" hidden><h3>10분 임시 제례실 이용</h3><p class="kiosk-help">별들의 기록에는 있지만 고정 명패가 없는 아이를 위한 공간입니다. 가족마다 독립적인 임시 제례실이 자동 배정되며, 이용자가 늘어나면 공간도 확장됩니다. 서버 기준 최대 10분 후 자동 종료됩니다.</p><div id="reservationChoice" class="reservation-choice">먼저 ‘아이 찾기’에서 사진을 선택해 주세요.</div><p id="roomAvailability" role="status"></p><button type="button" id="reserveRoom" disabled>선택한 아이와 10분 보내기</button><button type="button" class="light-button" id="checkAvailability">이용 가능 여부 새로고침</button><p id="reservationStatus" role="status"></p></section>
     </div>
   </dialog>
   <footer>© HAEMUNGI · 일현 조성훈 <span>모든 기억에 존중과 따뜻함을.</span></footer>

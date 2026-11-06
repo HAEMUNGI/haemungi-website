@@ -88,3 +88,4 @@ body{min-height:100dvh;background:linear-gradient(180deg,#fffaf3 0%,#f5ecdf 56%,
 .stage-screen[data-screen="entrance"] .scene-caption h1,.stage-screen[data-screen="entrance"] .scene-caption p{text-shadow:0 1px 5px #fffdf1d6}
 .film-frame[data-film="entrance"]{border:0;border-radius:0;background:transparent;box-shadow:none}
 @media(min-width:680px){.film-frame[data-film="entrance"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 13%,#000 87%,transparent);mask-image:linear-gradient(90deg,transparent,#000 13%,#000 87%,transparent)}}
+.premium-inquiry{margin:20px 0 26px;padding:18px;border:1px solid #e8d8b7;background:#fffaf0;border-radius:16px}.premium-inquiry h2{margin:0 0 8px;font-size:clamp(18px,3.8vw,22px);color:#66533b}.premium-inquiry p{margin:0 0 14px;line-height:1.7;color:#685e51}.premium-inquiry .quiet-btn{display:inline-flex;align-items:center;min-height:42px}
