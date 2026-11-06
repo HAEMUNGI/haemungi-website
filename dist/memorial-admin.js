@@ -3,7 +3,7 @@
   const cfg=window.HAEMUNGI_CONTENT_CONFIG||{},api=cfg.projectUrl||'',key=cfg.publishableKey||'';
   const $=id=>document.getElementById(id);
   let session=null;let busy=false;
-  let archivePage=0,archiveFilter='';
+  let archivePage=0,archiveFilter='',publishedPage=0;
   let requestPage=0,letterPage=0,hallMessagePage=0;
   function notice(txt,error=false){$('notice').textContent=txt;$('notice').style.color=error?'#ffb6a5':'#e9d5b7';}
   function authView(text){$('authMessage').hidden=false;$('authMessage').querySelector('p').textContent=text;$('adminWorkspace').hidden=true;}
@@ -70,24 +70,32 @@
   async function publish(row,slot,verified){
     if(!verified)throw new Error('보호자의 명시적 공개 동의를 먼저 확인해주세요.');
     if(row.requested_visibility!=='public')throw new Error('비공개 신청은 공개할 수 없습니다.');
-    if(!row.photo_path)throw new Error('사진을 먼저 등록해주세요.');
-    if(slot!==null&&(!Number.isInteger(slot)||slot<1||slot>12))throw new Error('안식관 위치는 001~012호 중 선택해주세요.');
+    if(slot!==null&&(!Number.isInteger(slot)||slot<1||slot>30000))throw new Error('안식관 위치는 001~30000호 중 선택해주세요.');
     if(slot===1 && !(row.requested_slot===1))throw new Error('001호는 첫 친구를 위해 예약되어 있습니다.');
     if(slot!==null){
       const taken=await request(rest('hm_memorial_public','?select=id&slot_index=eq.'+slot));
       if(taken.some(r=>r.id!==row.id))throw new Error('해당 안치 공간은 이미 사용 중입니다.');
     }
+    const alreadyPublished=await request(rest('hm_memorial_public','?select=id,slot_index,photo_path&id=eq.'+row.id));
+    if(alreadyPublished.length&&alreadyPublished[0].slot_index!==null)
+      throw new Error('이미 안식관 명패가 배정된 기록입니다.');
+    if(!row.photo_path&&!alreadyPublished.length)throw new Error('사진을 먼저 등록해주세요.');
     await patch('hm_memorial_requests',row.id,{owner_consent_verified:true});
-    const blob=await fetchPrivatePhoto(row.photo_path);
-    const path='approved/'+row.id+'.'+row.photo_path.split('.').pop();
-    await request('/storage/v1/object/hm-memorial-published/'+path,{method:'POST',body:blob,
-      headers:{'Content-Type':blob.type||'image/jpeg','x-upsert':'true'}});
-    const thumbnailPath=await uploadListThumbnail(blob);
-    const publicRow={id:row.id,slot_index:slot,pet_name:row.pet_name,born_on:row.born_on,
-      passed_on:row.passed_on,story:row.story,farewell:row.farewell,photo_path:path,
-      thumbnail_path:thumbnailPath};
-    await request(rest('hm_memorial_public','?on_conflict=id'),{method:'POST',body:JSON.stringify(publicRow),
-      headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});
+    if(alreadyPublished.length){
+      // Archive -> plaque: keep the exact same single uploaded photo.
+      await patch('hm_memorial_public',row.id,{slot_index:slot});
+    }else{
+      const blob=await fetchPrivatePhoto(row.photo_path);
+      const path='approved/'+row.id+'.'+row.photo_path.split('.').pop();
+      await request('/storage/v1/object/hm-memorial-published/'+path,{method:'POST',body:blob,
+        headers:{'Content-Type':blob.type||'image/jpeg','x-upsert':'true'}});
+      const thumbnailPath=await uploadListThumbnail(blob);
+      const publicRow={id:row.id,slot_index:slot,pet_name:row.pet_name,born_on:row.born_on,
+        passed_on:row.passed_on,story:row.story,farewell:row.farewell,photo_path:path,
+        thumbnail_path:thumbnailPath};
+      await request(rest('hm_memorial_public','?on_conflict=id'),{method:'POST',body:JSON.stringify(publicRow),
+        headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});
+    }
     await patch('hm_memorial_requests',row.id,{status:'published',approved_slot:slot,approved_at:new Date().toISOString()});
     notice(slot===null?'별들의 기록에 공개가 완료되었습니다.':
       '안식관 '+String(slot).padStart(3,'0')+'호 공개가 완료되었습니다.');
@@ -109,7 +117,7 @@
   }
   function renderRequest(row){
     const card=elem('article','request-card'),title=elem('h3','',row.pet_name+' · '+(row.requested_visibility==='public'?'공개 신청':'비공개 신청'));
-    card.appendChild(title);card.appendChild(elem('p','meta','신청: '+new Date(row.created_at).toLocaleString('ko-KR')+' · 상태: '+row.status+' · 희망 위치: '+(row.requested_slot||'미지정')));
+    card.appendChild(title);card.appendChild(elem('p','meta','신청: '+new Date(row.created_at).toLocaleString('ko-KR')+' · 상태: '+row.status+' · 희망 위치: '+(row.requested_slot||'미지정')+(row.publication_source==='self_archive'?' · 기존 공개 기록의 명패 전환 (사진 재사용)':'')));
     card.appendChild(elem('p','meta','연락처: '+(row.contact_email||'등록되지 않음')));
     card.appendChild(elem('p','meta',dates(row)));
     card.appendChild(elem('p','',row.story||''));
@@ -121,24 +129,27 @@
         catch(err){notice(err.message,true);}finally{preview.remove();}
       });card.appendChild(preview);
     }
-    const uploadLabel=elem('label','',row.photo_path?'사진 교체(관리자)':'사진 등록(관리자)');
-    const file=elem('input');file.type='file';file.accept='image/jpeg,image/png,image/webp';uploadLabel.appendChild(file);card.appendChild(uploadLabel);
-    card.appendChild(button('사진 저장','secondary',()=>withBusy(()=>uploadPhoto(row,file.files?.[0]))));
+    if(row.publication_source!=='self_archive'){
+      const uploadLabel=elem('label','',row.photo_path?'사진 교체(관리자)':'사진 등록(관리자)');
+      const file=elem('input');file.type='file';file.accept='image/jpeg,image/png,image/webp';uploadLabel.appendChild(file);card.appendChild(uploadLabel);
+      card.appendChild(button('사진 저장','secondary',()=>withBusy(()=>uploadPhoto(row,file.files?.[0]))));
+    }
     const consentLabel=elem('label');
     const consent=elem('input');consent.type='checkbox';consent.checked=!!row.owner_consent_verified;
     consentLabel.appendChild(consent);consentLabel.appendChild(document.createTextNode(' 실제 보호자에게 공개·보관 동의를 확인했습니다.'));
     card.appendChild(consentLabel);
     if(row.requested_visibility==='public'){
-      const slotLabel=elem('label','', '배정할 안식관 번호 (001~012)');
-      const slot=elem('input');slot.type='number';slot.min='1';slot.max='12';slot.step='1';slot.value=String(row.requested_slot||2);
+      const slotLabel=elem('label','', '배정할 안식관 번호 (001~30000, 12개씩 1개 구역)');
+      const slot=elem('input');slot.type='number';slot.min='1';slot.max='30000';slot.step='1';slot.value=String(row.requested_slot||2);
       slotLabel.appendChild(slot);card.appendChild(slotLabel);
       card.appendChild(button('승인하고 명패 공개','',()=>withBusy(()=>publish(row,Number(slot.value),consent.checked))));
-      card.appendChild(button('별들의 기록에 승인·공개 (안식관 번호 없음)','secondary',
+      if(row.publication_source!=='self_archive')card.appendChild(button('별들의 기록에 승인·공개 (안식관 번호 없음)','secondary',
         ()=>withBusy(()=>publish(row,null,consent.checked))));
     }else{
       card.appendChild(button('비공개 보관 승인','',()=>withBusy(()=>approvePrivate(row,consent.checked))));
     }
-    card.appendChild(button('신청 반려','danger',()=>{if(confirm(row.pet_name+'의 신청을 반려하시겠습니까?'))withBusy(()=>patch('hm_memorial_requests',row.id,{status:'rejected'}));}));
+    card.appendChild(button('신청 반려','danger',()=>{if(confirm(row.pet_name+'의 신청을 반려하시겠습니까?'))withBusy(()=>patch('hm_memorial_requests',row.id,
+      row.publication_source==='self_archive'?{status:'published',requested_slot:null,owner_consent_verified:false}:{status:'rejected'}));}));
     return card;
   }
 
@@ -339,11 +350,7 @@
     const born=input('date',row.born_on||''),passed=input('date',row.passed_on||'');
     const story=elem('textarea');story.value=row.story||'';story.maxLength=900;story.rows=4;story.required=true;
     const farewell=elem('textarea');farewell.value=row.farewell||'';farewell.maxLength=500;farewell.rows=2;
-    const slot=elem('select');
-    for(let i=1;i<=12;i++){
-      const opt=elem('option','',String(i).padStart(3,'0')+'호');opt.value=String(i);
-      opt.selected=i===row.slot_index;slot.appendChild(opt);
-    }
+    const slot=input('number',String(row.slot_index));slot.min='1';slot.max='30000';slot.step='1';
     const frame=elem('select');
     for(const [k,label] of [['ivory','아이보리 액자'],['brass','황동 액자'],['walnut','원목 액자']]){
       const opt=elem('option','',label);opt.value=k;opt.selected=(row.frame_style||'ivory')===k;frame.appendChild(opt);
@@ -360,7 +367,8 @@
     focusY.min='0';focusY.max='100';focusY.step='1';
 
     const initialIndex=Number(row.slot_index)||1;
-    const initialQ=nicheArtCorners(initialIndex,Math.floor((initialIndex-1)/3),(initialIndex-1)%3,row.frame_corners);
+    const localIndex=(initialIndex-1)%12;
+    const initialQ=nicheArtCorners(initialIndex,Math.floor(localIndex/3),localIndex%3,row.frame_corners);
     let corners=initialQ.map(p=>p.slice()),accepted=corners.map(p=>p.slice());
     let needsAccept=false,fine=false,blank=false,zoom=1,drawPending=false;
 
@@ -403,7 +411,7 @@
     const editCol=elem('div','frame-editor-column');
     const toolbar=elem('div','frame-tool-row');
     const reframe=button('액자 추가·다시 배치','secondary',()=>{
-      blank=false;corners=nicheArtCorners(Number(slot.value),Math.floor((Number(slot.value)-1)/3),(Number(slot.value)-1)%3)
+      blank=false;corners=nicheArtCorners(Number(slot.value),Math.floor(((Number(slot.value)-1)%12)/3),(Number(slot.value)-1)%3)
         .map(p=>p.slice());
       needsAccept=true;enterFine();setInfo('기본 위치로 다시 지정했습니다. 네 점을 조절한 다음 「이 위치 사용」을 누르세요.');
     });
@@ -521,7 +529,7 @@
     [frame,fit,mat,focusX,focusY].forEach(el=>el.addEventListener(el===frame||el===fit?'change':'input',queueDraw));
     slot.addEventListener('change',()=>{
       if(!validFrameCorners(row.frame_corners)){
-        const i=Number(slot.value);corners=nicheArtCorners(i,Math.floor((i-1)/3),(i-1)%3).map(p=>p.slice());
+        const i=Number(slot.value);corners=nicheArtCorners(i,Math.floor(((i-1)%12)/3),(i-1)%3).map(p=>p.slice());
         queueDraw();
       }
     });
@@ -630,7 +638,7 @@
   async function reload(){
     const [requests,published,archive,letters,scenes,offerings,hallMessages]=await Promise.all([
       request(rest('hm_memorial_requests','?select=*&status=eq.pending&order=created_at.asc&limit=25&offset='+(requestPage*24))),
-      request(rest('hm_memorial_public','?select=*&slot_index=not.is.null&order=slot_index.asc&limit=12')),
+      request(rest('hm_memorial_public','?select=*&slot_index=not.is.null&order=slot_index.asc&limit=25&offset='+(publishedPage*24))),
       request(rest('hm_memorial_public',archiveQueryString())),
       request(rest('hm_memorial_letters','?select=*&status=eq.pending&order=created_at.asc&limit=25&offset='+(letterPage*24))),
       request(rest('hm_memorial_scene_settings','?select=*&order=scene_key.asc')),
@@ -657,7 +665,10 @@
       $(prefix+'AdminPrev').disabled=n===0;
       $(prefix+'AdminNext').disabled=rows.length<=24;
     }
-    for(const [id,rows,render] of [['requestList',requests.slice(0,24),renderRequest],['publishedList',published,renderPublic],['letterAdminList',letters.slice(0,24),renderLetter]]){
+    $('publishedAdminPage').textContent=(publishedPage+1)+'쪽 · 최대 24호씩';
+    $('publishedAdminPrev').disabled=publishedPage===0;
+    $('publishedAdminNext').disabled=published.length<=24;
+    for(const [id,rows,render] of [['requestList',requests.slice(0,24),renderRequest],['publishedList',published.slice(0,24),renderPublic],['letterAdminList',letters.slice(0,24),renderLetter]]){
       const box=$(id);box.replaceChildren();
       if(!rows.length)box.appendChild(elem('p','empty','해당 항목이 없습니다.'));
       rows.forEach(row=>box.appendChild(render(row)));
@@ -681,6 +692,12 @@
   $('archiveAdminPrev').addEventListener('click',()=>{if(archivePage>0){archivePage--;withBusy(async()=>{});}});
   $('archiveAdminNext').addEventListener('click',()=>{
     if(!$('archiveAdminNext').disabled){archivePage++;withBusy(async()=>{});}
+  });
+  $('publishedAdminPrev').addEventListener('click',()=>{
+    if(publishedPage>0){publishedPage--;withBusy(async()=>{});}
+  });
+  $('publishedAdminNext').addEventListener('click',()=>{
+    if(!$('publishedAdminNext').disabled){publishedPage++;withBusy(async()=>{});}
   });
   for(const prefix of ['request','letter']){
     $(prefix+'AdminPrev').addEventListener('click',()=>{
