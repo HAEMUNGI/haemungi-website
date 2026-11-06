@@ -8,6 +8,7 @@
   let visitor=null,selectedSlot=null,wings=[],busy=false,wingLoadSeq=0,slotLoadSeq=0;
   const status=(message)=>{$('applicationStatus').textContent=message;};
   const authStatus=(message)=>{$('visitorAuthStatus').textContent=message;};
+  const quickStatus=(message)=>{$('quickLoginStatus').textContent=message;};
   const tier=()=>form.querySelector('input[name="registration_tier"]:checked')?.value||'archive';
   const headers=(jwt)=>({apikey:key,...(jwt?{Authorization:'Bearer '+jwt}:{}),'Content-Type':'application/json'});
 
@@ -105,6 +106,9 @@
     const logged=!!visitor?.access_token;
     $('visitorLogin').hidden=logged;$('visitorSignup').hidden=logged;$('visitorLogout').hidden=!logged;
     $('upgradeArchiveBox').hidden=!logged;
+    $('openVisitorLogin').textContent=logged?'내 계정':'로그인';
+    $('quickLoginForm').hidden=logged;$('quickAccountArea').hidden=!logged;
+    $('quickAccountEmail').textContent=logged?'로그인됨 · '+(visitor.user?.email||'이메일 계정'):'';
     form.elements.contact_email.readOnly=logged;
     if(logged){
       form.elements.contact_email.value=visitor.user?.email||form.elements.contact_email.value;
@@ -112,29 +116,71 @@
       loadOwnedArchives();
     }else{authStatus('명패 신청 시 신청자 이메일과 비밀번호로 로그인해주세요.');}
   }
-  async function authenticate(signup=false){
+  async function authenticate(signup=false,credentials=null){
     if(busy)return;
     busy=true;
     try{
-      const email=readEmail(),password=readPassword();
-      authStatus(signup?'계정과 확인 메일을 준비하고 있습니다…':'로그인하고 있습니다…');
+      const email=credentials?.email||readEmail(),password=credentials?.password||readPassword();
+      const message=signup?'계정과 확인 메일을 준비하고 있습니다…':'로그인하고 있습니다…';
+      authStatus(message);if(credentials)quickStatus(message);
       const path=signup?'/auth/v1/signup?redirect_to='+encodeURIComponent(location.origin+'/memorial.html#apply'):
         '/auth/v1/token?grant_type=password';
       const data=await jsonFetch(api+path,{method:'POST',headers:headers(),body:JSON.stringify({email,password})});
       if(!data.access_token){
-        authStatus('가입 신청을 받았습니다. 이메일 인증 안내를 확인한 뒤 이곳에서 로그인해주세요.');
+        const message='가입 신청을 받았습니다. 이메일 인증 안내를 확인한 뒤 이곳에서 로그인해주세요.';
+        authStatus(message);if(credentials)quickStatus(message);
         return;
       }
       visitor={...data,expires_at:Math.floor(Date.now()/1000)+(data.expires_in||3600)};
       if(!visitor.user?.email_confirmed_at){visitor=null;throw new Error('이메일 인증을 마친 뒤 로그인해주세요.');}
       persistVisitor();renderVisitor();
-    }catch(err){authStatus(err.message);}finally{busy=false;}
+      $('visitorPassword').value='';$('quickLoginPassword').value='';
+      if(credentials)quickStatus('로그인되었습니다. 내 기록과 명패 신청을 확인할 수 있습니다.');
+    }catch(err){authStatus(err.message);if(credentials)quickStatus(err.message);}finally{busy=false;}
   }
   $('visitorLogin').addEventListener('click',()=>authenticate(false));
   $('visitorSignup').addEventListener('click',()=>authenticate(true));
-  $('visitorLogout').addEventListener('click',()=>{
-    visitor=null;persistVisitor();renderVisitor();$('visitorPassword').value='';
+  async function logoutVisitor(){
+    const token=visitor?.access_token;
+    visitor=null;persistVisitor();renderVisitor();
+    $('visitorPassword').value='';$('quickLoginPassword').value='';
     form.elements.contact_email.readOnly=false;
+    quickStatus('이 기기에서 로그아웃했습니다.');
+    if(token&&api){
+      try{await fetch(api+'/auth/v1/logout?scope=local',{method:'POST',headers:headers(token),cache:'no-store'});}
+      catch(_){/* Local session is cleared even if the server is unreachable. */}
+    }
+  }
+  $('visitorLogout').addEventListener('click',logoutVisitor);
+  $('quickLogout').addEventListener('click',logoutVisitor);
+
+  const loginDialog=$('visitorLoginDialog');
+  $('openVisitorLogin').addEventListener('click',()=>{
+    if(!loginDialog.open)loginDialog.showModal();
+    if(visitor?.access_token)$('quickManageMemories').focus();
+    else $('quickLoginEmail').focus();
+  });
+  $('closeVisitorLogin').addEventListener('click',()=>loginDialog.close());
+  loginDialog.addEventListener('close',()=>{$('quickLoginPassword').value='';});
+  $('quickLoginForm').addEventListener('submit',event=>{
+    event.preventDefault();
+    const email=$('quickLoginEmail').value.trim().toLowerCase();
+    const password=$('quickLoginPassword').value;
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){quickStatus('올바른 이메일 주소를 입력해주세요.');return;}
+    if(password.length<8){quickStatus('비밀번호는 8자 이상 입력해주세요.');return;}
+    authenticate(false,{email,password});
+  });
+  $('quickSignup').addEventListener('click',()=>{
+    const email=$('quickLoginEmail').value.trim().toLowerCase();
+    const password=$('quickLoginPassword').value;
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){quickStatus('올바른 이메일 주소를 입력해주세요.');return;}
+    if(password.length<8){quickStatus('비밀번호는 8자 이상 입력해주세요.');return;}
+    authenticate(true,{email,password});
+  });
+  $('quickManageMemories').addEventListener('click',()=>{
+    const radio=form.querySelector('input[name="registration_tier"][value="plaque"]');
+    radio.checked=true;setTier();loginDialog.close();
+    location.hash='#apply';
   });
 
   async function loadOwnedArchives(){
@@ -260,4 +306,5 @@
     if(raw){visitor=JSON.parse(raw);if(!visitor?.access_token)visitor=null;}
   }catch(_){visitor=null;}
   renderVisitor();setTier();
+  if(new URLSearchParams(location.search).get('login')==='1'&&!loginDialog.open)loginDialog.showModal();
 })();
