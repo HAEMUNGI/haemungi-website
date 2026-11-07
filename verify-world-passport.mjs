@@ -6,6 +6,7 @@ const read=path=>readFileSync(path,'utf8');
 const passport=read('dist/world-passport.js');
 const css=read('dist/world-passport.css');
 const sql=read('019_haemungi_world_passport.sql');
+const sqlService=read('020_haemungi_world_passport_service_permissions.sql');
 const edge=read('supabase/functions/world-passport/index.ts');
 const memorial=read('dist/memorial-registration.js');
 const privacy=read('dist/memorial-privacy.html');
@@ -51,6 +52,9 @@ assert.match(sql,/r\.status='pending'/,'Existing pending plaque requests are pro
 assert.match(sql,/hm_world_passports_one_reward_per_account/,'One reward per verified account');
 assert.match(sql,/drop policy if exists "mem_requests_owner_apply"/,'Old direct booking policy disabled');
 assert.match(sql,/revoke execute on function public\.hm_memorial_request_archive_plaque/,'Old direct booking RPC disabled');
+assert.match(sqlService,/revoke all on function public\.hm_world_passport_stamp\(uuid,text,text\) from public,anon,authenticated/,'Stamp is server-only after the live permission fix');
+assert.match(sqlService,/grant execute on function public\.hm_world_passport_claim\(uuid,text,uuid,uuid\) to service_role/,'Only server may allocate plaques');
+assert(!sqlService.includes("current_setting('request.jwt.claim.role'"),'Supabase secret-key service calls must not rely on a missing JWT role claim');
 assert(!memorial.includes('hm_memorial_request_archive_plaque'),'Old client path is gone');
 assert(!read('dist/memorial.html').includes('value="plaque"'),'Manual plaque booking no longer offered');
 assert(privacy.includes('14개 방문 도장'),'Public privacy disclosure describes passport');
