@@ -37,6 +37,8 @@
   const wideArt=new Set(['home','videos','room']);
   const ids=new Set(stops.map(s=>s[0]));
   let pass=null,stamps={},claimedSlot=null,page=0,busy=false,visitTimer=null;
+  let visitTicker=null,visitToastTimer=null,visitSequence=0,stampBusy=false,retryTimer=null;
+  let visitToast,visitToastText,visitToastProgress;
   let dialog,pageBody,actionNode,statusNode,countNode,prevBtn,nextBtn;
   try{const saved=JSON.parse(localStorage.getItem(storageKey)||'null');
     if(saved?.id&&saved?.token)pass={id:saved.id,token:saved.token};
@@ -72,24 +74,79 @@
   async function sync(){
     if(!pass)return;
     const response=await request('status');
-    stamps=response.stamps||{};claimedSlot=response.claimed_slot||null;
+    // A slower status response must never erase a stamp just confirmed by the server.
+    stamps={...stamps,...(response.stamps||{})};claimedSlot=response.claimed_slot||null;
     render();
   }
-  async function stampStop(stop){
-    if(!pass||!ids.has(stop)||stamps[stop]||busy||claimedSlot||document.visibilityState==='hidden')return;
+  const stopName=stop=>stops.find(s=>s[0]===stop)?.[1]||'이 장소';
+  function showVisitToast(message,progress=0,state='pending'){
+    if(!visitToast)return;
+    if(visitToastTimer){clearTimeout(visitToastTimer);visitToastTimer=null;}
+    visitToast.hidden=false;visitToast.dataset.state=state;
+    visitToastText.textContent=message;
+    visitToastProgress.style.width=Math.max(0,Math.min(100,progress))+'%';
+  }
+  function hideVisitToast(delay=0){
+    if(visitToastTimer)clearTimeout(visitToastTimer);
+    visitToastTimer=setTimeout(()=>{if(visitToast)visitToast.hidden=true;},delay);
+  }
+  function clearVisitTimers(){
+    if(visitTimer){clearTimeout(visitTimer);visitTimer=null;}
+    if(visitTicker){clearInterval(visitTicker);visitTicker=null;}
+    if(retryTimer){clearTimeout(retryTimer);retryTimer=null;}
+  }
+  const stillVisiting=(stop,sequence)=>sequence===visitSequence&&currentStop()===stop&&document.visibilityState!=='hidden';
+  async function stampStop(stop,sequence,attempt=0){
+    if(!pass||!ids.has(stop)||stamps[stop]||claimedSlot||!stillVisiting(stop,sequence))return;
+    // A stamp for another destination may be in flight. Queue this visit instead of dropping it.
+    if(stampBusy||busy){
+      retryTimer=setTimeout(()=>stampStop(stop,sequence,attempt),1200);
+      return;
+    }
+    stampBusy=true;
+    showVisitToast(stopName(stop)+' 방문 도장 저장 중…',100);
     try{
-      busy=true;const response=await request('stamp',{stop});
-      stamps=response.stamps||stamps;render();
-      setStatus(stops.find(s=>s[0]===stop)[1]+' 방문 도장을 여권에 찍었습니다.');
-    }catch(err){setStatus(err.message);}
-    finally{busy=false;}
+      const response=await request('stamp',{stop});
+      stamps={...stamps,...(response.stamps||{})};render();
+      if(!stamps[stop])throw Error('서버에서 방문 도장 저장을 확인하지 못했습니다.');
+      setStatus(stopName(stop)+' 방문 도장을 여권에 찍었습니다.');
+      if(stillVisiting(stop,sequence)){
+        showVisitToast('✿ '+stopName(stop)+' 방문 완료 · '+stampCount()+'/14',100,'success');
+        hideVisitToast(4200);
+      }
+    }catch(err){
+      setStatus(stopName(stop)+' 저장 실패: '+err.message);
+      if(stillVisiting(stop,sequence)){
+        if(attempt<2){
+          const delay=3200+attempt*1800;
+          showVisitToast('도장 저장이 지연되어 다시 확인 중…',100,'retry');
+          retryTimer=setTimeout(()=>stampStop(stop,sequence,attempt+1),delay);
+        }else{
+          showVisitToast('도장을 저장하지 못했어요. 여권을 열어 확인해주세요.',100,'error');
+          hideVisitToast(9000);
+        }
+      }
+    }finally{stampBusy=false;}
   }
   function queueStamp(){
-    if(visitTimer)clearTimeout(visitTimer);
-    if(!pass)return;
-    const stop=currentStop();if(!stop)return;
+    clearVisitTimers();
+    const sequence=++visitSequence;
+    if(!pass||claimedSlot||document.visibilityState==='hidden'){hideVisitToast();return;}
+    const stop=currentStop();
+    if(!stop||stamps[stop]){hideVisitToast();return;}
     // A visible stay, not an item merely shown in the sitemap, counts as a visit.
-    visitTimer=setTimeout(()=>{if(currentStop()===stop)stampStop(stop);},4000);
+    const began=Date.now(),dwell=4000;
+    showVisitToast(stopName(stop)+' 방문 확인 중 · 4초',0);
+    visitTicker=setInterval(()=>{
+      if(!stillVisiting(stop,sequence))return;
+      const elapsed=Math.min(dwell,Date.now()-began);
+      showVisitToast(stopName(stop)+' 방문 확인 중 · '+Math.max(1,Math.ceil((dwell-elapsed)/1000))+'초',elapsed/dwell*100);
+    },600);
+    visitTimer=setTimeout(()=>{
+      if(visitTicker){clearInterval(visitTicker);visitTicker=null;}
+      visitTimer=null;
+      if(stillVisiting(stop,sequence))stampStop(stop,sequence);
+    },dwell);
   }
 
   function coverArtwork(){
@@ -178,8 +235,9 @@
   }
   async function issuePassport(){
     if(busy)return;busy=true;
-    try{setStatus('여권을 발급하고 있습니다…');await ensure();render();setStatus('새 여권이 발급되었습니다. 장소를 방문하면 도장이 찍힙니다.');queueStamp();}
+    try{setStatus('여권을 발급하고 있습니다…');await ensure();render();setStatus('새 여권이 발급되었습니다. 장소를 방문하면 도장이 찍힙니다.');}
     catch(err){setStatus(err.message);}finally{busy=false;}
+    if(pass)queueStamp();
   }
 
   async function authToken(){
@@ -229,6 +287,13 @@
   // passport reward, never to the discontinued manual slot reservation.
   window.HAEMUNGI_PASSPORT_OPEN_REWARD=()=>{page=pass?16:0;open();};
   function mount(){
+    visitToast=document.createElement('div');visitToast.id='hmPassportVisitToast';
+    visitToast.className='hm-passport-visit-toast';visitToast.hidden=true;visitToast.setAttribute('role','status');
+    visitToast.setAttribute('aria-live','polite');
+    visitToast.innerHTML='<span class="hm-passport-visit-toast-text"></span><span class="hm-passport-visit-track"><span class="hm-passport-visit-progress"></span></span>';
+    document.body.appendChild(visitToast);
+    visitToastText=visitToast.querySelector('.hm-passport-visit-toast-text');
+    visitToastProgress=visitToast.querySelector('.hm-passport-visit-progress');
     const launcher=document.createElement('button');launcher.id='hmPassportLauncher';launcher.type='button';
     launcher.className='hm-passport-launcher';launcher.setAttribute('aria-label','헤뭉이 월드 여행 여권 열기');
     launcher.textContent='✿ 여권';document.body.appendChild(launcher);
@@ -251,10 +316,11 @@
     dialog.querySelector('#hmPassportClose').addEventListener('click',()=>dialog.close());
     prevBtn.addEventListener('click',()=>{if(page>0){page--;render();}});
     nextBtn.addEventListener('click',()=>{if(page<16){page++;render();}});
-    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')queueStamp();});
+    document.addEventListener('visibilitychange',queueStamp);
     window.addEventListener('hashchange',queueStamp);
+    window.addEventListener('pageshow',event=>{if(event.persisted)sync().catch(err=>setStatus(err.message)).finally(queueStamp);});
     window.addEventListener('haemungi:visitor',()=>{if(dialog.open&&page===16)render();});
-    if(pass){sync().then(queueStamp).catch(err=>setStatus(err.message));}
+    if(pass){sync().catch(err=>setStatus(err.message)).finally(queueStamp);}
     render();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();

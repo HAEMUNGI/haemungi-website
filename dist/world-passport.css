@@ -2,6 +2,12 @@
    A single uncropped cover is shared by the 17-page book and the About preview.
    Stamps, consent and all language are text/interactive UI, never raster text. */
 .hm-passport-launcher{position:fixed;z-index:900;bottom:max(15px,env(safe-area-inset-bottom));left:16px;min-height:46px;padding:10px 18px;border:1px solid #d4a66e;border-radius:30px;background:linear-gradient(130deg,#fffdf8,#fdf0ef);color:#8b584e;box-shadow:0 4px 25px #6d3f3833;font:700 14px/1.2 'Gowun Batang',serif;cursor:pointer;backdrop-filter:blur(10px)}
+.hm-passport-visit-toast{position:fixed;right:14px;bottom:max(16px,env(safe-area-inset-bottom));z-index:901;width:min(300px,calc(100vw - 122px));padding:11px 13px 9px;border:1px solid #d9afa2;border-radius:13px;background:linear-gradient(130deg,#fffdf8f5,#fff0f2f5);box-shadow:0 7px 24px #6f495c29;color:#835d59;font:700 12px/1.5 'Gowun Dodum',sans-serif;pointer-events:none;backdrop-filter:blur(10px)}
+.hm-passport-visit-toast[hidden]{display:none}
+.hm-passport-visit-toast[data-state=success]{border-color:#bc9794;color:#8d5263}
+.hm-passport-visit-toast[data-state=error]{border-color:#ca8282;color:#a34d55}
+.hm-passport-visit-track{display:block;height:3px;margin-top:8px;border-radius:99px;background:#ead5d3;overflow:hidden}
+.hm-passport-visit-progress{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#edb7a7,#c7839c);transition:width .35s ease}
 .hm-passport-launcher:focus-visible,.hm-passport-dialog button:focus-visible,.hm-passport-dialog a:focus-visible{outline:3px solid #bd728f;outline-offset:3px}
 .hm-passport-dialog{position:fixed;inset:0;margin:auto;max-height:96dvh;width:min(97vw,660px);max-width:none;padding:0;border:1px solid #ead3ad;border-radius:18px;background:linear-gradient(160deg,#fffcf6,#f7e8ed 55%,#f6e6d6);color:#77523d;box-shadow:0 24px 90px #37233166;font-family:'Gowun Batang','Noto Serif KR',serif;overflow:hidden}
 .hm-passport-dialog[open]{display:flex;flex-direction:column;align-items:stretch}

@@ -49,6 +49,7 @@ jobs:
           node verify-memorial.mjs
           node verify-memorial-registration.mjs
           node verify-world-passport.mjs
+          node verify-world-passport-runtime.mjs
           node --experimental-vm-modules verify-memorial-security.mjs
           node verify-memorial-entry-and-dates.cjs
           node verify-memorial-communal-elastic.mjs

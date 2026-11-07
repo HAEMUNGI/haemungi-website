@@ -30,7 +30,12 @@ for(const name of ['index','playground','memorial','temple','christmas']){
 }
 assert.match(passport,/haemungi:visitor/,'Passport reflects login state');
 assert.match(memorial,/dispatchEvent\(new Event\('haemungi:visitor'\)\)/,'Registration publishes login changes');
-assert.match(passport,/setTimeout\(\(\)=>\{if\(currentStop\(\)===stop\)stampStop\(stop\);\},4000\)/,'Only sustained visits are stamped');
+assert.match(passport,/const began=Date\.now\(\),dwell=4000/,'A visible 4-second visit is required');
+assert.match(passport,/if\(stillVisiting\(stop,sequence\)\)stampStop\(stop,sequence\)/,'Only the same visible destination is stamped');
+assert.match(passport,/visitToastText\.textContent=message/,'Stamp progress is visible outside the passport dialog');
+assert.match(passport,/stamps=\{\.\.\.stamps,\.\.\.\(response\.stamps\|\|\{\}\)\}/,'Verified stamps survive an overlapping status response');
+assert.match(passport,/retryTimer=setTimeout\(\(\)=>stampStop\(stop,sequence,attempt\+1\),delay\)/,'Temporary stamp save errors are retried');
+assert.match(css,/\.hm-passport-visit-toast\{/,'A small floating visit progress message is styled');
 assert.match(passport,/document\.visibilityState==='hidden'/,'Hidden tab cannot earn a stamp');
 assert.match(passport,/request\('claim',\{memorial_id:select\.value,consent:true\},jwt\)/,'Claims carry verified email session and consent');
 assert.match(passport,/window\.HAEMUNGI_PASSPORT_OPEN_REWARD/,'Legacy plaque route opens passport reward');
@@ -83,4 +88,4 @@ assert(!sqlService.includes("current_setting('request.jwt.claim.role'"),'Supabas
 assert(!memorial.includes('hm_memorial_request_archive_plaque'),'Old client path is gone');
 assert(!read('dist/memorial.html').includes('value="plaque"'),'Manual plaque booking no longer offered');
 assert(privacy.includes('14개 방문 도장'),'Public privacy disclosure describes passport');
-console.log('PASS world passport: 14 real menu stops, book/map/stamps, 4-second visit, authenticated consent, server-only atomic plaque reward, 001/pending protection, no legacy self-booking.');
+console.log('PASS world passport: 14 real menu stops, book/map/stamps, visible 4-second visit, stamp retry and sync, authenticated consent, server-only atomic plaque reward, 001/pending protection, no legacy self-booking.');
