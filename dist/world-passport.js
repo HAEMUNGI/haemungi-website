@@ -19,16 +19,22 @@
     ['temple','파도가 들리는 법당','종소리와 파도 곁에서 잠시 마음을 쉬어가요.','☼','/temple.html','해안 사찰'],
     ['christmas','크리스마스 빌리지','반짝이는 트리와 겨울의 축제를 만나보세요.','❄','/christmas.html','겨울 마을'],
   ];
-  // These seventeen supplied illustrations are the complete, immutable page art.
-  // Visits, dates, navigation, page counts and the reward remain live controls.
+  // One canonical luxury cover is reused on the passport AND the About preview.
+  // All visible text, 14 legitimate stamps, and navigation are real HTML UI.
   const artBase='/assets/world-passport/';
-  const artPages=[
-    '01_cover.png','02_guide.png','03_visit_01.png','04_visit_02.png',
-    '05_visit_03.png','06_visit_04.png','07_visit_05.png','08_visit_06.png',
-    '09_visit_07.png','10_visit_08.png','11_visit_09.png','12_visit_10.png',
-    '13_visit_11.png','14_visit_12.png','15_visit_13.png','16_visit_14.png',
-    '17_final.png',
-  ];
+  const coverAsset=artBase+'luxury-cover.webp';
+  const paperAsset=artBase+'luxury-paper.webp';
+  const atlasAsset=artBase+'luxury-atlas.webp';
+  const landmarkArt={
+    home:'haemungi-hero.webp',videos:'haemungi-3d-play.webp',
+    cards:'cardnews-01-01.webp',daily:'daily-first-encounter.webp',
+    goods:'merch-collection.webp',room:'haemungi-room.webp',
+    about:'haemungi-sheet.webp',today:'today-world-trip.jpg',
+    creator:'haemungi-3d-reference.jpg',emoticons:'emoticon-collection.jpg',
+    playground:'playground-main.jpg',memorial:'memorial-walk-morning-20261105.webp',
+    temple:'temple-haesu.webp',christmas:'christmas-square.webp',
+  };
+  const wideArt=new Set(['home','videos','room']);
   const ids=new Set(stops.map(s=>s[0]));
   let pass=null,stamps={},claimedSlot=null,page=0,busy=false,visitTimer=null;
   let dialog,pageBody,actionNode,statusNode,countNode,prevBtn,nextBtn;
@@ -86,23 +92,62 @@
     visitTimer=setTimeout(()=>{if(currentStop()===stop)stampStop(stop);},4000);
   }
 
-  function artPage(index){
-    const name=artPages[index];
-    const stop=index>=2&&index<=15?stops[index-2]:null;
-    const raw=stop?String(stamps[stop[0]]||''):'';
-    const date=/^\d{4}-\d{2}-\d{2}$/.test(raw)?raw:'';
-    const alt=index===0?'헤뭉이 월드 여행 여권 표지':index===1?'헤뭉이 월드 14개 장소 여행 안내도':
-      index===16?'헤뭉이 월드 여행 여권의 마지막 장':`헤뭉이 월드 여권 ${index-1}번째 방문지, ${stop[1]}`;
-    return `<div class="hm-passport-art-frame">
-      <img class="hm-passport-art" src="${artBase}${name}" width="900" height="1350" alt="${escapeHtml(alt)}" decoding="async" draggable="false">
-      ${stop?`${date?`<div class="hm-passport-art-stamp" aria-label="${escapeHtml(stop[1])} 방문 완료 ${date}"><strong>방문 완료</strong><span>HAEMUNGI WORLD</span><time>${date}</time></div>`:''}
-        <a class="hm-passport-art-link" href="${stop[4]}" aria-label="${escapeHtml(stop[1])} ${date?'다시 둘러보기':'방문하여 도장 받기'}"></a>`:''}
-      ${index===16?`<div class="hm-passport-final-message">${claimedSlot?`14곳 완주! 안식관 ${String(claimedSlot).padStart(3,'0')}호 명패가 배정되었습니다.`:
-        complete()?'14곳의 방문을 모두 마쳤습니다. 아래에서 이메일 확인과 공개 동의를 진행해주세요.':
-        `아직 ${14-stampCount()}곳의 방문 도장이 남았습니다. 천천히 둘러보고 돌아오세요.`}</div>
-        <div class="hm-passport-final-count" aria-label="방문 ${stampCount()}곳 완료">${stampCount()} / 14</div>`:''}
-      ${index>=2?`<div class="hm-passport-art-pagination" aria-label="${index+1}쪽 중 17쪽, 방문 ${stampCount()}곳">${index+1} / 17 · 방문 ${stampCount()}/14</div>`:''}
+  function coverArtwork(){
+    return `<div class="hm-premium-cover" aria-label="헤뭉이 월드 여행 여권 핑크 사쿠라 에디션 표지">
+      <img src="${coverAsset}" alt="벚꽃과 금빛 문양으로 장식된 헤뭉이 월드 여권의 공식 프리미엄 표지" width="1024" height="1536" decoding="async" draggable="false">
+      <div class="hm-premium-cover-letters"><span>HAEMUNGI WORLD PASSPORT</span>
+        <strong>헤뭉이 월드<br>여행 여권</strong><em>✦ PINK SAKURA EDITION ✦</em></div>
+      <div class="hm-premium-cover-serial" aria-label="가상의 여권 디자인 번호">HM · WORLD · 001</div>
     </div>`;
+  }
+  function paperPage(inner,kind=''){
+    return `<div class="hm-premium-paper ${kind}" style="--hm-paper:url('${paperAsset}')">${inner}</div>`;
+  }
+  function folio(number){return `<div class="hm-premium-folio"><span>✦ HAEMUNGI WORLD ✦</span><span>${number} / 17</span></div>`;}
+  function artPage(index){
+    if(index===0)return coverArtwork();
+    if(index===1){
+      const places=stops.map((s,i)=>`<li><span>${String(i+1).padStart(2,'0')}</span>${escapeHtml(s[1])}</li>`).join('');
+      return paperPage(`<div class="hm-premium-kicker">THE WORLD ATLAS · TRAVEL GUIDE</div>
+        <h2>헤뭉이 월드 <span>여행 안내도</span></h2>
+        <p class="hm-premium-subtitle">작은 우연에서 시작된 특별한 세계, 열네 곳의 이야기를 만나러 떠나요.</p>
+        <div class="hm-premium-atlas"><img src="${atlasAsset}" alt="헤뭉이 마을, 놀이터, 별빛 해안과 사찰, 겨울 마을이 모두 이어진 판타지 월드 지도" width="1672" height="941" decoding="async"></div>
+        <div class="hm-premium-section-title">YOUR 14 DESTINATIONS <span>방문 도장 ${stampCount()}/14</span></div>
+        <ol class="hm-premium-destinations">${places}</ol>
+        ${folio(2)}`,'hm-premium-guide');
+    }
+    if(index===16){
+      const message=claimedSlot?`14곳 완주! 안식관 ${String(claimedSlot).padStart(3,'0')}호 명패가 배정되었습니다.`:
+        complete()?'14곳의 방문을 모두 마쳤습니다. 아래에서 이메일 확인과 공개 동의를 진행해주세요.':
+        `아직 ${14-stampCount()}곳의 방문 도장이 남았습니다. 천천히 둘러보고 돌아오세요.`;
+      return paperPage(`<div class="hm-premium-kicker">THE GRAND FINALE · COMPLETION CERTIFICATE</div>
+        <h2>여행의 끝, <span>새로운 시작</span></h2>
+        <div class="hm-premium-final-crest" aria-hidden="true"><span>✿</span><strong>HAEMUNGI</strong><small>WORLD EXPLORER</small></div>
+        <p class="hm-premium-final-intro">여권 속 열네 개의 장소를 지나<br>헤뭉이의 세계를 만나주셔서 고마워요.</p>
+        <div class="hm-premium-final-count" aria-label="방문 ${stampCount()}곳 완료"><strong>${stampCount()}</strong><span>/ 14</span><small>VISIT STAMPS</small></div>
+        <p class="hm-premium-final-message">${message}</p>
+        ${folio(17)}`,'hm-premium-final');
+    }
+    const stop=stops[index-2];
+    const raw=String(stamps[stop[0]]||'');
+    const date=/^\d{4}-\d{2}-\d{2}$/.test(raw)?raw:'';
+    const wide=wideArt.has(stop[0]);
+    const image=landmarkArt[stop[0]];
+    return paperPage(`<div class="hm-premium-kicker">OFFICIAL VISIT COURSE · ${String(index-1).padStart(2,'0')} / 14</div>
+      <h2>${escapeHtml(stop[1])}</h2>
+      <p class="hm-premium-region">✦ ${escapeHtml(stop[5])} ✦</p>
+      <div class="hm-premium-visit-panel ${wide?'hm-premium-landscape':'hm-premium-portrait'}">
+        <div class="hm-premium-picture"><img src="/assets/${image}" alt="${escapeHtml(stop[1])}의 원본 전체 그림" loading="lazy" decoding="async" draggable="false"></div>
+        <div class="hm-premium-visit-info"><span class="hm-premium-entry-mark">${escapeHtml(stop[3])}</span>
+          <p>${escapeHtml(stop[2])}</p>
+          <div class="hm-premium-seal ${date?'hm-premium-seal-earned':'hm-premium-seal-empty'}" aria-label="${escapeHtml(stop[1])} ${date?'방문 완료 '+date:'방문 도장 미획득'}">
+            ${date?`<strong>방문 완료</strong><span>HAEMUNGI WORLD</span><time>${date}</time>`:'<span>VISIT STAMP</span><strong>도장을 기다리는 중</strong><small>✦ ✦ ✦</small>'}
+          </div>
+          <a class="hm-premium-visit-link" href="${stop[4]}">${date?'이 장소 다시 둘러보기':'이 장소로 여행하기'} ↗</a>
+        </div>
+      </div>
+      <div class="hm-premium-visit-bottom">${String(index-1).padStart(2,'0')} <span>✧</span> ${escapeHtml(stop[1])}</div>
+      ${folio(index+1)}`,'hm-premium-visit');
   }
   function claimPanel(){
     if(page===0)return pass?'<p class="hm-passport-footnote">이 여권의 방문 기록은 현재 브라우저에 연결되어 있습니다.</p>':
@@ -200,6 +245,8 @@
     pageBody=dialog.querySelector('#hmPassportPage');actionNode=dialog.querySelector('#hmPassportAction');statusNode=dialog.querySelector('#hmPassportStatus');
     countNode=dialog.querySelector('#hmPassportCount');prevBtn=dialog.querySelector('#hmPassportPrev');nextBtn=dialog.querySelector('#hmPassportNext');
     launcher.addEventListener('click',open);
+    const aboutPreview=document.getElementById('hmPassportAboutCover');
+    if(aboutPreview)aboutPreview.innerHTML=coverArtwork();
     document.getElementById('hmPassportAboutOpen')?.addEventListener('click',open);
     dialog.querySelector('#hmPassportClose').addEventListener('click',()=>dialog.close());
     prevBtn.addEventListener('click',()=>{if(page>0){page--;render();}});

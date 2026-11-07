@@ -1,95 +1,107 @@
-/* The World Passport uses a book, not a scrolling collection of stamps. */
-.hm-passport-launcher{position:fixed;z-index:900;bottom:max(16px,env(safe-area-inset-bottom));left:16px;min-height:44px;padding:9px 16px;border:1px solid #b99b6d;border-radius:40px;background:rgba(255,249,237,.94);color:#70543a;box-shadow:0 5px 24px #5f48242b;font:700 14px/1.2 sans-serif;cursor:pointer;backdrop-filter:blur(6px)}
-.hm-passport-launcher:focus-visible,.hm-passport-dialog button:focus-visible,.hm-passport-dialog a:focus-visible{outline:3px solid #a7793c;outline-offset:3px}
-.hm-passport-dialog{position:fixed;inset:0;margin:auto;max-height:96dvh;width:min(95vw,620px);max-width:none;padding:0;border:1px solid #c7a981;border-radius:20px;background:#f4e9d8;color:#614d38;box-shadow:0 24px 100px #261b143a;font-family:'Gowun Batang','Noto Serif KR',serif;overflow:hidden}
-.hm-passport-dialog::backdrop{background:rgba(58,46,34,.54);backdrop-filter:blur(5px)}
+/* HAEMUNGI World Passport · Pink Sakura rare collector's edition.
+   A single uncropped cover is shared by the 17-page book and the About preview.
+   Stamps, consent and all language are text/interactive UI, never raster text. */
+.hm-passport-launcher{position:fixed;z-index:900;bottom:max(15px,env(safe-area-inset-bottom));left:16px;min-height:46px;padding:10px 18px;border:1px solid #d4a66e;border-radius:30px;background:linear-gradient(130deg,#fffdf8,#fdf0ef);color:#8b584e;box-shadow:0 4px 25px #6d3f3833;font:700 14px/1.2 'Gowun Batang',serif;cursor:pointer;backdrop-filter:blur(10px)}
+.hm-passport-launcher:focus-visible,.hm-passport-dialog button:focus-visible,.hm-passport-dialog a:focus-visible{outline:3px solid #bd728f;outline-offset:3px}
+.hm-passport-dialog{position:fixed;inset:0;margin:auto;max-height:96dvh;width:min(97vw,660px);max-width:none;padding:0;border:1px solid #ead3ad;border-radius:18px;background:linear-gradient(160deg,#fffcf6,#f7e8ed 55%,#f6e6d6);color:#77523d;box-shadow:0 24px 90px #37233166;font-family:'Gowun Batang','Noto Serif KR',serif;overflow:hidden}
+.hm-passport-dialog[open]{display:flex;flex-direction:column;align-items:stretch}
+.hm-passport-dialog::backdrop{background:rgba(35,23,31,.62);backdrop-filter:blur(7px)}
 .hm-passport-dialog *{box-sizing:border-box}
-.hm-passport-header{height:43px;display:flex;justify-content:space-between;align-items:center;padding:0 13px 0 21px;border-bottom:1px solid #dac4a5;letter-spacing:.13em;font:700 10px/1.3 sans-serif;color:#846341}
-.hm-passport-header button{font:400 27px/1 sans-serif;border:0;background:transparent;color:#765738;min-width:35px;min-height:35px;cursor:pointer}
-.hm-passport-book{position:relative;margin:10px auto 0;width:calc(100% - 24px);max-width:550px;height:min(68dvh,620px);min-height:390px;perspective:1400px;border-radius:5px 18px 18px 5px;background:#fdf8ec;box-shadow:9px 8px 0 #dac6a8,13px 10px 0 #bfa47e,18px 14px 30px #755c3640;border-left:10px solid #a78a61;overflow:hidden}
-.hm-passport-book::before{content:'';position:absolute;inset:0 auto 0 5px;border-left:1px solid #d4c3a9;z-index:2;pointer-events:none}
-.hm-passport-bookmark{position:absolute;top:0;right:28px;background:#b68655;color:white;padding:12px 8px 16px;border-radius:0 0 20px 20px;z-index:2;font-size:15px;box-shadow:0 2px 7px #6b4c2c22}
-.hm-passport-page{height:100%;padding:22px 27px 18px 26px;display:flex;flex-direction:column;align-items:stretch;text-align:center;overflow:hidden;background:radial-gradient(circle at 90% 10%,#faf1da 0%,transparent 31%),repeating-linear-gradient(0deg,transparent 0 33px,#e3d3b633 34px),#fdf8ed}
-.hm-passport-turning{animation:hmPassportTurn .35s ease both;transform-origin:left center}
-@keyframes hmPassportTurn{0%{opacity:.45;transform:rotateY(-13deg)}100%{opacity:1;transform:rotateY(0)}}
-.hm-passport-page h2{font:700 clamp(22px,4.5vw,33px)/1.3 'Gowun Batang',serif;margin:8px 0;color:#6f5032;word-break:keep-all}
-.hm-passport-kicker{font:700 10px/1.3 sans-serif;letter-spacing:.15em;color:#a1815b;margin-top:3px}
-.hm-passport-intro,.hm-passport-description,.hm-passport-page>p{font:400 clamp(12px,2.6vw,15px)/1.7 'Gowun Batang',serif;color:#715f4d;margin:9px 0;word-break:keep-all}
-.hm-passport-cover{display:flex;flex:1;flex-direction:column;justify-content:center;align-items:center;gap:7px;padding:18px;background:linear-gradient(132deg,#7c5e48,#a68061 52%,#694d39);border:4px double #d4b47e;outline:9px solid #916e50;color:#fff7e7;box-shadow:inset 0 0 25px #3b2d2638}
-.hm-passport-cover .hm-passport-crest{font-size:58px;color:#f0d9aa;text-shadow:0 2px 2px #392a2629}
-.hm-passport-cover small{font:700 10px sans-serif;letter-spacing:.19em}
-.hm-passport-cover h2{color:#fff7e7;font:700 clamp(30px,7vw,43px)/1.38 'Gowun Batang',serif;margin:10px 0}
-.hm-passport-cover p{color:#f3ddb6;font:600 11px/1.5 sans-serif;letter-spacing:.16em;margin:0}
-.hm-passport-cover .hm-passport-cover-caption{font-family:'Gowun Batang',serif;font-weight:400;font-size:12px;letter-spacing:0}
-.hm-passport-cover-line{height:1px;width:55%;background:#e7cb9e;margin:17px 0}
-.hm-passport-cover-number{font:700 12px sans-serif;letter-spacing:.1em}
-.hm-passport-footnote{font:400 11px/1.5 sans-serif;margin:10px 0;color:#7e6a55}
-.hm-passport-primary{background:#916b47;color:#fffaf2;border:1px solid #916b47;padding:12px 17px;border-radius:10px;font:700 13px 'Gowun Batang',serif;cursor:pointer}
+.hm-passport-header{flex:0 0 43px;display:flex;justify-content:space-between;align-items:center;padding:0 14px 0 22px;border-bottom:1px solid #e4c8ba;letter-spacing:.17em;font:700 10px/1.3 sans-serif;color:#9c6b6d}
+.hm-passport-header button{font:400 28px/1 sans-serif;border:0;background:transparent;color:#8e626a;min-width:36px;min-height:36px;cursor:pointer}
+.hm-passport-book{flex:0 1 auto;align-self:center;position:relative;aspect-ratio:2/3;width:min(calc(100% - 32px),47dvh,500px);min-height:0;margin:11px auto 0;border-radius:7px 17px 17px 7px;perspective:1400px;background:#fefaf1;box-shadow:-5px 0 0 #c69c82,4px 4px 0 #e4ba9b,9px 9px 0 #ba9682,13px 13px 26px #58404452;overflow:hidden}
+.hm-passport-book::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3.2%;background:linear-gradient(90deg,#8f666855,#ffeec399,#e6bb9350,transparent);pointer-events:none;z-index:3}
+.hm-passport-page{height:100%;width:100%;overflow:hidden;position:relative;container-type:inline-size;background:#fffcf8}
+.hm-passport-turning{animation:hmPassportTurn .37s cubic-bezier(.15,.62,.34,1) both;transform-origin:left center}
+@keyframes hmPassportTurn{0%{opacity:.55;transform:rotateY(-12deg)}100%{opacity:1;transform:rotateY(0)}}
+.hm-premium-cover{width:100%;height:100%;position:relative;isolation:isolate;overflow:hidden;background:#fff1eb;color:#87534b}
+.hm-premium-cover>img{width:100%;height:100%;display:block;object-fit:contain;user-select:none}
+.hm-premium-cover-letters{position:absolute;top:20.2%;left:10%;width:80%;height:21%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.8cqw;text-align:center;text-shadow:0 1px 0 #fffef9,0 2px 5px #fffefa}
+.hm-premium-cover-letters>span{font:700 2.85cqw/1.3 Georgia,serif;letter-spacing:.18em;color:#906353}
+.hm-premium-cover-letters>strong{font:700 7.7cqw/1.23 'Gowun Batang','Noto Serif KR',serif;letter-spacing:.02em;color:#895044;word-break:keep-all}
+.hm-premium-cover-letters>em{font:700 2.6cqw/1.3 Georgia,serif;font-style:normal;letter-spacing:.2em;color:#ac8068}
+.hm-premium-cover-serial{position:absolute;bottom:7%;left:10%;width:80%;text-align:center;color:#b5877e;font:700 2.55cqw/1.3 Georgia,serif;letter-spacing:.25em}
+.hm-premium-paper{width:100%;height:100%;position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:13.3% 8.7% 8.9%;background:#fffaf5 var(--hm-paper) center/100% 100% no-repeat;color:#805c54;overflow:hidden}
+.hm-premium-kicker{font:700 2.65cqw/1.35 Georgia,sans-serif;letter-spacing:.12em;color:#a97a71;white-space:nowrap}
+.hm-premium-paper h2{margin:3.2% auto 0;max-width:100%;font:700 6.7cqw/1.3 'Gowun Batang','Noto Serif KR',serif;color:#865850;word-break:keep-all}
+.hm-premium-paper h2 span{color:#b57783}
+.hm-premium-subtitle{font:400 2.95cqw/1.6 'Gowun Batang',serif;color:#8f776c;margin:3% auto 4%;word-break:keep-all}
+.hm-premium-folio{position:absolute;bottom:5.4%;left:10%;width:80%;display:flex;align-items:center;justify-content:space-between;font:600 2.55cqw/1.1 Georgia,serif;letter-spacing:.08em;color:#a7867e;border-top:1px solid #dcbca8;padding-top:2%}
+.hm-premium-atlas{width:100%;height:34%;display:grid;place-items:center;background:#fffaf4ad;border:1px solid #edc9a6;border-radius:10px;overflow:hidden;box-shadow:0 3px 8px #bd9a8229;padding:1.5%}
+.hm-premium-atlas img{display:block;width:100%;height:100%;object-fit:contain}
+.hm-premium-section-title{margin:4% 0 2.5%;width:100%;display:flex;justify-content:space-between;align-items:center;color:#a57b6c;font:700 2.3cqw/1.3 Georgia,sans-serif;letter-spacing:.06em;border-bottom:1px solid #ddc6b8;padding-bottom:2%}
+.hm-premium-section-title span{font:700 2.8cqw/1.3 'Gowun Batang',serif;color:#9c666d;letter-spacing:0}
+.hm-premium-destinations{width:100%;margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:1.5% 4.5%;text-align:left}
+.hm-premium-destinations li{display:flex;align-items:center;gap:5%;min-width:0;font:600 2.93cqw/1.65 'Gowun Batang','Noto Sans KR',sans-serif;color:#775d55;white-space:nowrap}
+.hm-premium-destinations li span{font:700 2.4cqw/1.5 Georgia,serif;color:#b5867e}
+.hm-premium-region{margin:1.4% auto 0;font:600 3.15cqw/1.5 'Gowun Batang',serif;color:#ab8575}
+.hm-premium-visit-panel{width:100%;margin-top:6%;min-height:0;height:66.5%;display:grid;gap:5%;align-items:center}
+.hm-premium-portrait{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+.hm-premium-picture{height:100%;min-height:0;display:flex;align-items:center;justify-content:center;border:1px solid #d9ad92;border-radius:7px;background:#fff5e9a3;box-shadow:0 5px 13px #9e7d6f25;overflow:hidden;padding:2.3%}
+.hm-premium-picture img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;image-rendering:auto}
+.hm-premium-visit-info{height:100%;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4%;text-align:center}
+.hm-premium-entry-mark{font:500 7.8cqw/1.1 Georgia,serif;color:#c39480}
+.hm-premium-visit-info>p{font:400 3.2cqw/1.55 'Gowun Batang',serif;margin:0;color:#805f57;word-break:keep-all}
+.hm-premium-seal{width:96%;max-width:145px;aspect-ratio:1.28;border:3px double #d3a8a4;border-radius:48%;transform:rotate(-7deg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6%;background:#fff5ef96;box-shadow:0 0 0 2px #fff8ed;color:#b5797e}
+.hm-premium-seal strong{font:700 3.55cqw/1.2 'Gowun Batang',serif}
+.hm-premium-seal span{font:700 1.95cqw/1.25 Georgia,serif;letter-spacing:.06em}
+.hm-premium-seal time,.hm-premium-seal small{font:600 2.3cqw/1.2 Georgia,serif}
+.hm-premium-seal-earned{border-color:#c27a83;color:#a34f67;background:#fff0f2db}
+.hm-premium-seal-empty{border-style:dashed;opacity:.75}
+.hm-premium-visit-link{display:inline-flex;min-height:34px;align-items:center;justify-content:center;text-decoration:none;border:1px solid #c99b89;border-radius:100px;background:#fff9f3c9;color:#8c5f56;padding:6px 8px;font:700 3cqw/1.35 'Gowun Batang',serif;word-break:keep-all}
+.hm-premium-visit-link:hover{background:#ffedeb;border-color:#ab7886}
+.hm-premium-landscape{grid-template-columns:minmax(0,1fr);grid-template-rows:54% minmax(0,1fr);gap:3%;margin-top:4%}
+.hm-premium-landscape .hm-premium-picture{width:100%;height:100%}
+.hm-premium-landscape .hm-premium-visit-info{display:grid;width:100%;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2%;align-items:center}
+.hm-premium-landscape .hm-premium-entry-mark{display:none}
+.hm-premium-landscape .hm-premium-visit-info>p{grid-row:1/3;grid-column:1;font-size:3.15cqw}
+.hm-premium-landscape .hm-premium-seal{grid-row:1;grid-column:2;width:75%;max-width:115px;height:100%;aspect-ratio:auto;justify-self:center}
+.hm-premium-landscape .hm-premium-visit-link{grid-row:2;grid-column:2}
+.hm-premium-visit-bottom{font:700 2.65cqw/1.4 Georgia,'Gowun Batang',serif;color:#bd8e80;margin-top:3.3%;letter-spacing:.08em}
+.hm-premium-visit-bottom span{color:#c6a590;padding:0 1em}
+.hm-premium-final .hm-premium-final-crest{margin-top:9%;width:43%;aspect-ratio:1;border:4px double #caa384;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle,#fff8dd,#ffe8ea 68%,#f2d5e3);box-shadow:0 5px 17px #d9b7ac55,inset 0 0 0 7px #fff9f0}
+.hm-premium-final-crest>span{font:500 13cqw/1.2 Georgia,serif;color:#c48c86}
+.hm-premium-final-crest>strong{font:700 3.5cqw/1.5 Georgia,serif;letter-spacing:.12em;color:#9c6770}
+.hm-premium-final-crest>small{font:700 2cqw/1.4 Georgia,serif;letter-spacing:.06em;color:#aa8180}
+.hm-premium-final-intro{margin:7% auto 5%;font:400 3.4cqw/1.75 'Gowun Batang',serif;color:#825e5e}
+.hm-premium-final-count{display:flex;align-items:baseline;justify-content:center;gap:3%;flex-wrap:wrap;color:#ae747e}
+.hm-premium-final-count>strong{font:700 13cqw/1 Georgia,serif}.hm-premium-final-count>span{font:500 6cqw/1 Georgia,serif}.hm-premium-final-count>small{width:100%;font:700 2.3cqw/1.6 Georgia,serif;letter-spacing:.16em}
+.hm-premium-final-message{margin:6% auto 0;font:400 3.2cqw/1.6 'Gowun Batang',serif;color:#8e6763;word-break:keep-all}
+.hm-passport-controls{flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;gap:7px;margin:13px 15px 0;font:700 12px sans-serif;color:#92716c}
+.hm-passport-controls button{border:1px solid #d6b7a6;background:#fffdf8;border-radius:8px;color:#855c57;min-height:39px;padding:9px 13px;font:700 12px sans-serif;cursor:pointer}
+.hm-passport-controls button:disabled{opacity:.35;cursor:default}
+.hm-passport-action{flex:0 1 auto;width:calc(100% - 28px);margin:9px auto 0;display:flex;justify-content:center;min-height:0;overflow:hidden}
+.hm-passport-action:empty{display:none}
+.hm-passport-primary{background:#9b6975;color:#fffaf4;border:1px solid #9b6975;padding:11px 16px;border-radius:10px;font:700 13px 'Gowun Batang',serif;cursor:pointer;min-height:40px}
 .hm-passport-primary:disabled{opacity:.6;cursor:wait}
-.hm-passport-map{width:100%;max-width:400px;margin:8px auto 0;overflow:hidden;border:1px solid #c7af85;border-radius:20px;box-shadow:0 3px 12px #9e816020}
-.hm-passport-map svg{display:block;width:100%;height:auto}
-.hm-passport-map-note{font-size:12px!important;margin:9px 0!important}
-.hm-passport-progress{margin-top:auto;padding:12px;border-block:1px solid #dfcfb5;display:flex;justify-content:space-between;font:600 12px sans-serif;color:#927553}
-.hm-passport-region{font-size:13px!important;color:#9f7d52!important;margin:0!important}
-.hm-passport-landmark{position:relative;height:clamp(100px,19vh,180px);min-height:105px;width:100%;max-width:355px;margin:10px auto 2px;border:1px solid #d9c6a3;border-radius:50% 50% 15px 15px;background:radial-gradient(circle at 50% 92%,#f8dda7 0 22%,transparent 24%),linear-gradient(180deg,#dcefe8,#f9edcb);overflow:hidden;display:grid;place-items:center}
-.hm-passport-landmark span{font-size:clamp(50px,11vw,92px);color:#af8352;text-shadow:2px 4px 0 #f6e4c9;z-index:1}
-.hm-passport-landmark i{position:absolute;bottom:-55px;width:120%;height:100px;border-radius:50%;background:#9fbe9e8f}
-.hm-passport-description{max-width:340px;margin:10px auto!important;min-height:45px}
-.hm-passport-seal-area{height:112px;display:grid;place-items:center;margin:auto 0 6px}
-.hm-passport-seal{width:132px;height:92px;border:4px double #ba7d72;border-radius:49%;transform:rotate(-12deg);color:#a66860;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#fbeadea1;box-shadow:0 0 0 3px #f9f1e4,0 0 0 4px #ca9789;font-family:sans-serif}
-.hm-passport-seal strong{font-size:20px;line-height:1.25}.hm-passport-seal span{font-size:8px;letter-spacing:.08em}.hm-passport-seal time{font-size:11px;font-weight:700}
-.hm-passport-seal-outline{height:80px;width:140px;border:2px dashed #d9cbb5;border-radius:50%;color:#b6a38c;display:grid;place-items:center;font-size:11px;transform:rotate(-9deg)}
-.hm-passport-visit{display:inline-block;align-self:center;background:#fff8ea;border:1px solid #bba079;border-radius:11px;color:#715134;text-decoration:none;padding:10px 17px;font:700 12px 'Gowun Batang',serif}
-.hm-passport-reward-symbol{font-size:clamp(65px,16vw,125px);line-height:1.5;color:#c69a60;text-shadow:0 2px 0 #e8c79c}
-.hm-passport-reward-count{font:700 28px sans-serif!important;color:#a27a50!important}
-.hm-passport-claim{margin-top:10px;padding:12px;border:1px solid #dcc8a5;border-radius:12px;background:#fffcf5;text-align:left;font:13px/1.5 sans-serif;overflow:auto;max-height:53%;color:#69533b}
+.hm-passport-footnote{font:400 11px/1.5 sans-serif;margin:0 0 3px;color:#907978}
+.hm-passport-claimed-link{display:block;text-decoration:none;text-align:center}
+.hm-passport-status{flex:0 0 auto;min-height:20px;margin:6px 15px 8px;font:12px/1.5 sans-serif;color:#8e6865;text-align:center}
+.hm-passport-claim{margin:0;width:100%;max-height:27dvh;padding:12px;border:1px solid #dec0b5;border-radius:13px;background:#fffaf7;text-align:left;font:13px/1.5 sans-serif;overflow-y:auto;overscroll-behavior:contain;color:#765658}
 .hm-passport-claim p{font-size:12px;line-height:1.5;margin:0 0 9px}
 .hm-passport-claim label{display:block;font-size:12px;margin:7px 0}
-.hm-passport-claim select{width:100%;max-width:100%;border:1px solid #c7b294;border-radius:8px;padding:9px;background:#fff;color:#654930;font-size:13px}
+.hm-passport-claim select{width:100%;border:1px solid #cbb3a9;border-radius:8px;padding:9px;background:#fff;color:#765658;font-size:13px}
 .hm-passport-claim-consent{display:flex!important;gap:8px;align-items:flex-start;line-height:1.5!important}
 .hm-passport-claim-consent input{margin-top:3px}
 .hm-passport-claim button{width:100%;margin-top:6px}
-.hm-passport-text-button{background:transparent;color:#785d43;border:0;font:12px sans-serif;text-decoration:underline;cursor:pointer;padding:7px}
-.hm-passport-controls{margin:15px 13px 0;display:flex;justify-content:space-between;align-items:center;gap:5px;font:700 12px sans-serif;color:#90704c}
-.hm-passport-controls button{border:1px solid #cbb18e;background:#fff9ed;border-radius:8px;color:#72553a;min-height:37px;padding:8px 12px;font:700 12px sans-serif;cursor:pointer}
-.hm-passport-controls button:disabled{opacity:.35;cursor:default}
-.hm-passport-status{min-height:34px;margin:5px 17px 10px;font:12px/1.5 sans-serif;color:#84694c;text-align:center}
-@media(max-width:470px){.hm-passport-dialog{width:96vw;max-height:94dvh;border-radius:15px}.hm-passport-book{height:min(67dvh,570px);min-height:370px;border-left-width:7px}.hm-passport-page{padding:17px 18px 12px}.hm-passport-map{margin-top:6px}.hm-passport-landmark{margin-top:6px;height:120px}.hm-passport-seal-area{height:94px}.hm-passport-seal{height:80px;width:120px}.hm-passport-controls{margin-top:12px}.hm-passport-claim{max-height:49%}}
-@media(prefers-reduced-motion:reduce){.hm-passport-turning{animation:none}}
-
-/* Original 900×1350 user-supplied artwork: each page is shown in full, uncropped.
-   Only the actual visit stamp, links and live progress occupy transparent layers. */
-.hm-passport-dialog[open]{display:flex;flex-direction:column;align-items:stretch}
-.hm-passport-book{flex:0 1 auto;align-self:center;aspect-ratio:2/3;width:min(calc(100% - 24px),45dvh,550px);height:auto;min-height:0;max-height:none;margin:8px auto 0;border:0;border-radius:9px;box-shadow:4px 5px 0 #e6d3b7,8px 9px 18px #5c492537;background:#fffdf8;overflow:hidden}
-.hm-passport-book::before,.hm-passport-bookmark{display:none}
-.hm-passport-page{width:100%;height:100%;padding:0!important;display:block;overflow:hidden;background:#fffdf8}
-.hm-passport-art-frame{position:relative;width:100%;height:100%;container-type:inline-size}
-.hm-passport-art{width:100%;height:100%;object-fit:contain;display:block;user-select:none}
-.hm-passport-art-link{position:absolute;left:27.5%;top:84%;width:45%;height:5.9%;border-radius:12px;cursor:pointer;background:transparent}
-.hm-passport-art-link:hover{box-shadow:inset 0 0 0 2px #b18a63;background:rgba(255,244,223,.2)}
-.hm-passport-art-stamp{position:absolute;left:33%;top:73.4%;width:34%;height:8.8%;border:double 4px #b16e67;border-radius:50%;transform:rotate(-8deg);display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fffdf8;color:#a36158;box-shadow:0 0 0 2px #fffdf8;font-family:sans-serif;pointer-events:none}
-.hm-passport-art-stamp strong{font-size:4.15cqw;line-height:1.2}.hm-passport-art-stamp span{font-size:1.45cqw;letter-spacing:.05em}.hm-passport-art-stamp time{font-size:2.3cqw;font-weight:700}
-.hm-passport-art-pagination{position:absolute;left:26%;width:48%;bottom:3.9%;height:3.1%;display:flex;align-items:center;justify-content:center;background:#fffdf8;color:#976c48;font:500 2.65cqw/1.3 sans-serif;white-space:nowrap;pointer-events:none}
-.hm-passport-final-message{position:absolute;left:8%;width:84%;top:40.9%;height:8%;display:flex;align-items:center;justify-content:center;padding:0 2%;background:#fffdf8;color:#825c42;font:400 3.1cqw/1.5 'Gowun Batang',serif;text-align:center;word-break:keep-all;pointer-events:none}
-.hm-passport-final-count{position:absolute;left:28%;width:44%;top:54.5%;height:8.5%;display:flex;align-items:center;justify-content:center;background:#fffdf8;color:#b98552;font:500 8.5cqw/1.2 sans-serif;pointer-events:none}
-.hm-passport-controls{flex:0 0 auto;margin:12px 15px 0}
-.hm-passport-action{flex:0 1 auto;width:calc(100% - 26px);margin:10px auto 0;display:flex;justify-content:center;min-height:0;overflow:hidden}
-.hm-passport-action:empty{display:none}
-.hm-passport-action>.hm-passport-footnote{margin:0 0 2px}
-.hm-passport-claimed-link{display:block;text-decoration:none;text-align:center}
-.hm-passport-action>.hm-passport-primary{min-height:40px}
-.hm-passport-claim{margin:0;width:100%;max-height:26dvh;padding:12px;overflow-y:auto;overscroll-behavior:contain}
-.hm-passport-has-claim .hm-passport-book{width:min(calc(100% - 24px),29dvh,350px)}
-.hm-passport-status{flex:0 0 auto;min-height:21px;margin:6px 16px 8px}
-@media(max-width:470px){.hm-passport-book{width:min(calc(100% - 20px),45dvh);height:auto;min-height:0;border:0}.hm-passport-page{padding:0!important}.hm-passport-has-claim .hm-passport-book{width:min(calc(100% - 20px),29dvh)}.hm-passport-claim{max-height:26dvh}}
-@media(max-height:600px){.hm-passport-book{width:min(calc(100% - 24px),39dvh)}.hm-passport-has-claim .hm-passport-book{width:min(calc(100% - 24px),25dvh)}.hm-passport-header{height:36px}.hm-passport-claim{max-height:24dvh}}
-
-/* The separate landscape artwork belongs to the HAEMUNGI introduction only. */
-.hm-passport-introduction{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.45fr);gap:clamp(20px,4vw,60px);align-items:center;background:linear-gradient(145deg,#fffaf4 0%,#fbf2f6 65%,#f3eefb 100%)}
-.hm-passport-introduction-copy h2{font-size:clamp(27px,4vw,48px);line-height:1.3;color:#72533e;margin:12px 0 20px}
+.hm-passport-text-button{background:transparent;color:#8c6b6b;border:0;font:12px sans-serif;text-decoration:underline;cursor:pointer;padding:7px}
+.hm-passport-has-claim .hm-passport-book{width:min(calc(100% - 32px),27dvh,350px)}
+/* The cover in About is rendered by the exact same coverArtwork() function. */
+.hm-passport-introduction{display:grid;grid-template-columns:minmax(230px,.9fr) minmax(0,1.25fr);gap:clamp(26px,4vw,60px);align-items:center;background:linear-gradient(145deg,#fffaf4 0%,#fff0f2 57%,#f4edfb 100%)}
+.hm-passport-introduction-copy h2{font-size:clamp(27px,4vw,48px);line-height:1.3;color:#865b54;margin:12px 0 20px}
 .hm-passport-introduction-copy p:not(.eyebrow){font-size:clamp(14px,1.65vw,17px);line-height:1.9;color:#786456;word-break:keep-all;margin:0 0 25px}
 .hm-passport-introduction-copy .button-primary{border:0;cursor:pointer;font:700 14px/1.3 'Gowun Dodum',sans-serif;min-height:46px}
-.hm-passport-introduction-art{margin:0;min-width:0;text-align:center}
-.hm-passport-introduction-art img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;border-radius:15px;box-shadow:0 14px 38px #76566a20}
-.hm-passport-introduction-art figcaption{font:12px/1.6 'Gowun Dodum',sans-serif;color:#987e83;margin-top:12px}
-@media(max-width:760px){.hm-passport-introduction{grid-template-columns:minmax(0,1fr);gap:22px}.hm-passport-introduction-copy{text-align:center}.hm-passport-introduction-copy h2{margin:8px 0 12px}.hm-passport-introduction-copy p:not(.eyebrow){margin-bottom:18px}}
+.hm-passport-introduction-art{position:relative;margin:0;min-width:0;display:flex;align-items:center;justify-content:center;gap:0;text-align:center;filter:drop-shadow(0 14px 21px #77586d30)}
+.hm-passport-introduction-cover{width:44%;max-width:260px;aspect-ratio:2/3;container-type:inline-size;border-radius:8px;overflow:hidden;box-shadow:5px 6px 0 #dab5a6,8px 9px 17px #78586036;transform:rotate(-5deg) translateX(4%);z-index:2;flex:0 0 44%}
+.hm-passport-introduction-art .hm-premium-cover{width:100%;height:100%}
+.hm-passport-introduction-inset{flex:0 0 52%;aspect-ratio:2/3;container-type:inline-size;border-radius:5px;overflow:hidden;box-shadow:5px 6px 0 #dabfa8,8px 9px 17px #78586025;transform:rotate(3deg) translate(-2%,1%);position:relative;background:#fffaf5 url('/assets/world-passport/luxury-paper.webp') center/100% 100%}
+.hm-passport-introduction-inset-inner{position:absolute;inset:11% 8% 8%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center}
+.hm-passport-introduction-inset-inner>span{font:700 2.4cqw Georgia,serif;letter-spacing:.11em;color:#aa8377}
+.hm-passport-introduction-inset-inner>strong{font:700 6.8cqw/1.35 'Gowun Batang',serif;color:#97636d;margin-top:5%}
+.hm-passport-introduction-inset-inner>img{margin-top:9%;width:94%;height:43%;object-fit:contain;border:1px solid #e6c9a6;border-radius:5px}
+.hm-passport-introduction-inset-inner>small{font:400 3cqw/1.65 'Gowun Batang',serif;color:#99766c;margin-top:6%;word-break:keep-all}
+.hm-passport-introduction-caption{position:absolute;left:0;right:0;bottom:-29px;font:12px/1.6 'Gowun Dodum',sans-serif;color:#987e83}
+@media(max-width:760px){.hm-passport-introduction{grid-template-columns:minmax(0,1fr);gap:22px}.hm-passport-introduction-copy{text-align:center}.hm-passport-introduction-copy h2{margin:8px 0 12px}.hm-passport-introduction-copy p:not(.eyebrow){margin-bottom:18px}.hm-passport-introduction-art{max-width:470px;width:100%;margin:0 auto 26px}}
+@media(max-width:470px){.hm-passport-dialog{width:96vw;max-height:95dvh;border-radius:14px}.hm-passport-book{width:min(calc(100% - 26px),46dvh);margin-top:8px}.hm-passport-controls{margin-top:10px}.hm-premium-paper{padding-top:12.5%}.hm-passport-has-claim .hm-passport-book{width:min(calc(100% - 26px),26dvh)}.hm-passport-claim{max-height:26dvh}.hm-passport-introduction-art{width:100%}}
+@media(max-height:650px){.hm-passport-book{width:min(calc(100% - 26px),41dvh)}.hm-passport-has-claim .hm-passport-book{width:min(calc(100% - 26px),24dvh)}.hm-passport-header{flex-basis:36px}.hm-passport-claim{max-height:25dvh}}
+@media(prefers-reduced-motion:reduce){.hm-passport-turning{animation:none}}

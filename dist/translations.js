@@ -375,4 +375,9 @@ window.HAEMUNGI_TRANSLATIONS = Object.freeze([
   ,["여행 여권 펼쳐보기 ↗","Open the travel passport ↗","旅のパスポートを開く ↗","打开旅行护照 ↗"]
   ,["헤뭉이 월드 여행 여권 · 소개 이미지","HAEMUNGI World Passport · Introduction Image","ヘムンギ・ワールド旅のパスポート・紹介画像","HAEMUNGI 世界旅行护照 · 介绍图片"]
   ,["꽃과 금빛 장식이 어우러진 헤뭉이 월드 여권의 표지와 가상 방문자 등록 페이지를 나란히 소개하는 이미지","An illustration of the HAEMUNGI World Passport cover beside a fictional visitor-registration page, with blossoms and golden ornaments.","花と金色の装飾に囲まれたヘムンギ・ワールド旅のパスポートの表紙と、架空の来訪者登録ページを並べた画像。","以花朵和金色装饰点缀的 HAEMUNGI 世界护照封面与虚构访客登记页并列展示的图片。"]
+  ,["여행 안내도","Travel Guide","旅の案内図","旅行指南地图"]
+  ,["14곳의 이야기를 만나러 떠나요.","Set off to discover fourteen stories.","14の場所にまつわる物語を見つけに行きましょう。","出发探索十四处景点的故事吧。"]
+  ,["여행 여권과 완전히 같은 공식 표지","The identical official cover used on the travel passport","旅のパスポートと同一の公式表紙","与旅行护照完全一致的官方封面"]
+  ,["여권 속 세계 지도 미리보기","Preview the world map inside the passport","パスポート内の世界地図のプレビュー","预览护照内的世界地图"]
+  ,["헤뭉이 월드의 열네 장소를 연결한 환상적인 여행 지도","Fantasy travel atlas connecting the fourteen places of HAEMUNGI World","ヘムンギ・ワールドの14の場所を結ぶ幻想的な旅の地図","连接 HAEMUNGI 世界十四处地点的梦幻旅行地图"]
 ]);
