@@ -60,18 +60,18 @@
 /* Original 900×1350 user-supplied artwork: each page is shown in full, uncropped.
    Only the actual visit stamp, links and live progress occupy transparent layers. */
 .hm-passport-dialog[open]{display:flex;flex-direction:column;align-items:stretch}
-.hm-passport-book{flex:0 1 auto;align-self:center;aspect-ratio:2/3;width:min(calc(100% - 24px),45dvh,550px);height:auto;min-height:0;max-height:none;margin:8px auto 0;border:0;border-radius:9px;box-shadow:4px 5px 0 #e6d3b7,8px 9px 18px #5c492537;background:#fdfaf5;overflow:hidden}
+.hm-passport-book{flex:0 1 auto;align-self:center;aspect-ratio:2/3;width:min(calc(100% - 24px),45dvh,550px);height:auto;min-height:0;max-height:none;margin:8px auto 0;border:0;border-radius:9px;box-shadow:4px 5px 0 #e6d3b7,8px 9px 18px #5c492537;background:#fffdf8;overflow:hidden}
 .hm-passport-book::before,.hm-passport-bookmark{display:none}
-.hm-passport-page{width:100%;height:100%;padding:0!important;display:block;overflow:hidden;background:#fdfaf5}
+.hm-passport-page{width:100%;height:100%;padding:0!important;display:block;overflow:hidden;background:#fffdf8}
 .hm-passport-art-frame{position:relative;width:100%;height:100%;container-type:inline-size}
 .hm-passport-art{width:100%;height:100%;object-fit:contain;display:block;user-select:none}
 .hm-passport-art-link{position:absolute;left:27.5%;top:84%;width:45%;height:5.9%;border-radius:12px;cursor:pointer;background:transparent}
 .hm-passport-art-link:hover{box-shadow:inset 0 0 0 2px #b18a63;background:rgba(255,244,223,.2)}
-.hm-passport-art-stamp{position:absolute;left:33%;top:73.4%;width:34%;height:8.8%;border:double 4px #b16e67;border-radius:50%;transform:rotate(-8deg);display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fcf9f2;color:#a36158;box-shadow:0 0 0 2px #fcf9f2;font-family:sans-serif;pointer-events:none}
+.hm-passport-art-stamp{position:absolute;left:33%;top:73.4%;width:34%;height:8.8%;border:double 4px #b16e67;border-radius:50%;transform:rotate(-8deg);display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fffdf8;color:#a36158;box-shadow:0 0 0 2px #fffdf8;font-family:sans-serif;pointer-events:none}
 .hm-passport-art-stamp strong{font-size:4.15cqw;line-height:1.2}.hm-passport-art-stamp span{font-size:1.45cqw;letter-spacing:.05em}.hm-passport-art-stamp time{font-size:2.3cqw;font-weight:700}
-.hm-passport-art-pagination{position:absolute;left:26%;width:48%;bottom:3.9%;height:3.1%;display:flex;align-items:center;justify-content:center;background:#fdfaf4;color:#976c48;font:500 2.65cqw/1.3 sans-serif;white-space:nowrap;pointer-events:none}
-.hm-passport-final-message{position:absolute;left:8%;width:84%;top:40.9%;height:8%;display:flex;align-items:center;justify-content:center;padding:0 2%;background:#fdfaf4;color:#825c42;font:400 3.1cqw/1.5 'Gowun Batang',serif;text-align:center;word-break:keep-all;pointer-events:none}
-.hm-passport-final-count{position:absolute;left:28%;width:44%;top:54.5%;height:8.5%;display:flex;align-items:center;justify-content:center;background:#fdfaf4;color:#b98552;font:500 8.5cqw/1.2 sans-serif;pointer-events:none}
+.hm-passport-art-pagination{position:absolute;left:26%;width:48%;bottom:3.9%;height:3.1%;display:flex;align-items:center;justify-content:center;background:#fffdf8;color:#976c48;font:500 2.65cqw/1.3 sans-serif;white-space:nowrap;pointer-events:none}
+.hm-passport-final-message{position:absolute;left:8%;width:84%;top:40.9%;height:8%;display:flex;align-items:center;justify-content:center;padding:0 2%;background:#fffdf8;color:#825c42;font:400 3.1cqw/1.5 'Gowun Batang',serif;text-align:center;word-break:keep-all;pointer-events:none}
+.hm-passport-final-count{position:absolute;left:28%;width:44%;top:54.5%;height:8.5%;display:flex;align-items:center;justify-content:center;background:#fffdf8;color:#b98552;font:500 8.5cqw/1.2 sans-serif;pointer-events:none}
 .hm-passport-controls{flex:0 0 auto;margin:12px 15px 0}
 .hm-passport-action{flex:0 1 auto;width:calc(100% - 26px);margin:10px auto 0;display:flex;justify-content:center;min-height:0;overflow:hidden}
 .hm-passport-action:empty{display:none}
