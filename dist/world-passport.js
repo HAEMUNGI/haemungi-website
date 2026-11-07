@@ -19,9 +19,19 @@
     ['temple','파도가 들리는 법당','종소리와 파도 곁에서 잠시 마음을 쉬어가요.','☼','/temple.html','해안 사찰'],
     ['christmas','크리스마스 빌리지','반짝이는 트리와 겨울의 축제를 만나보세요.','❄','/christmas.html','겨울 마을'],
   ];
+  // These seventeen supplied illustrations are the complete, immutable page art.
+  // Visits, dates, navigation, page counts and the reward remain live controls.
+  const artBase='/assets/world-passport/';
+  const artPages=[
+    '01_cover.png','02_guide.png','03_visit_01.png','04_visit_02.png',
+    '05_visit_03.png','06_visit_04.png','07_visit_05.png','08_visit_06.png',
+    '09_visit_07.png','10_visit_08.png','11_visit_09.png','12_visit_10.png',
+    '13_visit_11.png','14_visit_12.png','15_visit_13.png','16_visit_14.png',
+    '17_final.png',
+  ];
   const ids=new Set(stops.map(s=>s[0]));
   let pass=null,stamps={},claimedSlot=null,page=0,busy=false,visitTimer=null;
-  let dialog,pageBody,statusNode,countNode,prevBtn,nextBtn;
+  let dialog,pageBody,actionNode,statusNode,countNode,prevBtn,nextBtn;
   try{const saved=JSON.parse(localStorage.getItem(storageKey)||'null');
     if(saved?.id&&saved?.token)pass={id:saved.id,token:saved.token};
   }catch(_){/* Corrupt local passport is treated as absent. */}
@@ -76,59 +86,31 @@
     visitTimer=setTimeout(()=>{if(currentStop()===stop)stampStop(stop);},4000);
   }
 
-  function drawMap(){
-    return `<div class="hm-passport-map" role="img" aria-label="가운데 헤뭉이 마을과 사방의 놀이터, 별빛 추모관, 해안 사찰, 크리스마스 빌리지가 이어지는 헤뭉이 월드 지도">
-      <svg viewBox="0 0 340 235" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs><linearGradient id="hmSea" x2="0" y2="1"><stop stop-color="#cfeee9"/><stop offset="1" stop-color="#f5e4c5"/></linearGradient></defs>
-        <rect width="340" height="235" rx="19" fill="url(#hmSea)"/>
-        <path d="M14 52 Q40 14 84 25 T152 36 Q173 65 148 99 T70 121 Q15 111 14 52" fill="#e5f0d2" stroke="#99b99a" stroke-width="2"/>
-        <path d="M189 27 Q241 6 300 33 T327 104 Q289 124 222 97 T189 27" fill="#f2e4dc" stroke="#c8a29b" stroke-width="2"/>
-        <path d="M75 143 Q127 104 197 132 T245 214 Q181 232 113 214 T75 143" fill="#f4ecc6" stroke="#d0b57c" stroke-width="2"/>
-        <path d="M258 140 Q299 122 324 156 L326 217 Q292 235 255 211 T258 140" fill="#d9e6f5" stroke="#9faec9" stroke-width="2"/>
-        <path d="M62 82 Q142 112 163 164 M245 69 Q202 112 165 164 M165 164 Q255 167 292 178" fill="none" stroke="#ab9275" stroke-width="2.5" stroke-dasharray="4 6" stroke-linecap="round"/>
-        <g fill="#735941" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="11">
-          <text x="79" y="64">✿ 놀이터</text><text x="255" y="62">✧ 추모관</text>
-          <text x="165" y="164">⌂ 헤뭉이 마을</text><text x="165" y="178" font-size="9" font-weight="400">10개의 이야기</text>
-          <text x="292" y="176">❄ 겨울 마을</text><text x="270" y="88" font-size="9">☼ 해안 사찰</text>
-        </g>
-      </svg>
+  function artPage(index){
+    const name=artPages[index];
+    const stop=index>=2&&index<=15?stops[index-2]:null;
+    const raw=stop?String(stamps[stop[0]]||''):'';
+    const date=/^\d{4}-\d{2}-\d{2}$/.test(raw)?raw:'';
+    const alt=index===0?'헤뭉이 월드 여행 여권 표지':index===1?'헤뭉이 월드 14개 장소 여행 안내도':
+      index===16?'헤뭉이 월드 여행 여권의 마지막 장':`헤뭉이 월드 여권 ${index-1}번째 방문지, ${stop[1]}`;
+    return `<div class="hm-passport-art-frame">
+      <img class="hm-passport-art" src="${artBase}${name}" width="900" height="1350" alt="${escapeHtml(alt)}" decoding="async" draggable="false">
+      ${stop?`${date?`<div class="hm-passport-art-stamp" aria-label="${escapeHtml(stop[1])} 방문 완료 ${date}"><strong>방문 완료</strong><span>HAEMUNGI WORLD</span><time>${date}</time></div>`:''}
+        <a class="hm-passport-art-link" href="${stop[4]}" aria-label="${escapeHtml(stop[1])} ${date?'다시 둘러보기':'방문하여 도장 받기'}"></a>`:''}
+      ${index===16?`<div class="hm-passport-final-message">${claimedSlot?`14곳 완주! 안식관 ${String(claimedSlot).padStart(3,'0')}호 명패가 배정되었습니다.`:
+        complete()?'14곳의 방문을 모두 마쳤습니다. 아래에서 이메일 확인과 공개 동의를 진행해주세요.':
+        `아직 ${14-stampCount()}곳의 방문 도장이 남았습니다. 천천히 둘러보고 돌아오세요.`}</div>
+        <div class="hm-passport-final-count" aria-label="방문 ${stampCount()}곳 완료">${stampCount()} / 14</div>`:''}
+      ${index>=2?`<div class="hm-passport-art-pagination" aria-label="${index+1}쪽 중 17쪽, 방문 ${stampCount()}곳">${index+1} / 17 · 방문 ${stampCount()}/14</div>`:''}
     </div>`;
   }
-  function cover(){
-    const number=pass?'HM-'+pass.id.replace(/-/g,'').slice(0,8).toUpperCase():'발급 전';
-    return `<div class="hm-passport-cover"><span class="hm-passport-crest">✿</span>
-      <small>HAEMUNGI LITTLE WORLD</small><h2>헤뭉이 월드<br>여행 여권</h2>
-      <p>HAEMUNGI WORLD PASSPORT</p><span class="hm-passport-cover-line"></span>
-      <span class="hm-passport-cover-number">PASSPORT NO. ${number}</span>
-      <p class="hm-passport-cover-caption">사소한 우연이 특별한 여행이 되는 곳</p></div>
-      <div class="hm-passport-footnote">${pass?'이 여권은 이 브라우저에 보관됩니다.':'비밀번호나 회원가입 없이 여행 여권을 발급받을 수 있어요.'}</div>
-      ${pass?'':`<button class="hm-passport-primary" id="hmPassportIssue" type="button">나의 여권 발급하기</button>`}`;
-  }
-  function intro(){return `<div class="hm-passport-kicker">TRAVEL GUIDE · 01</div><h2>헤뭉이 월드 안내도</h2>
-    <p class="hm-passport-intro">머리카락 한 올에서 시작된 작은 세계. 14곳의 이야기를 따라가며 여권에 방문 도장을 모아보세요.</p>
-    ${drawMap()}<p class="hm-passport-map-note">지도 속 모든 공간은 헤뭉이 공식 홈페이지의 서로 다른 이야기로 이어집니다.</p>
-    <div class="hm-passport-progress">방문 기록 <strong>${stampCount()} / 14</strong></div>`;}
-  function locationPage(index){
-    const [id,title,desc,symbol,href,region]=stops[index];
-    const raw=String(stamps[id]||'');const date=/^\d{4}-\d{2}-\d{2}$/.test(raw)?raw:'';
-    return `<div class="hm-passport-kicker">OFFICIAL VISIT COURSE · ${String(index+1).padStart(2,'0')}/14</div>
-      <h2>${escapeHtml(title)}</h2><p class="hm-passport-region">${escapeHtml(region)}</p>
-      <div class="hm-passport-landmark" aria-hidden="true"><span>${symbol}</span><i></i></div>
-      <p class="hm-passport-description">${escapeHtml(desc)}</p>
-      <div class="hm-passport-seal-area">${date?`<div class="hm-passport-seal"><strong>방문 완료</strong><span>HAEMUNGI WORLD</span><time>${date}</time></div>`:
-       `<div class="hm-passport-seal-outline"><span>방문 도장을 기다리는 중</span></div>`}</div>
-      <a class="hm-passport-visit" href="${href}">${date?'다시 둘러보기':'이 장소로 여행하기'} →</a>`;
-  }
-  function reward(){
-    if(claimedSlot)return `<div class="hm-passport-kicker">JOURNEY COMPLETED</div><div class="hm-passport-reward-symbol">✧</div>
-      <h2>축하합니다!</h2><p>모든 여행을 마치고 별빛 추모관 <strong>${String(claimedSlot).padStart(3,'0')}호</strong> 명패가 배정되었습니다.</p>
-      <a class="hm-passport-visit" href="/memorial.html#hall">우리 아이의 안식관으로 →</a>`;
-    if(!complete())return `<div class="hm-passport-kicker">FINAL DESTINATION</div><div class="hm-passport-reward-symbol">☆</div>
-      <h2>여행의 마지막 장</h2><p>아직 ${14-stampCount()}곳의 방문 도장이 남아 있습니다. 천천히 둘러보고 다시 돌아오세요.</p>
-      <p class="hm-passport-reward-count">${stampCount()} / 14</p>`;
-    return `<div class="hm-passport-kicker">HAEMUNGI WORLD · COMPLETED</div><div class="hm-passport-reward-symbol">✧</div>
-      <h2>여권 완주를 축하합니다!</h2><p>14개의 방문 인장을 모두 모았습니다. 이메일 인증과 공개 동의 후 우리 아이의 명패를 자동 배정받을 수 있습니다.</p>
-      <div class="hm-passport-claim" id="hmPassportClaim">
+  function claimPanel(){
+    if(page===0)return pass?'<p class="hm-passport-footnote">이 여권의 방문 기록은 현재 브라우저에 연결되어 있습니다.</p>':
+      '<button class="hm-passport-primary" id="hmPassportIssue" type="button">나의 여권 발급하기</button>';
+    if(page!==16)return '';
+    if(claimedSlot)return `<a class="hm-passport-primary hm-passport-claimed-link" href="/memorial.html#hall">배정된 ${String(claimedSlot).padStart(3,'0')}호 안식관 방문하기 →</a>`;
+    if(!complete())return '';
+    return `<div class="hm-passport-claim" id="hmPassportClaim">
         <p id="hmPassportClaimStatus" role="status">이메일 인증을 마친 뒤 별들의 기록에서 우리 아이를 선택해주세요.</p>
         <label for="hmPassportMemorial">명패로 만날 아이</label><select id="hmPassportMemorial"><option value="">확인하고 있습니다…</option></select>
         <label class="hm-passport-claim-consent"><input id="hmPassportConsent" type="checkbox"> 아이의 이름·사진·이야기가 안식관 명패에 공개되는 데 동의합니다.</label>
@@ -140,12 +122,14 @@
     if(!pageBody)return;
     pageBody.classList.remove('hm-passport-turning');void pageBody.offsetWidth;
     pageBody.classList.add('hm-passport-turning');
-    pageBody.innerHTML=page===0?cover():page===1?intro():page===16?reward():locationPage(page-2);
+    pageBody.innerHTML=artPage(page);
+    actionNode.innerHTML=claimPanel();
+    dialog.classList.toggle('hm-passport-has-claim',page===16&&complete()&&!claimedSlot);
     countNode.textContent=`${page+1} / 17 · 방문 ${stampCount()}/14`;
     prevBtn.disabled=page===0;nextBtn.disabled=page===16;
     nextBtn.textContent=page===15?'완주 확인 →':'다음 쪽 →';
     const issue=document.getElementById('hmPassportIssue');if(issue)issue.addEventListener('click',issuePassport);
-    const claim=document.getElementById('hmPassportClaim');if(claim)setupClaim(claim);
+    const claim=actionNode.querySelector('#hmPassportClaim');if(claim)setupClaim(claim);
   }
   async function issuePassport(){
     if(busy)return;busy=true;
@@ -206,16 +190,17 @@
     dialog=document.createElement('dialog');dialog.id='hmPassportDialog';dialog.className='hm-passport-dialog';
     dialog.setAttribute('aria-label','헤뭉이 월드 여권');dialog.innerHTML=`
       <div class="hm-passport-header"><span>HAEMUNGI WORLD PASSPORT</span><button type="button" id="hmPassportClose" aria-label="여권 닫기">×</button></div>
-      <div class="hm-passport-book" id="hmPassportBook"><div class="hm-passport-bookmark" aria-hidden="true">✿</div>
-      <div class="hm-passport-page" id="hmPassportPage"></div></div>
+      <div class="hm-passport-book" id="hmPassportBook"><div class="hm-passport-page" id="hmPassportPage"></div></div>
       <div class="hm-passport-controls"><button type="button" id="hmPassportPrev">← 이전</button>
       <span id="hmPassportCount" aria-live="polite">1 / 17</span>
       <button type="button" id="hmPassportNext">다음 쪽 →</button></div>
+      <div class="hm-passport-action" id="hmPassportAction"></div>
       <p class="hm-passport-status" id="hmPassportStatus" role="status" aria-live="polite"></p>`;
     document.body.appendChild(dialog);
-    pageBody=dialog.querySelector('#hmPassportPage');statusNode=dialog.querySelector('#hmPassportStatus');
+    pageBody=dialog.querySelector('#hmPassportPage');actionNode=dialog.querySelector('#hmPassportAction');statusNode=dialog.querySelector('#hmPassportStatus');
     countNode=dialog.querySelector('#hmPassportCount');prevBtn=dialog.querySelector('#hmPassportPrev');nextBtn=dialog.querySelector('#hmPassportNext');
     launcher.addEventListener('click',open);
+    document.getElementById('hmPassportAboutOpen')?.addEventListener('click',open);
     dialog.querySelector('#hmPassportClose').addEventListener('click',()=>dialog.close());
     prevBtn.addEventListener('click',()=>{if(page>0){page--;render();}});
     nextBtn.addEventListener('click',()=>{if(page<16){page++;render();}});
