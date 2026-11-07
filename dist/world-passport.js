@@ -32,7 +32,7 @@
     about:'haemungi-sheet.webp',today:'today-world-trip.jpg',
     creator:'haemungi-3d-reference.jpg',emoticons:'emoticon-collection.jpg',
     playground:'playground-main.jpg',memorial:'memorial-walk-morning-20261105.webp',
-    temple:'temple-haesu.webp',christmas:'christmas-square.webp',
+    temple:'temple-haesu.webp',christmas:'christmas-square.jpg',
   };
   const wideArt=new Set(['home','videos','room']);
   const ids=new Set(stops.map(s=>s[0]));

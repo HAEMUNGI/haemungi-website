@@ -48,6 +48,8 @@ assert.match(passport,/aboutPreview\.innerHTML=coverArtwork\(\)/,'About preview 
 assert.match(passport,/if\(index===16\)/,'The final printable page exists');
 assert.match(passport,/const stop=stops\[index-2\]/,'Exactly 14 destination pages are generated');
 for(const id of stops)assert.match(passport,new RegExp(`${id}:'`),`Uncropped source art mapping for ${id}`);
+assert(passport.includes("christmas:'christmas-square.jpg'"),'Christmas passport page uses the browser-tested warm JPEG, not the unreliable WebP');
+assert(read('dist/christmas.js').includes("img:'/assets/christmas-square.jpg'"),'Christmas destination matches the same proven site artwork');
 assert.match(passport,/hm-premium-seal-earned/,'Real stamps replace printed static placeholders');
 assert.match(passport,/hm-premium-visit-link/,'Each destination opens its real page');
 assert.match(passport,/hm-premium-final-count/,'Completion total derives from live server stamps');
