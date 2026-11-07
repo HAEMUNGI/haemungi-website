@@ -48,6 +48,7 @@ jobs:
           node verify-story-seo.mjs
           node verify-memorial.mjs
           node verify-memorial-registration.mjs
+          node verify-world-passport.mjs
           node --experimental-vm-modules verify-memorial-security.mjs
           node verify-memorial-entry-and-dates.cjs
           node verify-memorial-communal-elastic.mjs

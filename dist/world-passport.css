@@ -1,0 +1,58 @@
+/* The World Passport uses a book, not a scrolling collection of stamps. */
+.hm-passport-launcher{position:fixed;z-index:900;bottom:max(16px,env(safe-area-inset-bottom));left:16px;min-height:44px;padding:9px 16px;border:1px solid #b99b6d;border-radius:40px;background:rgba(255,249,237,.94);color:#70543a;box-shadow:0 5px 24px #5f48242b;font:700 14px/1.2 sans-serif;cursor:pointer;backdrop-filter:blur(6px)}
+.hm-passport-launcher:focus-visible,.hm-passport-dialog button:focus-visible,.hm-passport-dialog a:focus-visible{outline:3px solid #a7793c;outline-offset:3px}
+.hm-passport-dialog{position:fixed;inset:0;margin:auto;max-height:96dvh;width:min(95vw,620px);max-width:none;padding:0;border:1px solid #c7a981;border-radius:20px;background:#f4e9d8;color:#614d38;box-shadow:0 24px 100px #261b143a;font-family:'Gowun Batang','Noto Serif KR',serif;overflow:hidden}
+.hm-passport-dialog::backdrop{background:rgba(58,46,34,.54);backdrop-filter:blur(5px)}
+.hm-passport-dialog *{box-sizing:border-box}
+.hm-passport-header{height:43px;display:flex;justify-content:space-between;align-items:center;padding:0 13px 0 21px;border-bottom:1px solid #dac4a5;letter-spacing:.13em;font:700 10px/1.3 sans-serif;color:#846341}
+.hm-passport-header button{font:400 27px/1 sans-serif;border:0;background:transparent;color:#765738;min-width:35px;min-height:35px;cursor:pointer}
+.hm-passport-book{position:relative;margin:10px auto 0;width:calc(100% - 24px);max-width:550px;height:min(68dvh,620px);min-height:390px;perspective:1400px;border-radius:5px 18px 18px 5px;background:#fdf8ec;box-shadow:9px 8px 0 #dac6a8,13px 10px 0 #bfa47e,18px 14px 30px #755c3640;border-left:10px solid #a78a61;overflow:hidden}
+.hm-passport-book::before{content:'';position:absolute;inset:0 auto 0 5px;border-left:1px solid #d4c3a9;z-index:2;pointer-events:none}
+.hm-passport-bookmark{position:absolute;top:0;right:28px;background:#b68655;color:white;padding:12px 8px 16px;border-radius:0 0 20px 20px;z-index:2;font-size:15px;box-shadow:0 2px 7px #6b4c2c22}
+.hm-passport-page{height:100%;padding:22px 27px 18px 26px;display:flex;flex-direction:column;align-items:stretch;text-align:center;overflow:hidden;background:radial-gradient(circle at 90% 10%,#faf1da 0%,transparent 31%),repeating-linear-gradient(0deg,transparent 0 33px,#e3d3b633 34px),#fdf8ed}
+.hm-passport-turning{animation:hmPassportTurn .35s ease both;transform-origin:left center}
+@keyframes hmPassportTurn{0%{opacity:.45;transform:rotateY(-13deg)}100%{opacity:1;transform:rotateY(0)}}
+.hm-passport-page h2{font:700 clamp(22px,4.5vw,33px)/1.3 'Gowun Batang',serif;margin:8px 0;color:#6f5032;word-break:keep-all}
+.hm-passport-kicker{font:700 10px/1.3 sans-serif;letter-spacing:.15em;color:#a1815b;margin-top:3px}
+.hm-passport-intro,.hm-passport-description,.hm-passport-page>p{font:400 clamp(12px,2.6vw,15px)/1.7 'Gowun Batang',serif;color:#715f4d;margin:9px 0;word-break:keep-all}
+.hm-passport-cover{display:flex;flex:1;flex-direction:column;justify-content:center;align-items:center;gap:7px;padding:18px;background:linear-gradient(132deg,#7c5e48,#a68061 52%,#694d39);border:4px double #d4b47e;outline:9px solid #916e50;color:#fff7e7;box-shadow:inset 0 0 25px #3b2d2638}
+.hm-passport-cover .hm-passport-crest{font-size:58px;color:#f0d9aa;text-shadow:0 2px 2px #392a2629}
+.hm-passport-cover small{font:700 10px sans-serif;letter-spacing:.19em}
+.hm-passport-cover h2{color:#fff7e7;font:700 clamp(30px,7vw,43px)/1.38 'Gowun Batang',serif;margin:10px 0}
+.hm-passport-cover p{color:#f3ddb6;font:600 11px/1.5 sans-serif;letter-spacing:.16em;margin:0}
+.hm-passport-cover .hm-passport-cover-caption{font-family:'Gowun Batang',serif;font-weight:400;font-size:12px;letter-spacing:0}
+.hm-passport-cover-line{height:1px;width:55%;background:#e7cb9e;margin:17px 0}
+.hm-passport-cover-number{font:700 12px sans-serif;letter-spacing:.1em}
+.hm-passport-footnote{font:400 11px/1.5 sans-serif;margin:10px 0;color:#7e6a55}
+.hm-passport-primary{background:#916b47;color:#fffaf2;border:1px solid #916b47;padding:12px 17px;border-radius:10px;font:700 13px 'Gowun Batang',serif;cursor:pointer}
+.hm-passport-primary:disabled{opacity:.6;cursor:wait}
+.hm-passport-map{width:100%;max-width:400px;margin:8px auto 0;overflow:hidden;border:1px solid #c7af85;border-radius:20px;box-shadow:0 3px 12px #9e816020}
+.hm-passport-map svg{display:block;width:100%;height:auto}
+.hm-passport-map-note{font-size:12px!important;margin:9px 0!important}
+.hm-passport-progress{margin-top:auto;padding:12px;border-block:1px solid #dfcfb5;display:flex;justify-content:space-between;font:600 12px sans-serif;color:#927553}
+.hm-passport-region{font-size:13px!important;color:#9f7d52!important;margin:0!important}
+.hm-passport-landmark{position:relative;height:clamp(100px,19vh,180px);min-height:105px;width:100%;max-width:355px;margin:10px auto 2px;border:1px solid #d9c6a3;border-radius:50% 50% 15px 15px;background:radial-gradient(circle at 50% 92%,#f8dda7 0 22%,transparent 24%),linear-gradient(180deg,#dcefe8,#f9edcb);overflow:hidden;display:grid;place-items:center}
+.hm-passport-landmark span{font-size:clamp(50px,11vw,92px);color:#af8352;text-shadow:2px 4px 0 #f6e4c9;z-index:1}
+.hm-passport-landmark i{position:absolute;bottom:-55px;width:120%;height:100px;border-radius:50%;background:#9fbe9e8f}
+.hm-passport-description{max-width:340px;margin:10px auto!important;min-height:45px}
+.hm-passport-seal-area{height:112px;display:grid;place-items:center;margin:auto 0 6px}
+.hm-passport-seal{width:132px;height:92px;border:4px double #ba7d72;border-radius:49%;transform:rotate(-12deg);color:#a66860;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#fbeadea1;box-shadow:0 0 0 3px #f9f1e4,0 0 0 4px #ca9789;font-family:sans-serif}
+.hm-passport-seal strong{font-size:20px;line-height:1.25}.hm-passport-seal span{font-size:8px;letter-spacing:.08em}.hm-passport-seal time{font-size:11px;font-weight:700}
+.hm-passport-seal-outline{height:80px;width:140px;border:2px dashed #d9cbb5;border-radius:50%;color:#b6a38c;display:grid;place-items:center;font-size:11px;transform:rotate(-9deg)}
+.hm-passport-visit{display:inline-block;align-self:center;background:#fff8ea;border:1px solid #bba079;border-radius:11px;color:#715134;text-decoration:none;padding:10px 17px;font:700 12px 'Gowun Batang',serif}
+.hm-passport-reward-symbol{font-size:clamp(65px,16vw,125px);line-height:1.5;color:#c69a60;text-shadow:0 2px 0 #e8c79c}
+.hm-passport-reward-count{font:700 28px sans-serif!important;color:#a27a50!important}
+.hm-passport-claim{margin-top:10px;padding:12px;border:1px solid #dcc8a5;border-radius:12px;background:#fffcf5;text-align:left;font:13px/1.5 sans-serif;overflow:auto;max-height:53%;color:#69533b}
+.hm-passport-claim p{font-size:12px;line-height:1.5;margin:0 0 9px}
+.hm-passport-claim label{display:block;font-size:12px;margin:7px 0}
+.hm-passport-claim select{width:100%;max-width:100%;border:1px solid #c7b294;border-radius:8px;padding:9px;background:#fff;color:#654930;font-size:13px}
+.hm-passport-claim-consent{display:flex!important;gap:8px;align-items:flex-start;line-height:1.5!important}
+.hm-passport-claim-consent input{margin-top:3px}
+.hm-passport-claim button{width:100%;margin-top:6px}
+.hm-passport-text-button{background:transparent;color:#785d43;border:0;font:12px sans-serif;text-decoration:underline;cursor:pointer;padding:7px}
+.hm-passport-controls{margin:15px 13px 0;display:flex;justify-content:space-between;align-items:center;gap:5px;font:700 12px sans-serif;color:#90704c}
+.hm-passport-controls button{border:1px solid #cbb18e;background:#fff9ed;border-radius:8px;color:#72553a;min-height:37px;padding:8px 12px;font:700 12px sans-serif;cursor:pointer}
+.hm-passport-controls button:disabled{opacity:.35;cursor:default}
+.hm-passport-status{min-height:34px;margin:5px 17px 10px;font:12px/1.5 sans-serif;color:#84694c;text-align:center}
+@media(max-width:470px){.hm-passport-dialog{width:96vw;max-height:94dvh;border-radius:15px}.hm-passport-book{height:min(67dvh,570px);min-height:370px;border-left-width:7px}.hm-passport-page{padding:17px 18px 12px}.hm-passport-map{margin-top:6px}.hm-passport-landmark{margin-top:6px;height:120px}.hm-passport-seal-area{height:94px}.hm-passport-seal{height:80px;width:120px}.hm-passport-controls{margin-top:12px}.hm-passport-claim{max-height:49%}}
+@media(prefers-reduced-motion:reduce){.hm-passport-turning{animation:none}}

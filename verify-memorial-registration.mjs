@@ -9,9 +9,7 @@ const admin=read('dist/memorial-admin.js'),sql=read('016_haemungi_memorial_publi
 const edge=read('supabase/functions/memorial-self-register/index.ts');
 new Script(main);new Script(register);new Script(admin);
 
-for(const id of ['hallWing','hallOccupancy','plaqueApplication','plaqueWing','plaqueSlotPicker',
-  'visitorPassword','visitorLogin','visitorSignup','visitorLogout','upgradeArchiveBox',
-  'myArchiveRecords','upgradeArchive','applicationForm'])
+for(const id of ['hallWing','hallOccupancy','applicationForm','openPassportReward'])
   assert(html.includes(`id="${id}"`),`Missing UI control: ${id}`);
 for(const id of ['openVisitorLogin','visitorLoginDialog','closeVisitorLogin','quickLoginForm',
   'quickLoginEmail','quickLoginPassword','quickLoginSubmit','quickSignup','quickLoginStatus',
@@ -23,15 +21,15 @@ assert.match(html,/aria-haspopup="dialog"/,'Header must identify the sign-in dia
 assert.match(register,/loginDialog\.showModal\(\)/,'Header login opens a dedicated dialog');
 assert.match(register,/authenticate\(false,\{email,password\}\)/,'Quick login must reuse existing Supabase Auth');
 assert.match(register,/authenticate\(true,\{email,password\}\)/,'Quick signup must reuse existing account flow');
-assert.match(register,/location\.hash='#apply'/,'Signed-in user can navigate to plaque records');
+assert.match(register,/location\.hash='#apply'/,'Signed-in user can navigate to archive registration');
 assert.match(register,/logout\?scope=local/,'Sign-out attempts local session revocation');
 assert.match(register,/get\('login'\)==='1'/,'Deep link must open the login dialog');
 assert.match(archive,/memorial\.html\?login=1#entrance/,'Archive exposes a login entry');
 assert.match(kiosk,/memorial\.html\?login=1#entrance/,'Communal kiosk exposes a login entry');
 for(const file of ['memorial-registration.js','memorial-privacy.html'])
   assert(html.includes('/'+file),`Missing published resource: ${file}`);
-assert.match(html,/value="archive" checked/,'Archive-first, no admin approval');
-assert.match(html,/value="plaque"/,'Separate login and admin approval');
+assert.match(html,/14곳을 둘러보면 안식관 명패를 선물합니다/,'Passport reward is advertised');
+assert(!html.includes('value="plaque"'),'Old direct plaque booking is not available');
 assert.match(html,/후원 추억의 방은 별도 문의/,'Premium remains inquiry-only');
 assert.match(archive,/이메일 인증 후.*관리자 승인 없이 바로 공개됩니다/,'Archive email check and no administrator approval');
 assert(!html.includes('로그인 없이'), 'Archive must no longer claim anonymous immediate publication');
@@ -46,10 +44,9 @@ assert.match(register,/memorial-self-register/,'Server-side public registration'
 assert.match(register,/Authorization:'Bearer '\+jwt/,'Free archive must send the verified visitor token');
 assert.match(register,/visitor\?\.user\?\.email\?\.toLowerCase\(\)!==email/,'Client requires matching account email');
 assert.match(register,/누구나 검색하고 열람할 수 있습니다.*공개하시겠습니까/,'Explicit confirmation before irreversible public archive submission');
-assert.match(register,/session_token/,'Authenticated plaque submission');
-assert.match(register,/hm_memorial_request_archive_plaque/,'No duplicate photo for archive upgrade');
-assert.match(register,/sequence!==slotLoadSeq/,'Concurrent slot loads must not duplicate controls');
-assert.match(register,/skipWingLoad:true/,'Selecting a plaque must not launch duplicate wing fetches');
+assert(!register.includes('hm_memorial_request_archive_plaque'),'Direct plaque RPC must not be called');
+assert(!register.includes('hm-memorial-inbox'),'Old private plaque upload path must not be called');
+assert.match(register,/HAEMUNGI_PASSPORT_OPEN_REWARD/,'Old plaque clicks must open passport');
 assert.match(sql,/mem_requests_owner_apply/,'Owner insert RLS');
 assert.match(sql,/hm_memorial_pending_requested_slot_unique/,'Pending slot uniqueness');
 assert.match(sql,/hm_memorial_wings\(/,'Expandable wing availability');
@@ -66,4 +63,4 @@ assert.match(edge,/authorization, content-type/,'Preflight permits authenticated
 assert.match(admin,/명패를 .*호에 공개하시겠습니까/,'Administrator confirms public plaque placement');
 assert(!register.includes('SUPABASE_SERVICE_ROLE_KEY'),'Server credential must not appear in browser');
 assert(!/레오|2025-11-10|2026-07-01/.test(html+register),'No original memorial private details in registration');
-console.log('PASS memorial registration: verified email + immediate archive, 12/wing availability, authenticated owner/RLS, one photo, admin archive upgrade, premium inquiry, anti-abuse, privacy notice.');
+console.log('PASS memorial registration: verified email + immediate archive, authenticated owner, one photo, passport reward, premium inquiry, anti-abuse, privacy notice.');

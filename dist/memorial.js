@@ -292,7 +292,7 @@
       b.textContent = pet ? pet.pet_name : '';
       b.setAttribute('aria-label', pet ? String(slot).padStart(3,'0')+'호 · '+pet.pet_name+' 추억 보기' :
         reserved ? String(slot).padStart(3,'0')+'호 · 관리자 승인 대기' :
-        slot === 1 ? '001호 · 첫 친구의 자리' : String(slot).padStart(3,'0')+'호 · 빈자리 명패 신청');
+        slot === 1 ? '001호 · 첫 친구의 자리' : String(slot).padStart(3,'0')+'호 · 여권 완주자 자동 배정 대상');
       b.addEventListener('click', () => {
         if(pet){openPet();return;}
         if(reserved){$('hallGuide').textContent='해당 호수는 다른 친구의 승인 대기 중입니다.';return;}
