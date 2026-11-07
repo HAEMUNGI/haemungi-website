@@ -23,7 +23,7 @@
     else sessionStorage.removeItem(sessionKey);
   }
   async function visitorToken() {
-    if(!visitor?.access_token)throw new Error('안식관 명패는 먼저 로그인해주세요.');
+    if(!visitor?.access_token)throw new Error('먼저 이메일 계정으로 로그인하고 인증을 완료해주세요.');
     if((visitor.expires_at||0)<Date.now()/1000+65){
       const updated=await jsonFetch(api+'/auth/v1/token?grant_type=refresh_token',{
         method:'POST',headers:headers(),body:JSON.stringify({refresh_token:visitor.refresh_token})});
@@ -82,12 +82,12 @@
   $('plaqueWing').addEventListener('change',loadSlots);
 
   function setTier(options={}){
-    const plaque=tier()==='plaque';$('plaqueApplication').hidden=!plaque;
+    const plaque=tier()==='plaque';$('plaqueApplication').hidden=!plaque;$('archiveAuth').hidden=plaque;
     $('submitApplication').textContent=plaque?'안식관 명패 승인 신청하기':'무료 기록 바로 공개하기';
     $('photoPolicy').textContent=plaque?'JPG·PNG·WebP / 5MB 이하 · 관리자 승인 전 사진 비공개':'JPG·PNG·WebP / 5MB 이하 · 한 장을 압축하여 바로 공개';
     $('applyExplanation').textContent=plaque?
       '로그인 후 신청하면 선택한 자리가 승인 대기로 표시됩니다. 관리자가 확인한 뒤 같은 사진으로 명패가 공개됩니다.':
-      '등록 직후 기록관에서 이름을 검색할 수 있습니다. 개인정보가 공개되지 않도록 내용을 확인해주세요.';
+      '이메일 인증 후 관리자 승인 없이 공개됩니다. 개인정보가 공개되지 않도록 내용을 확인해주세요.';
     if(plaque&&!options.skipWingLoad)loadWings();
   }
   form.querySelectorAll('input[name="registration_tier"]').forEach(r=>r.addEventListener('change',setTier));
@@ -110,11 +110,15 @@
     $('quickLoginForm').hidden=logged;$('quickAccountArea').hidden=!logged;
     $('quickAccountEmail').textContent=logged?'로그인됨 · '+(visitor.user?.email||'이메일 계정'):'';
     form.elements.contact_email.readOnly=logged;
+    $('archiveAuthStatus').textContent=logged?
+      '이메일 인증 완료 · '+(visitor.user?.email||'계정')+' · 무료 기록 공개 가능':
+      '기록을 공개하려면 이메일 인증을 마친 계정으로 로그인해주세요.';
+    $('archiveLogin').textContent=logged?'로그인된 내 계정 확인':'이메일 로그인 · 계정 만들기';
     if(logged){
       form.elements.contact_email.value=visitor.user?.email||form.elements.contact_email.value;
       authStatus('로그인됨: '+(visitor.user?.email||'이메일 계정')+' · 명패 신청 가능');
       loadOwnedArchives();
-    }else{authStatus('명패 신청 시 신청자 이메일과 비밀번호로 로그인해주세요.');}
+    }else{authStatus('무료 기록 공개와 명패 신청에는 이메일 인증 계정이 필요합니다.');}
   }
   async function authenticate(signup=false,credentials=null){
     if(busy)return;
@@ -155,6 +159,13 @@
   $('quickLogout').addEventListener('click',logoutVisitor);
 
   const loginDialog=$('visitorLoginDialog');
+  $('archiveLogin').addEventListener('click',()=>{
+    const email=String(form.elements.contact_email.value||'').trim();
+    if(email&&!visitor)$('quickLoginEmail').value=email;
+    if(!loginDialog.open)loginDialog.showModal();
+    if(visitor?.access_token)$('quickManageMemories').focus();
+    else $('quickLoginEmail').focus();
+  });
   $('openVisitorLogin').addEventListener('click',()=>{
     if(!loginDialog.open)loginDialog.showModal();
     if(visitor?.access_token)$('quickManageMemories').focus();
@@ -260,12 +271,15 @@
       if(data.get('born_on')&&data.get('passed_on')&&data.get('born_on')>data.get('passed_on'))
         throw new Error('태어난 날과 별이 된 날의 순서를 확인해주세요.');
       const email=readEmail(),isPlaque=tier()==='plaque';
+      const jwt=await visitorToken();
+      if(visitor?.user?.email?.toLowerCase()!==email)throw new Error('로그인 계정과 신청자 이메일이 달라요.');
+      if(!visitor.user?.email_confirmed_at)throw new Error('이메일 인증을 완료한 뒤 신청해주세요.');
       if(isPlaque){
         if(!selectedSlot)throw new Error('안식관 명패를 신청할 호수를 먼저 선택해주세요.');
-        const jwt=await visitorToken();
-        if(visitor?.user?.email?.toLowerCase()!==email)throw new Error('로그인 계정과 신청자 이메일이 달라요.');
-        if(!visitor.user?.email_confirmed_at)throw new Error('이메일 인증 후 신청할 수 있습니다.');
         data.set('session_token',jwt);
+      }else if(!confirm('이름·사진 한 장·생몰일(입력 시)·이야기·마지막 인사가 별들의 기록에 즉시 공개됩니다. 누구나 검색하고 열람할 수 있습니다. 이 내용으로 공개하시겠습니까?')){
+        status('공개를 취소했습니다. 사진과 내용을 다시 확인해주세요.');
+        return;
       }
       busy=true;$('submitApplication').disabled=true;
       const name=String(data.get('pet_name')||'').trim();
@@ -274,7 +288,7 @@
         data.set('photo',await compressImage(file));data.set('consent_declaration','true');
         data.delete('registration_tier');data.delete('session_token');
         const r=await jsonFetch(api+'/functions/v1/memorial-self-register',{
-          method:'POST',headers:{apikey:key},body:data});
+          method:'POST',headers:{apikey:key,Authorization:'Bearer '+jwt},body:data});
         submittedPreview(file,name,'등록되었습니다. 별들의 기록에서 누구나 검색하고 기억할 수 있습니다.',r.id);
         status('별들의 기록 공개가 완료되었습니다. 관리자 승인 없이 바로 이용하실 수 있습니다.');
       }else{

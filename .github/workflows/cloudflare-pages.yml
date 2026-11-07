@@ -28,6 +28,11 @@ jobs:
       - name: Checkout public website source
         uses: actions/checkout@v6
 
+      - name: Set up Node.js for security regression tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Restore exact approved pet store film from lossless upload parts
         run: |
           cat media-source/memorial-store/entry-00.bin media-source/memorial-store/entry-01.bin > dist/memorial/store-entry.mp4
@@ -43,6 +48,7 @@ jobs:
           node verify-story-seo.mjs
           node verify-memorial.mjs
           node verify-memorial-registration.mjs
+          node --experimental-vm-modules verify-memorial-security.mjs
           node verify-memorial-entry-and-dates.cjs
           node verify-memorial-communal-elastic.mjs
           node verify-memorial-scale.cjs

@@ -7,11 +7,11 @@
   <meta name="description" content="별빛 추모관. 별이 된 소중한 친구들의 이름과 기억이 머무르는 공간입니다.">
   <title>별빛 추모관 | 헤뭉이의 작은 세계</title>
   <link rel="preload" as="image" href="/memorial/entrance-daylight.png">
-  <link rel="stylesheet" href="/memorial.css?v=20261107-login1">
+  <link rel="stylesheet" href="/memorial.css?v=20261108-security1">
   <script src="/content-config.js" defer></script>
   <script src="/memorial-anniversaries.js?v=20261107-calendar1" defer></script>
   <script src="/memorial.js?v=20261107-entry2" defer></script>
-  <script src="/memorial-registration.js?v=20261107-login1" defer></script>
+  <script src="/memorial-registration.js?v=20261108-security1" defer></script>
   <script type="module" src="/memorial-gifts.js?v=20261105-gifts2"></script>
 </head>
 <body>
@@ -110,7 +110,7 @@
     <div class="paper-page application">
       <button class="back-link" type="button" data-go="hall">← 안식관으로</button>
       <p class="eyebrow">별들의 기록 · 안식관 신청</p><h1>우리 친구의 이야기를 들려주세요</h1>
-      <p class="lead">무료 기록은 곧바로 공개할 수 있습니다. 안식관 명패는 로그인 후 빈자리를 선택해 관리자 승인을 받습니다. 사진은 한 장이면 충분합니다.</p>
+      <p class="lead">무료 기록은 이메일 인증 후 관리자 승인 없이 공개할 수 있습니다. 안식관 명패는 로그인 후 빈자리를 선택해 관리자 승인을 받습니다. 사진은 한 장이면 충분합니다.</p>
       <aside class="premium-inquiry" aria-label="후원 추억의 방 안내">
         <h2>✧ 후원 추억의 방은 별도 문의</h2>
         <p>후원자를 위한 프리미엄 독립 공간입니다. 일반 등록 신청으로 자동 배정되지 않으며, 문의 후 이용 안내와 배정 절차를 개별적으로 진행합니다.</p>
@@ -118,9 +118,14 @@
       </aside>
       <form id="applicationForm">
         <fieldset class="registration-tiers"><legend>등록 방식 선택</legend>
-          <label class="radio-label"><input type="radio" name="registration_tier" value="archive" checked><span><strong>별들의 기록 · 무료</strong><small>로그인이나 관리자 승인 없이 바로 기록관에 공개됩니다.</small></span></label>
+          <label class="radio-label"><input type="radio" name="registration_tier" value="archive" checked><span><strong>별들의 기록 · 무료</strong><small>이메일 계정 인증 후 관리자 승인 없이 바로 공개됩니다.</small></span></label>
           <label class="radio-label"><input type="radio" name="registration_tier" value="plaque"><span><strong>안식관 명패 · 무료 신청</strong><small>이메일 계정 로그인 → 빈 호수 선택 → 관리자 승인 후 명패 배정</small></span></label>
         </fieldset>
+        <section class="archive-auth" id="archiveAuth" aria-label="무료 기록 이메일 인증">
+          <p class="hint">다른 사람의 이메일을 사용한 등록을 막기 위해 이메일 인증을 마친 계정으로 로그인해주세요. 인증 후 무료 기록은 관리자 승인 없이 공개됩니다.</p>
+          <button id="archiveLogin" class="quiet-btn" type="button">이메일 로그인 · 계정 만들기</button>
+          <p id="archiveAuthStatus" class="form-status" role="status">이메일 인증이 필요합니다.</p>
+        </section>
         <section class="plaque-application" id="plaqueApplication" hidden aria-label="안식관 명패 신청">
           <h2>안식관 자리 선택</h2>
           <div class="plaque-app-select"><label>안식관 구역<select id="plaqueWing" aria-label="신청할 구역"><option value="1">제1관</option></select></label></div>
@@ -160,7 +165,7 @@
     <button id="closeVisitorLogin" class="visitor-login-close" type="button" aria-label="로그인 창 닫기">×</button>
     <p class="visitor-login-eyebrow">STARLIGHT MEMBERS</p>
     <h2 id="visitorLoginHeading">다시 만나서 반가워요</h2>
-    <p class="visitor-login-intro">안식관 명패 신청과 내 기록 확인을 위한 회원 로그인입니다.</p>
+    <p class="visitor-login-intro">무료 기록 공개, 안식관 명패 신청과 내 기록 확인을 위한 이메일 로그인입니다.</p>
     <form id="quickLoginForm">
       <label for="quickLoginEmail">이메일</label>
       <input id="quickLoginEmail" name="email" type="email" maxlength="254" autocomplete="email" required placeholder="이메일 주소">
@@ -178,7 +183,7 @@
       <button id="quickManageMemories" type="button">내 기록 · 명패 신청 확인하기</button>
       <button id="quickLogout" class="visitor-signup" type="button">로그아웃</button>
     </div>
-    <p class="visitor-login-footer">별들의 기록은 로그인 없이도 무료로 남길 수 있습니다.</p>
+    <p class="visitor-login-footer">이메일 인증 후 별들의 기록을 무료로 공개할 수 있습니다. 관리자 승인이나 후원은 필요하지 않습니다.</p>
   </div>
 </dialog>
 <footer class="footer">© HAEMUNGI · 일현 조성훈 <span>소중한 친구들의 기억을 존중합니다.</span></footer>

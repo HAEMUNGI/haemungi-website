@@ -142,11 +142,20 @@
       const slotLabel=elem('label','', '배정할 안식관 번호 (001~30000, 12개씩 1개 구역)');
       const slot=elem('input');slot.type='number';slot.min='1';slot.max='30000';slot.step='1';slot.value=String(row.requested_slot||2);
       slotLabel.appendChild(slot);card.appendChild(slotLabel);
-      card.appendChild(button('승인하고 명패 공개','',()=>withBusy(()=>publish(row,Number(slot.value),consent.checked))));
+      card.appendChild(button('승인하고 명패 공개','',()=>{
+        if(confirm(row.pet_name+'의 명패를 '+String(slot.value)+'호에 공개하시겠습니까?'))
+          withBusy(()=>publish(row,Number(slot.value),consent.checked));
+      }));
       if(row.publication_source!=='self_archive')card.appendChild(button('별들의 기록에 승인·공개 (안식관 번호 없음)','secondary',
-        ()=>withBusy(()=>publish(row,null,consent.checked))));
+        ()=>{
+          if(confirm(row.pet_name+'의 사진과 이야기를 별들의 기록에 공개하시겠습니까?'))
+            withBusy(()=>publish(row,null,consent.checked));
+        }));
     }else{
-      card.appendChild(button('비공개 보관 승인','',()=>withBusy(()=>approvePrivate(row,consent.checked))));
+      card.appendChild(button('비공개 보관 승인','',()=>{
+        if(confirm(row.pet_name+'의 기록을 비공개 상태로 승인하시겠습니까?'))
+          withBusy(()=>approvePrivate(row,consent.checked));
+      }));
     }
     card.appendChild(button('신청 반려','danger',()=>{if(confirm(row.pet_name+'의 신청을 반려하시겠습니까?'))withBusy(()=>patch('hm_memorial_requests',row.id,
       row.publication_source==='self_archive'?{status:'published',requested_slot:null,owner_consent_verified:false}:{status:'rejected'}));}));

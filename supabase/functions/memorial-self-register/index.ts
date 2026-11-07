@@ -1,5 +1,5 @@
-// Public, immediate archive publication. Only this server-side function holds service access.
-// Publishable key is NOT authorization: Origin validation, image checks and DB rate limits apply.
+// Verified-email, immediate archive publication. No administrator approval is required.
+// Every request must carry a verified Supabase Auth user JWT; the service role remains server-only.
 import { createClient } from 'npm:@supabase/supabase-js@2.57.0';
 
 const allowedOrigins = new Set([
@@ -53,7 +53,7 @@ Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'apikey, content-type',
+    'Access-Control-Allow-Headers': 'apikey, authorization, content-type',
     'Access-Control-Max-Age': '3600',
     Vary: 'Origin',
   } });
@@ -70,6 +70,12 @@ Deno.serve(async (req: Request) => {
   let uploaded: string | null = null;
   const supabase = createClient(endpoint, secret, { auth: { persistSession: false, autoRefreshToken: false } });
   try {
+    const match = req.headers.get('authorization')?.match(/^Bearer\s+([^\s]+)$/i);
+    if (!match) return json({ error: '이메일 인증 후 로그인해야 무료 기록을 공개할 수 있습니다.' }, 401, origin);
+    const { data: { user }, error: authError } = await supabase.auth.getUser(match[1]);
+    if (authError || !user?.email || !user.email_confirmed_at)
+      return json({ error: '인증된 이메일 계정으로 다시 로그인해주세요.' }, 401, origin);
+
     // Enforce request size even if a client omits Content-Length (chunked uploads).
     const reader=req.body?.getReader();
     if(!reader)return json({error:'사진과 신청서를 함께 보내주세요.'},400,origin);
@@ -87,6 +93,8 @@ Deno.serve(async (req: Request) => {
     const story = String(form.get('story') || '').trim();
     const farewell = String(form.get('farewell') || '').trim();
     const email = String(form.get('contact_email') || '').trim().toLowerCase();
+    if (user.email.trim().toLowerCase() !== email)
+      return json({ error: '로그인한 계정의 이메일로만 등록할 수 있습니다.' }, 403, origin);
     const born = String(form.get('born_on') || '');
     const passed = String(form.get('passed_on') || '');
     const image = form.get('photo');
