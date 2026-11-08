@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#fffaf3">
+  <meta name="description" content="헤뭉이와 별잇다 커뮤니티의 이야기와 댓글입니다.">
+  <title>게시글 읽기 | 헤뭉이 커뮤니티</title>
+  <link rel="stylesheet" href="/community.css?v=20261109-community1">
+  <script src="/content-config.js" defer></script>
+  <script type="module" src="/community-post.js?v=20261109-community1"></script>
+</head>
+<body>
+  <a class="cm-skip" href="#cmMain">본문으로 이동</a>
+  <header class="cm-topbar">
+    <a href="/community.html" class="cm-brand">← 커뮤니티</a>
+    <nav><a href="/">헤뭉이 홈</a><a href="/memorial-walk.html">함께 걷기</a><button type="button" class="cm-small-button" id="cmAccountButton">로그인</button></nav>
+  </header>
+  <main id="cmMain" class="cm-wrap cm-detail-wrap">
+    <article id="cmPost" class="cm-detail-paper"><p class="cm-empty">게시글을 불러오는 중입니다…</p></article>
+    <section class="cm-comments" aria-labelledby="cmCommentsTitle">
+      <div class="cm-heading"><h2 id="cmCommentsTitle">댓글</h2><span id="cmAccountStatus" class="cm-account-state"></span></div>
+      <div id="cmCommentsList" class="cm-comment-list"></div>
+      <form id="cmCommentForm" class="cm-comment-form">
+        <label>함께 남기는 이야기<textarea name="body" maxlength="1500" rows="3" required placeholder="따뜻한 댓글을 남겨주세요."></textarea></label>
+        <p id="cmCommentStatus" class="cm-feedback" role="status"></p>
+        <button type="submit" class="cm-button">댓글 등록</button>
+      </form>
+    </section>
+    <a class="cm-back-link" href="/community.html">← 게시판 목록으로</a>
+  </main>
+  <footer class="cm-footer"><span>© HAEMUNGI · 일현 조성훈</span><nav><a href="/terms.html">이용약관</a><a href="/privacy.html">개인정보처리방침</a><a href="mailto:say3589@naver.com">문의</a></nav></footer>
+</body>
+</html>

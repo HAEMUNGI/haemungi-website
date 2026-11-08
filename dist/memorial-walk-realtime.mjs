@@ -13,6 +13,7 @@ export class MemorialWalkRelay {
     this.onPeers=options.onPeers||(()=>{});
     this.onMove=options.onMove||(()=>{});
     this.onMoment=options.onMoment||(()=>{});
+    this.onChatNotice=options.onChatNotice||(()=>{});
     this.position=normalPosition(options.x,options.y)||{x:.5,y:.78};
     this.plan=roomPlan(options.seed||0);
     this.ws=null;this.joined=false;this.joinRef=null;this.seq=0;
@@ -103,6 +104,10 @@ export class MemorialWalkRelay {
       this.remoteMoments.set(id,now);
       this.onMoment({id,type:'boat'});
     }
+    if(msg.event==='broadcast'&&msg.payload?.event==='chat-updated'){
+      const roomNo=this.plan[this.attempt]+1;
+      if(msg.payload.payload?.room_no===roomNo)this.onChatNotice(roomNo);
+    }
     if(msg.event==='phx_error'||msg.event==='phx_close'){
       this.active=false;this._disconnect();this._status('unavailable');
     }
@@ -138,6 +143,12 @@ export class MemorialWalkRelay {
     const success=this._send(this.topic,'broadcast',{type:'broadcast',event:'boat',payload:{id:this.id}});
     if(success)this.lastMomentSent=now;
     return success;
+  }
+  sendChatNotice(roomNo){
+    if(!this.joined||roomNo!==this.plan[this.attempt]+1)return false;
+    return this._send(this.topic,'broadcast',{
+      type:'broadcast',event:'chat-updated',payload:{room_no:roomNo}
+    });
   }
   _flushMove() {
     if(!this.pending || !this.joined)return;

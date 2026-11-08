@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#fffaf3">
+  <meta name="description" content="헤뭉이와 별잇다의 따뜻한 커뮤니티. 자유게시판, Q&A, 공지와 이용안내를 만나보세요.">
+  <title>헤뭉이 · 별잇다 커뮤니티 | 자유게시판 · Q&A</title>
+  <link rel="stylesheet" href="/community.css?v=20261109-community1">
+  <script src="/content-config.js" defer></script>
+  <script type="module" src="/community.js?v=20261109-community1"></script>
+</head>
+<body>
+  <a class="cm-skip" href="#cmMain">본문으로 이동</a>
+  <header class="cm-topbar">
+    <a href="/" class="cm-brand"><span>✿</span> 헤뭉이의 작은 세계</a>
+    <nav aria-label="상단 이동">
+      <a href="/memorial.html">별잇다</a>
+      <a href="/memorial-walk.html">함께 걷기</a>
+      <button type="button" class="cm-small-button" id="cmAccountButton">로그인</button>
+    </nav>
+  </header>
+  <main id="cmMain" class="cm-wrap">
+    <section class="cm-hero">
+      <span class="cm-eyebrow">HAEMUNGI COMMUNITY</span>
+      <h1>서로의 작은 이야기가 이어지는 곳</h1>
+      <p>안부를 나누고, 궁금한 것을 묻고, 마음을 담아 대화해요.</p>
+      <div class="cm-hero-links"><a href="/memorial-walk.html">✧ 아바타와 함께 걷기</a><a href="/terms.html">커뮤니티 이용 수칙</a></div>
+    </section>
+    <section class="cm-board">
+      <div class="cm-heading"><div><span class="cm-eyebrow">YOUR COMMUNITY</span><h2>이야기 게시판</h2></div><span id="cmAccountStatus" class="cm-account-state">비회원 · 읽기 가능</span></div>
+      <div class="cm-tabs" role="group" aria-label="게시판 종류">
+        <button type="button" data-board="free" aria-pressed="true">자유게시판</button>
+        <button type="button" data-board="qna" aria-pressed="false">Q&A</button>
+        <button type="button" data-board="notice" aria-pressed="false">공지</button>
+        <button type="button" data-board="guide" aria-pressed="false">이용안내</button>
+      </div>
+      <div class="cm-board-actions">
+        <p id="cmBoardDescription">헤뭉이의 작은 세계에서 자유롭게 이야기를 나눠요.</p>
+        <button id="cmNewPost" class="cm-button" type="button">글쓰기</button>
+      </div>
+      <form id="cmCompose" class="cm-compose" hidden>
+        <h3 id="cmComposeTitle">새 글 작성</h3>
+        <label>제목<input name="title" maxlength="120" minlength="2" required placeholder="제목을 입력해주세요"></label>
+        <label>내용<textarea name="body" rows="8" maxlength="6000" minlength="2" required placeholder="상대방을 배려하는 이야기를 나눠주세요"></textarea></label>
+        <p class="cm-small">게시물은 공개됩니다. 개인 연락처나 다른 사람의 사진·정보는 올리지 마세요.</p>
+        <p id="cmComposeStatus" class="cm-feedback" role="status"></p>
+        <div class="cm-dialog-actions"><button class="cm-button" type="submit">공개 등록</button><button id="cmCancelPost" type="button" class="cm-button secondary">취소</button></div>
+      </form>
+      <div id="cmPostList" class="cm-post-list" aria-live="polite"><p class="cm-empty">게시글을 불러오는 중입니다…</p></div>
+      <div class="cm-pagination"><button id="cmOlderPosts" type="button" class="cm-button secondary" hidden>이전 글 더 보기</button></div>
+    </section>
+    <section class="cm-guide-note">
+      <h2>처음 오셨나요?</h2>
+      <p>둘러보기는 로그인 없이 가능해요. 글쓰기, 댓글, 아바타 채팅은 이메일 인증 후 닉네임을 설정하면 이용할 수 있습니다.</p>
+      <div class="cm-guide-links">
+        <a href="/memorial-walk.html">미니미 아바타로 산책하기 ↗</a>
+        <a href="/memorial.html">별잇다 추모공간 둘러보기 ↗</a>
+        <a href="/terms.html">이용약관 ↗</a>
+        <a href="/privacy.html">개인정보처리방침 ↗</a>
+      </div>
+    </section>
+    <section id="cmAdminArea" class="cm-admin-area" hidden aria-label="관리자 신고 관리">
+      <h2>관리자 신고함</h2><p class="cm-small">신고된 게시물·댓글·채팅은 확인 후 개별 삭제할 수 있습니다.</p>
+      <button id="cmLoadReports" type="button" class="cm-button secondary">신고 목록 불러오기</button>
+      <div id="cmReports" class="cm-reports"></div>
+    </section>
+  </main>
+  <footer class="cm-footer">
+    <span>© HAEMUNGI · 일현 조성훈</span>
+    <nav aria-label="운영 문서"><a href="/terms.html">이용약관</a><a href="/privacy.html">개인정보처리방침</a><a href="/memorial-privacy.html">별잇다 공개 기록 안내</a><a href="mailto:say3589@naver.com">운영 문의</a></nav>
+  </footer>
+</body>
+</html>

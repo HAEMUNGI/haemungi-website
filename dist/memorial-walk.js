@@ -7,6 +7,7 @@ import {advancePose,advanceShorePose,limit,movementScene,movementSceneProgress,
   WALK_PATHS,WALK_SPEED,LANE_SPEED,SHORE_SPEED} from './memorial-walk-motion.mjs?v=20261105-freewalk2';
 import {WALK_IDENTITY_KEY,FELT_AVATARS,cleanWalkIdentity,cleanWalkNickname,
   genderForTone} from './memorial-walk-identity.mjs';
+import {initAvatarChat} from './avatar-chat.js';
 
 const $=id=>document.getElementById(id);
 const stage=$('walkStage'),avatarLayer=$('walkAvatars'),self=$('walkSelf');
@@ -165,11 +166,13 @@ function showStatus(state,_,roomIndex){
   $('walkRoom').textContent=state==='online'||state==='connecting'?'함께 걷는 길 '+String(roomIndex+1).padStart(2,'0'):'기억의 길 · 혼자';
   $('walkJoin').textContent=onlineWanted?'혼자 산책하기':'✧ 다른 방문자와 함께 걷기';
   $('walkChangeRoom').hidden=!onlineWanted;
+  chat.refreshRoom();
 }
 function newRelay(){
   relay?.stop();
   relay=new MemorialWalkRelay({api:cfg.projectUrl,key:cfg.publishableKey,id:visitorId,tone,
     x:lane,y:relayYForStep(distance),seed,onStatus:showStatus,onPeers:renderPeers,
+    onChatNotice:roomNo=>chat.onNotice(roomNo),
     onMoment:moment=>{if(moment.type==='boat'&&movementScene(distance)==='shore')launchBoat(true);}});
   if(onlineWanted&&!document.hidden)relay.start();
 }
@@ -455,6 +458,20 @@ document.addEventListener('visibilitychange',()=>{
   }
 });
 window.addEventListener('pagehide',()=>{relay?.stop();shoreVideos.forEach(video=>video.pause());});
+let chatBubbleTimer=0;
+function showSelfChatBubble(message){
+  let bubble=self.querySelector('.walk-self-chat-bubble');
+  if(!bubble){bubble=document.createElement('span');bubble.className='walk-self-chat-bubble';self.append(bubble);}
+  bubble.textContent=message.slice(0,50);
+  bubble.hidden=false;
+  clearTimeout(chatBubbleTimer);chatBubbleTimer=setTimeout(()=>{bubble.hidden=true;},6500);
+}
+const chat=initAvatarChat({
+  getRoom:()=>onlineWanted&&relay?.joined?relay.plan[relay.attempt]+1:null,
+  sessionId:visitorId,
+  notifyPeers:roomNo=>relay?.sendChatNotice(roomNo),
+  onNewMessage:item=>{if(item.self)showSelfChatBubble(item.body);}
+});
 applyFeltAvatar(self,identity?.gender||genderForTone(tone),identity?.nickname||'나');
 self.dataset.tone=String(tone);
 setAvatarPosition(self,lane);showStatus('solo','',-1);updateJourney();

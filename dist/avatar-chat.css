@@ -1,0 +1,42 @@
+.walk-chat{border:1px solid #e9dac4;background:#fff9f1;border-radius:16px;margin:13px 0 17px;overflow:hidden}
+.walk-chat-title{display:flex;align-items:center;justify-content:space-between;gap:7px;padding:13px}
+.walk-chat-title strong{display:block;font:700 16px 'Gowun Batang',serif;color:#725037}
+.walk-chat-title p{font-size:10px;color:#a08469;margin:4px 0 0}
+.walk-chat-title button,.walk-chat-account{border:1px solid #d9bfa0;background:transparent;border-radius:10px;color:#74553b;padding:7px 10px;font-size:11px;white-space:nowrap}
+.walk-chat-panel{padding:0 12px 12px}
+.walk-chat-controls{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-bottom:9px}
+.walk-chat-controls span{font-size:10px;color:#9e8064}
+.walk-chat-messages{height:235px;overflow:auto;overscroll-behavior:contain;border:1px solid #eadcc8;border-radius:12px;background:#fffcf8;padding:9px;display:flex;flex-direction:column;gap:9px}
+.walk-chat-empty{text-align:center;font-size:11px;line-height:1.9;color:#a28b73;padding:42px 10px}
+.walk-chat-message{display:flex;align-items:flex-start;gap:7px}
+.walk-chat-message.is-mine{background:#fff2df;border-radius:11px;padding:5px}
+.walk-chat-message>.cm-avatar{width:29px;height:38px;border-radius:7px;object-fit:contain;flex:none;background:#faf0e6}
+.walk-chat-message-body{min-width:0;flex:1}
+.walk-chat-message-head{display:flex;gap:7px;align-items:baseline;flex-wrap:wrap;color:#654e3a}
+.walk-chat-message-head strong{font-size:10px}.walk-chat-message-head time{font-size:8px;color:#ad9680}
+.walk-chat-message-body p{font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;margin:4px 0;color:#725943}
+.walk-chat-message-actions{display:flex;gap:10px;justify-content:flex-end}
+.walk-chat-message-actions button{background:none;border:0;color:#ad9073;font-size:9px;padding:2px 0;text-decoration:underline}
+.walk-chat-form{display:flex;gap:6px;margin-top:9px}
+.walk-chat-form input{flex:1;min-width:0;border:1px solid #e5cfb4;border-radius:10px;padding:10px;background:#fffdf8;color:#624b37;font-size:12px}
+.walk-chat-form button{border:1px solid #aa8661;border-radius:10px;background:#906f4e;color:white;padding:9px 12px;font-size:11px;white-space:nowrap}
+.walk-chat-form button:disabled{opacity:.45}
+.walk-chat-status{min-height:25px;font-size:10px;line-height:1.6;color:#a18a75;margin:8px 0 0}
+.walk-chat-links{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;margin-top:8px}
+.walk-chat-links a{color:#947052;text-decoration:underline}
+/* Shared login/profile/report dialog appearance on the walk page. */
+.cm-dialog{width:min(470px,calc(100% - 24px));max-height:90dvh;overflow:auto;border:1px solid #dcbf9d;border-radius:22px;padding:23px;background:#fffcf7;color:#654a35;box-shadow:0 20px 80px #38291750;font-family:'Noto Sans KR',sans-serif}
+.cm-dialog::backdrop{background:#211d1a6b}
+.cm-dialog h2{font:700 24px 'Gowun Batang',serif}.cm-dialog p{font-size:12px;line-height:1.8;color:#8d7158}
+.cm-dialog label{display:grid;gap:6px;margin:11px 0;font-size:12px;font-weight:700}
+.cm-dialog input:not([type=radio]):not([type=checkbox]),.cm-dialog textarea{width:100%;padding:11px 13px;border:1px solid #dbc8ad;background:#fffefa;color:#624c39;border-radius:10px;font-size:13px}
+.cm-dialog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.cm-button{border:1px solid #906b47;background:#906b47;color:white;border-radius:11px;min-height:40px;padding:9px 14px;font-size:12px;font-weight:700}
+.cm-button.secondary{background:transparent;color:#88684b;border-color:#d9bea0}.cm-button.quiet{background:transparent;border-color:transparent;color:#9d826a}
+.cm-feedback,.cm-small{font-size:11px;line-height:1.75;color:#9b7860}
+.cm-avatar-choice{border:1px solid #e8d6c0;border-radius:14px;display:flex;gap:10px;justify-content:center}
+.cm-avatar-choice label{display:grid;justify-items:center;flex:1;font-size:11px;text-align:center}
+.cm-avatar-choice img{width:64px;height:84px;object-fit:contain}
+.cm-consent{display:flex!important;align-items:flex-start;gap:8px;line-height:1.8}
+.cm-consent input{flex:none;margin-top:3px}.cm-consent a{text-decoration:underline;color:#94602d}
+.walk-self-chat-bubble{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);padding:7px 10px;min-width:70px;max-width:190px;width:max-content;border-radius:12px;background:#fffefaed;border:1px solid #d7b894;color:#704e38;font:600 12px/1.4 'Noto Sans KR',sans-serif;white-space:normal;overflow-wrap:anywhere;text-align:center;box-shadow:0 6px 16px #6044252f;z-index:40}

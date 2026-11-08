@@ -43,6 +43,7 @@ jobs:
           node verify-haemungi.mjs
           node verify-i18n.mjs
           node verify-byeolitda.mjs
+          node verify-community.mjs
           node verify-analytics.mjs
           node verify-admin.mjs
           node verify-playground.mjs
