@@ -222,7 +222,7 @@ function startRitual(row,result){
   booking={id:row.id,expires};
   const roomKey=String(result.room_key||'');
   const roomNumber=roomKey==='shared'?'001':/^room-[0-9]{4}$/.test(roomKey)?String(Number(roomKey.slice(5))).padStart(3,'0'):'';
-  status('ritualRoomLabel',roomNumber?'별빛 임시 제례실 '+roomNumber+'호':'나만의 임시 제례실');
+  status('ritualRoomLabel',roomNumber?'별잇다 임시 제례실 '+roomNumber+'호':'나만의 임시 제례실');
   const img=$('temporaryPetPhoto');img.src=photo(row);img.alt=row.pet_name+'의 공개 추모 사진';
   $('temporaryPetName').textContent=row.pet_name;
   $('temporaryPetDates').textContent=[row.born_on,row.passed_on].filter(Boolean).join(' ~ ');

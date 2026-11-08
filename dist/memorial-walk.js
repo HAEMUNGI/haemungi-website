@@ -440,7 +440,7 @@ $('walkShare').addEventListener('click',async()=>{
   const url=new URL(location.pathname,location.origin);
   url.searchParams.set('room',String(selected+1).padStart(2,'0'));
   try{
-    if(navigator.share)await navigator.share({title:'별빛 추모관 · 기억의 산책길',url:url.href});
+    if(navigator.share)await navigator.share({title:'별잇다 · 기억의 산책길',url:url.href});
     else{await navigator.clipboard.writeText(url.href);$('walkStatus').textContent='같은 길 초대 링크를 복사했습니다.';}
   }catch(err){if(err?.name!=='AbortError')$('walkStatus').textContent='주소창의 링크를 직접 공유해 주세요.';}
 });

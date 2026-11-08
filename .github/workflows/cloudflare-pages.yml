@@ -42,12 +42,14 @@ jobs:
         run: |
           node verify-haemungi.mjs
           node verify-i18n.mjs
+          node verify-byeolitda.mjs
           node verify-analytics.mjs
           node verify-admin.mjs
           node verify-playground.mjs
           node verify-story-seo.mjs
           node verify-memorial.mjs
           node verify-memorial-registration.mjs
+          node verify-memorial-adoption.mjs
           node verify-world-passport.mjs
           node verify-world-passport-runtime.mjs
           node --experimental-vm-modules verify-memorial-security.mjs

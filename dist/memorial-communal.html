@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#fff4e8">
-  <meta name="description" content="별빛 공동 추모홀. 함께 기억하고, 공개된 별을 찾고, 10분간 임시 제례실에서 인사할 수 있습니다.">
-  <title>별빛 공동 추모홀 | HAEMUNGI</title>
+  <meta name="description" content="별잇다 공동 추모홀. 함께 기억하고, 공개된 별을 찾고, 10분간 임시 제례실에서 인사할 수 있습니다.">
+  <title>별잇다 공동 추모홀 | HAEMUNGI</title>
   <link rel="preload" as="image" href="/memorial/communal-hall-poster.webp">
   <link rel="stylesheet" href="/memorial-communal.css?v=20261107-login1">
   <script src="/content-config.js" defer></script>
@@ -14,13 +14,13 @@
 </head>
 <body>
   <a class="skip-link" href="#hallMain">본문으로 이동</a>
-  <header class="communal-topbar"><a href="/memorial.html#entrance">← 별빛 추모관</a><div>✧ 별빛 공동 추모홀 <small>STARLIGHT COMMUNAL MEMORIAL</small></div><a href="/memorial-archive.html">별들의 기록 ↗</a></header>
+  <header class="communal-topbar"><a href="/memorial.html#entrance">← 별잇다</a><div>✧ 별잇다 공동 추모홀 <small>BYEOLITDA COMMUNAL MEMORIAL</small></div><a href="/memorial-archive.html">별들의 기록 ↗</a></header>
   <main id="hallMain" class="communal-main">
     <section id="hallView" aria-labelledby="hallTitle">
-      <div class="communal-heading"><p>함께 기억하는 따뜻한 공간</p><h1 id="hallTitle">별빛 공동 추모홀</h1><p>한 사람의 기억이 모여, 오래 빛나는 별이 됩니다.</p></div>
+      <div class="communal-heading"><p>함께 기억하는 따뜻한 공간</p><h1 id="hallTitle">별잇다 공동 추모홀</h1><p>한 사람의 기억이 모여, 오래 빛나는 별이 됩니다.</p></div>
       <div class="hall-scene" id="hallScene" aria-label="무지개 천장과 꽃들, 반려동물 공동 제단과 추모 메시지 키오스크가 있는 홀">
         <img class="hall-poster" id="hallPoster" src="/memorial/communal-hall-poster.webp" alt="무지개 천장 아래 밝은 공동 추모 제단과 오른쪽 추모 메시지 키오스크">
-        <video id="hallTour" src="/memorial/communal-hall.mp4" playsinline preload="metadata" poster="/memorial/communal-hall-poster.webp" aria-label="별빛 공동 추모홀 10초 공간 투어 영상" hidden></video>
+        <video id="hallTour" src="/memorial/communal-hall.mp4" playsinline preload="metadata" poster="/memorial/communal-hall-poster.webp" aria-label="별잇다 공동 추모홀 10초 공간 투어 영상" hidden></video>
         <div class="hall-entry" id="hallEntry"><div><span>✧ WELCOME</span><p>따뜻한 기억의 홀로 들어오세요.</p><button type="button" id="enterHall">공동 추모홀 입장 · 10초 투어</button></div></div>
         <button type="button" class="skip-tour" id="skipTour" hidden>영상 건너뛰기</button>
         <button type="button" class="unmute-tour" id="unmuteTour" hidden>영상 소리 켜기</button>
@@ -39,7 +39,7 @@
   </main>
 
   <dialog id="kioskDialog" class="kiosk-dialog" aria-labelledby="kioskHeading">
-    <div class="kiosk-shell"><header class="kiosk-header"><div><small>STARLIGHT MEMORY KIOSK</small><h2 id="kioskHeading">공동 추모 키오스크</h2></div><button type="button" id="closeKiosk" aria-label="키오스크 닫기">✕</button></header>
+    <div class="kiosk-shell"><header class="kiosk-header"><div><small>BYEOLITDA MEMORY KIOSK</small><h2 id="kioskHeading">공동 추모 키오스크</h2></div><button type="button" id="closeKiosk" aria-label="키오스크 닫기">✕</button></header>
       <nav class="kiosk-tabs" aria-label="키오스크 기능 선택"><button type="button" data-kiosk-tab="message" aria-selected="true">추모 메시지</button><button type="button" data-kiosk-tab="search" aria-selected="false">아이 찾기</button><button type="button" data-kiosk-tab="reservation" aria-selected="false">임시 제례실</button><button type="button" data-kiosk-tab="register" aria-selected="false">아이 등록</button></nav>
       <section data-kiosk-panel="message"><h3>함께 전하는 그리운 마음</h3><p class="kiosk-help">추모 메시지는 관리자 확인 후 공동 추모홀에 공개됩니다. 하루 최대 3회 접수할 수 있습니다.</p>
         <div id="hallMessageList" class="message-list" aria-live="polite"></div>
