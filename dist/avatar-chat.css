@@ -40,3 +40,8 @@
 .cm-consent{display:flex!important;align-items:flex-start;gap:8px;line-height:1.8}
 .cm-consent input{flex:none;margin-top:3px}.cm-consent a{text-decoration:underline;color:#94602d}
 .walk-self-chat-bubble{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);padding:7px 10px;min-width:70px;max-width:190px;width:max-content;border-radius:12px;background:#fffefaed;border:1px solid #d7b894;color:#704e38;font:600 12px/1.4 'Noto Sans KR',sans-serif;white-space:normal;overflow-wrap:anywhere;text-align:center;box-shadow:0 6px 16px #6044252f;z-index:40}
+.walk-self-chat-bubble{bottom:calc(100% + 25px);font-size:11px;line-height:1.5;max-width:175px;filter:drop-shadow(0 2px 7px #77503024)}
+.walk-self-chat-bubble::after{content:'';position:absolute;top:100%;left:50%;margin-left:-6px;border:6px solid transparent;border-top-color:#d7b894}
+.shore-chat-dock{order:3;width:100%;max-width:512px;margin:0 auto}
+.shore-chat-join{display:block;width:100%;margin:2px 0 9px;padding:11px;border:1px solid #d6b995;border-radius:13px;background:#fffaf3;color:#77563d;font-size:12px;font-weight:700}
+.shore-chat-dock .walk-chat{margin:2px 0 12px}

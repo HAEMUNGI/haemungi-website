@@ -165,6 +165,7 @@ function showStatus(state,_,roomIndex){
   $('walkMode').classList.toggle('is-online',state==='online');
   $('walkRoom').textContent=state==='online'||state==='connecting'?'함께 걷는 길 '+String(roomIndex+1).padStart(2,'0'):'기억의 길 · 혼자';
   $('walkJoin').textContent=onlineWanted?'혼자 산책하기':'✧ 다른 방문자와 함께 걷기';
+  $('shoreChatJoin').hidden=onlineWanted;
   $('walkChangeRoom').hidden=!onlineWanted;
   chat.refreshRoom();
 }
@@ -206,6 +207,15 @@ function updateJourney(){
     el.classList.toggle('is-past',(key==='garden'&&scene!=='garden')||(key==='trail'&&scene==='shore'));
   }
   $('shoreActions').hidden=scene!=='shore';
+  const chatDock=$('shoreChatDock'),chatHome=$('walkChatHome'),chatView=$('walkChat');
+  if(scene==='shore'){
+    chatDock.hidden=false;
+    $('shoreChatJoin').hidden=onlineWanted;
+    if(chatView.parentElement!==chatDock)chatDock.append(chatView);
+  }else{
+    if(chatView.parentElement!==chatHome)chatHome.append(chatView);
+    chatDock.hidden=true;
+  }
   $('starSky').hidden=scene!=='shore'||dayTime!=='night';
   $('starActions').hidden=scene!=='shore'||dayTime!=='night';
   if(scene==='shore'&&dayTime==='night'&&starStatus==='unloaded')loadStars();
@@ -436,7 +446,9 @@ $('walkJoin').addEventListener('click',()=>{
   onlineWanted=!onlineWanted;
   if(onlineWanted)newRelay();else relay?.stop();
   $('walkJoin').textContent=onlineWanted?'혼자 산책하기':'✧ 다른 방문자와 함께 걷기';
+  $('shoreChatJoin').hidden=onlineWanted;
 });
+$('shoreChatJoin').addEventListener('click',()=>$('walkJoin').click());
 $('walkChangeRoom').addEventListener('click',()=>{if(!onlineWanted)return;seed=(seed+1)%ROOM_COUNT;newRelay();});
 $('walkShare').addEventListener('click',async()=>{
   const selected=relay?.joined?relay.plan[relay.attempt]:seed;
@@ -458,19 +470,25 @@ document.addEventListener('visibilitychange',()=>{
   }
 });
 window.addEventListener('pagehide',()=>{relay?.stop();shoreVideos.forEach(video=>video.pause());});
-let chatBubbleTimer=0;
-function showSelfChatBubble(message){
-  let bubble=self.querySelector('.walk-self-chat-bubble');
-  if(!bubble){bubble=document.createElement('span');bubble.className='walk-self-chat-bubble';self.append(bubble);}
-  bubble.textContent=message.slice(0,50);
+const chatBubbleTimers=new Map();
+function showAvatarChatBubble(node,key,message){
+  if(!node)return;
+  let bubble=node.querySelector('.walk-self-chat-bubble');
+  if(!bubble){bubble=document.createElement('span');bubble.className='walk-self-chat-bubble';node.append(bubble);}
+  bubble.textContent=String(message).slice(0,70);
   bubble.hidden=false;
-  clearTimeout(chatBubbleTimer);chatBubbleTimer=setTimeout(()=>{bubble.hidden=true;},6500);
+  clearTimeout(chatBubbleTimers.get(key));
+  chatBubbleTimers.set(key,setTimeout(()=>{bubble.hidden=true;chatBubbleTimers.delete(key);},6500));
 }
 const chat=initAvatarChat({
   getRoom:()=>onlineWanted&&relay?.joined?relay.plan[relay.attempt]+1:null,
   sessionId:visitorId,
   notifyPeers:roomNo=>relay?.sendChatNotice(roomNo),
-  onNewMessage:item=>{if(item.self)showSelfChatBubble(item.body);}
+  onNewMessage:item=>{
+    if(item.self)showAvatarChatBubble(self,visitorId,item.body);
+    else if(item.avatar_session_id && currentPeers.some(peer=>peer.id===item.avatar_session_id))
+      showAvatarChatBubble(peerViews.get(item.avatar_session_id),item.avatar_session_id,item.body);
+  }
 });
 applyFeltAvatar(self,identity?.gender||genderForTone(tone),identity?.nickname||'나');
 self.dataset.tone=String(tone);

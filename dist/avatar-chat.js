@@ -8,10 +8,10 @@ export function initAvatarChat({getRoom,onNewMessage=()=>{},notifyPeers=()=>{},s
   const $=id=>document.getElementById(id);
   const chat=$('walkChat'),panel=$('walkChatPanel'),toggle=$('walkChatToggle');
   const list=$('walkChatMessages'),status=$('walkChatStatus'),form=$('walkChatForm');
-  let currentRoom=null,lastSignature='',pending=false,interval=null,open=false,previousIds=new Set(),lastFetchAt=0;
+  let currentRoom=null,lastSignature='',pending=false,interval=null,open=false,previousIds=new Set(),lastFetchAt=0,hasBaseline=false,lastUserId=null,retryTimer=null;
   const ui=createCommunityUi({onChange:({signedIn,profile})=>{
     $('walkChatAccount').textContent=profile?.nickname||(signedIn?'닉네임 설정':'로그인');
-    if(open)refreshRoom();
+    refreshRoom();
   }});
   function el(tag,cls,value){
     const node=document.createElement(tag);
@@ -22,8 +22,12 @@ export function initAvatarChat({getRoom,onNewMessage=()=>{},notifyPeers=()=>{},s
   function placeholder(message){list.replaceChildren(el('p','walk-chat-empty',message));}
   function refreshRoom(){
     const room=getRoom();
-    const changed=room!==currentRoom;
-    if(changed){currentRoom=room;lastSignature='';previousIds.clear();}
+    const userId=hasAccount()?getUserId():null;
+    const changed=room!==currentRoom||userId!==lastUserId;
+    if(changed){currentRoom=room;lastUserId=userId;lastSignature='';previousIds.clear();hasBaseline=false;}
+    // Build a baseline even with the chat panel folded. That allows new
+    // messages to appear above nearby avatars without forcing the panel open.
+    if(changed&&room&&hasAccount())load(true,true);
     if(!open)return;
     $('walkChatRoom').textContent=room?'함께 걷는 길 '+String(room).padStart(2,'0'):'동행 대기';
     if(!room){
@@ -37,27 +41,34 @@ export function initAvatarChat({getRoom,onNewMessage=()=>{},notifyPeers=()=>{},s
       status.textContent='아바타 위치와 별개로 채팅은 이메일 인증 이용자만 가능합니다.';return;
     }
     if(changed)placeholder('대화를 불러오는 중…');
-    load();
+    if(!changed)load();
   }
-  async function load(force=false){
-    if(pending||!open||!currentRoom||!hasAccount()||document.hidden)return;
-    if(!force&&Date.now()-lastFetchAt<1400)return;
+  async function load(force=false,passive=false){
+    if(pending||(!open&&!passive)||!currentRoom||!hasAccount()||document.hidden)return;
+    if(!force&&Date.now()-lastFetchAt<1400){
+      if(passive&&!retryTimer)retryTimer=setTimeout(()=>{
+        retryTimer=null;load(true,true);
+      },1400-(Date.now()-lastFetchAt));
+      return;
+    }
     lastFetchAt=Date.now();
     const wanted=currentRoom;pending=true;
     try{
       const data=await rest('hm_avatar_chat_messages',{
-        select:'id,author_id,author_nickname,avatar_gender,body,created_at',
+        select:'id,avatar_session_id,author_id,author_nickname,avatar_gender,body,created_at',
         room_no:'eq.'+wanted,order:'created_at.desc,id.desc',limit:45
       },{auth:true});
-      if(wanted!==currentRoom||!open)return;
+      if(wanted!==currentRoom)return;
       const signature=data.map(row=>row.id).join('|');
-      if(signature===lastSignature)return;
-      const scrolledToEnd=list.scrollTop+list.clientHeight>=list.scrollHeight-85;
+      if(open&&signature===lastSignature)return;
+      const scrolledToEnd=open&&list.scrollTop+list.clientHeight>=list.scrollHeight-85;
       const old=previousIds;previousIds=new Set(data.map(x=>x.id));
       const ordered=[...data].reverse();
-      list.replaceChildren();
-      if(!ordered.length)placeholder('아직 첫 대화가 없어요. 따뜻한 인사를 남겨보세요.');
-      for(const entry of ordered){
+      if(open){
+        list.replaceChildren();
+        if(!ordered.length)placeholder('아직 첫 대화가 없어요. 따뜻한 인사를 남겨보세요.');
+      }
+      for(const entry of open?ordered:[]){
         const mine=entry.author_id===getUserId();
         const item=el('article','walk-chat-message'+(mine?' is-mine':'')),body=el('div','walk-chat-message-body');
         const head=el('div','walk-chat-message-head');
@@ -76,14 +87,21 @@ export function initAvatarChat({getRoom,onNewMessage=()=>{},notifyPeers=()=>{},s
         }
         body.append(actions);item.append(makeAvatar(entry.avatar_gender,''),body);list.append(item);
       }
-      if(scrolledToEnd||lastSignature==='')list.scrollTop=list.scrollHeight;
-      lastSignature=signature;
-      const latest=ordered.at(-1);
-      if(latest&&!old.has(latest.id)&&old.size>0&&latest.author_id!==getUserId())
-        onNewMessage({body:latest.body,author_nickname:latest.author_nickname});
-      status.textContent='로그인된 이용자가 남긴 대화입니다. 개인정보와 광고성 메시지는 삼가주세요.';
+      if(open){
+        if(scrolledToEnd||lastSignature==='')list.scrollTop=list.scrollHeight;
+        lastSignature=signature;
+        status.textContent='로그인된 이용자가 남긴 대화입니다. 개인정보와 광고성 메시지는 삼가주세요.';
+      }
+      const wasInitialized=hasBaseline;hasBaseline=true;
+      if(wasInitialized){
+        const now=Date.now();
+        for(const entry of ordered.filter(item=>!old.has(item.id)&&item.author_id!==getUserId()
+          &&now-Date.parse(item.created_at)<15000).slice(-3))
+          onNewMessage({body:entry.body,author_nickname:entry.author_nickname,
+            avatar_session_id:entry.avatar_session_id});
+      }
     }catch(err){status.textContent=err.message;}
-    finally{pending=false;}
+    finally{pending=false;if(wanted!==currentRoom&&currentRoom&&hasAccount())load(true,true);}
   }
   toggle.addEventListener('click',()=>{
     open=!open;panel.hidden=!open;toggle.setAttribute('aria-expanded',String(open));
@@ -112,8 +130,8 @@ export function initAvatarChat({getRoom,onNewMessage=()=>{},notifyPeers=()=>{},s
     }catch(err){status.textContent=err.message;}
     finally{button.disabled=false;}
   });
-  window.addEventListener('pagehide',()=>clearInterval(interval));
+  window.addEventListener('pagehide',()=>{clearInterval(interval);clearTimeout(retryTimer);});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&open)refreshRoom();});
   chat.hidden=false;
-  return {refreshRoom,onNotice(room){if(room===currentRoom)load();},get open(){return open;}};
+  return {refreshRoom,onNotice(room){if(room===currentRoom)load(false,true);},get open(){return open;}};
 }

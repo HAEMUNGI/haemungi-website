@@ -16,7 +16,10 @@ const fullscreenCss=fs.readFileSync(path.join(__dirname,'dist','leo-room-fullscr
 assert.match(html,/id="roomFullscreen"[^>]*aria-controls="roomViewport"/,'fullscreen entry must target the room viewport');
 assert.match(html,/id="roomFullscreenExit"[^>]*hidden/,'fullscreen exit must be available');
 assert.match(fullscreenCss,/min-width:\s*0/,'fullscreen stage must override mobile 880px minimum width');
-assert.match(fullscreenCss,/aspect-ratio:\s*1536\s*\/\s*865/,'fullscreen stage must retain the original scene ratio');
+assert.match(fullscreenCss,/height:\s*100dvh[\s\S]*?aspect-ratio:\s*auto/,
+  'landscape fullscreen must fill the viewport without sidebars');
+assert.match(fullscreenCss,/@media \(orientation: portrait\)[\s\S]*?width:\s*max\(100vw,\s*177\.57dvh\)/,
+  'portrait fullscreen must preserve the room scene and allow horizontal panning');
 console.log('PASS: 25 vetted RGBA sprite frames and approved 16:9 scene asset present');
 
 if(!fs.existsSync(chromium.executablePath())){
@@ -54,8 +57,14 @@ if(!fs.existsSync(chromium.executablePath())){
         return {stageWidth:rect.width,stageHeight:rect.height,viewWidth:viewport.clientWidth,viewHeight:viewport.clientHeight,exitHidden:document.querySelector('#roomFullscreenExit').hidden};
       });
       assert.equal(expanded.exitHidden,false,`${config.name} fullscreen exit accessible`);
-      assert.ok(Math.abs(expanded.stageWidth/expanded.stageHeight-1536/865)<.02,`${config.name} fullscreen keeps scene aspect`);
-      assert.ok(expanded.stageWidth<=expanded.viewWidth+1,`${config.name} fullscreen scene fully visible`);
+      assert.ok(Math.abs(expanded.stageHeight-expanded.viewHeight)<=1,`${config.name} fullscreen scene fills viewport height`);
+      if(config.width>=config.height){
+        assert.ok(Math.abs(expanded.stageWidth-expanded.viewWidth)<=1,`${config.name} fullscreen has no sidebars`);
+      }else{
+        assert.ok(expanded.stageWidth>=expanded.viewWidth,`${config.name} portrait fullscreen offers horizontal panning`);
+        assert.ok(Math.abs(expanded.stageWidth/expanded.stageHeight-1536/865)<.02,
+          `${config.name} portrait fullscreen retains scene aspect`);
+      }
       await page.locator('#roomFullscreenExit').click();
       await page.waitForFunction(()=>!document.fullscreenElement && !document.querySelector('#roomViewport').classList.contains('is-expanded'));
       assert.equal(await page.locator('#roomFullscreenExit').isHidden(),true,`${config.name} exits fullscreen`);

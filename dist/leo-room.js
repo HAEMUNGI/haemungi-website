@@ -269,7 +269,9 @@
     }else{
       try{await screen.orientation?.lock?.('landscape');}catch(_){}
     }
-    viewport.scrollLeft=0;
+    requestAnimationFrame(()=>{
+      viewport.scrollLeft=Math.max(0,(viewport.scrollWidth-viewport.clientWidth)/2);
+    });
     syncFullscreenControls();
   };
   fullscreenButton.addEventListener('click',()=>{

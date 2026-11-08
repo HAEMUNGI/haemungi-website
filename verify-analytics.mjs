@@ -88,9 +88,11 @@ assert.equal(preview.requests.length, 0);
 
 assert(html.indexOf('analytics.js') > html.indexOf('content-config.js'));
 assert(html.indexOf('analytics.js') < html.indexOf('main.js'));
-assert(html.includes('id="analyticsLauncher"'), 'Consent must be discoverable on every page');
-assert(html.includes('id="analyticsConsent"'), 'Consent or blocking notice must have a panel');
-assert(pageScript.includes("blockedNoticeDismissed"), 'Blocked browsers must see an explanatory notice');
+assert(html.includes('id="analyticsSettings"'), 'Optional visitor statistics must be discoverable in footer settings');
+assert(html.includes('id="analyticsConsent"'), 'Explicitly opened consent settings must have a panel');
+assert(pageScript.includes("consentPanel.hidden = consentPanel.dataset.open !== 'true'"),
+  'Statistics settings must not auto-open over the homepage');
+assert(!pageScript.includes('blockedNoticeDismissed'), 'Blocked browsers must not display an intrusive auto-popup');
 assert(pageScript.includes('consentAllow.disabled = blocked'), 'Blocked browsers cannot be forced to track');
 for (const name of ['page_view', 'goods_detail', 'card_view', 'room_spot',
                     'diary_view', 'artwork_open', 'goods_filter', 'goods_search']) {

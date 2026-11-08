@@ -670,10 +670,6 @@
   const consentSettings = document.getElementById('analyticsSettings');
   const consentAllow = document.getElementById('analyticsAllow');
   const consentDeny = document.getElementById('analyticsDeny');
-  const BLOCKED_NOTICE_KEY = 'hm_analytics_blocked_notice_v1';
-  let blockedNoticeDismissed = false;
-  try { blockedNoticeDismissed = sessionStorage.getItem(BLOCKED_NOTICE_KEY) === 'seen'; }
-  catch (_) { /* Keep the privacy notice visible for this page load. */ }
 
   function statsStatus() {
     return window.HM_STATS?.getStatus?.() || 'unavailable';
@@ -705,17 +701,16 @@
       ? '현재 허용 중이에요. 거부하면 이후 기록이 중단됩니다.'
       : status === 'no' ? '현재 거부 중이에요. 언제든 선택을 바꿀 수 있습니다.'
       : '선택하기 전에는 조회 기록을 전송하지 않습니다.';
-    consentPanel.hidden = !(status === 'unset' || consentPanel.dataset.open === 'true' ||
-      (blocked && !blockedNoticeDismissed));
-    consentLauncher.hidden = !consentPanel.hidden;
+    // Analytics is optional. Never interrupt the homepage with a consent or
+    // tracker-blocked dialog; visitors can open it explicitly in the footer.
+    consentPanel.hidden = consentPanel.dataset.open !== 'true';
+    consentLauncher.hidden = true;
     consentLauncher.textContent = blocked ? '방문 통계 차단 중' : status === 'yes'
       ? '방문 통계 허용 중' : status === 'no' ? '방문 통계 거부 중' : '방문 통계 설정';
   }
 
   function changeConsent(allowed) {
     if (statsStatus() === 'unavailable') {
-      blockedNoticeDismissed = true;
-      try { sessionStorage.setItem(BLOCKED_NOTICE_KEY, 'seen'); } catch (_) { /* Optional preference. */ }
       consentPanel.dataset.open = 'false';
       refreshConsentView();
       return;
