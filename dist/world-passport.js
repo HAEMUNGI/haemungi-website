@@ -296,7 +296,8 @@
     visitToastProgress=visitToast.querySelector('.hm-passport-visit-progress');
     const launcher=document.createElement('button');launcher.id='hmPassportLauncher';launcher.type='button';
     launcher.className='hm-passport-launcher';launcher.setAttribute('aria-label','헤뭉이 월드 여행 여권 열기');
-    launcher.textContent='✿ 여권';document.body.appendChild(launcher);
+    launcher.innerHTML='<span class="hm-passport-launcher-icon" aria-hidden="true">✿</span><span>여권</span>';
+    document.body.appendChild(launcher);
     dialog=document.createElement('dialog');dialog.id='hmPassportDialog';dialog.className='hm-passport-dialog';
     dialog.setAttribute('aria-label','헤뭉이 월드 여권');dialog.innerHTML=`
       <div class="hm-passport-header"><span>HAEMUNGI WORLD PASSPORT</span><button type="button" id="hmPassportClose" aria-label="여권 닫기">×</button></div>

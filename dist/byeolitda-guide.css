@@ -7,25 +7,32 @@
 }
 #byeolitdaGuideButton {
   position: fixed;
-  z-index: 450;
+  z-index: 900;
   right: max(16px, env(safe-area-inset-right));
   bottom: max(16px, env(safe-area-inset-bottom));
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
-  padding: 10px 14px;
+  width: 106px;
+  min-width: 106px;
+  max-width: 106px;
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  padding: 0 10px;
   border: 1px solid #d8c5b4;
   border-radius: 999px;
-  background: rgba(255, 253, 249, .96);
+  background: #fffdfa;
   color: #584334;
   box-shadow: 0 5px 18px rgba(75, 53, 38, .15);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.4;
+  white-space: nowrap;
   cursor: pointer;
 }
-#byeolitdaGuideButton span:first-child { color: #cf8069; }
+#byeolitdaGuideButton span:first-child { color: #cf8069; font-size: 17px; }
 #byeolitdaGuideButton:hover { background: #f8f1e8; }
 #byeolitdaGuideButton:focus-visible,
 #byeolitdaGuideDialog button:focus-visible {
