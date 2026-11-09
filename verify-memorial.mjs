@@ -92,7 +92,7 @@ for(const path of ['memorial.css','memorial.js','memorial/entrance.mp4','memoria
   assert(html.includes('/'+path),'Missing reference '+path);
 assert(index.includes('href="/memorial.html"'),'Official home menu');
 assert(adminHome.includes('href="/memorial-admin.html"'),'Owner administration menu');
-assert(translations.includes('["별잇다","BYEOLITDA"'),'Locale entry');
+assert(translations.includes('["별잇다 추모관","BYEOLITDA Memorial"'),'Locale entry');
 for(const table of ['hm_memorial_requests','hm_memorial_public','hm_memorial_letters'])
   assert(sql.includes('alter table public.'+table+' enable row level security;'),'Missing RLS '+table);
 assert(sql.includes("status='pending' and consent_declaration=true"),'Pending-only anonymous applications');
