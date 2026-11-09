@@ -1,0 +1,148 @@
+/* 별잇다 추모관 · 비침해형 안내데스크 */
+#byeolitdaGuideButton,
+#byeolitdaGuideDialog,
+#byeolitdaGuideDialog * {
+  box-sizing: border-box;
+  font-family: "Gowun Dodum", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+#byeolitdaGuideButton {
+  position: fixed;
+  z-index: 450;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 14px;
+  border: 1px solid #d8c5b4;
+  border-radius: 999px;
+  background: rgba(255, 253, 249, .96);
+  color: #584334;
+  box-shadow: 0 5px 18px rgba(75, 53, 38, .15);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  cursor: pointer;
+}
+#byeolitdaGuideButton span:first-child { color: #cf8069; }
+#byeolitdaGuideButton:hover { background: #f8f1e8; }
+#byeolitdaGuideButton:focus-visible,
+#byeolitdaGuideDialog button:focus-visible {
+  outline: 3px solid #ba7854;
+  outline-offset: 3px;
+}
+#byeolitdaGuideDialog {
+  position: fixed;
+  inset: auto max(16px, env(safe-area-inset-right)) max(70px, calc(env(safe-area-inset-bottom) + 70px)) auto;
+  margin: 0;
+  padding: 0;
+  width: min(384px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  max-height: min(630px, calc(100dvh - 94px));
+  overflow: hidden;
+  border: 1px solid #e5d4c5;
+  border-radius: 20px;
+  background: #fffdf9;
+  color: #4b3a30;
+  box-shadow: 0 16px 44px rgba(68, 49, 34, .22);
+  z-index: 900;
+}
+#byeolitdaGuideDialog::backdrop { background: rgba(51, 41, 32, .23); }
+#byeolitdaGuideDialog[open] { display: flex; }
+#byeolitdaGuideDialog .bdg-shell { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+#byeolitdaGuideDialog .bdg-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #eae0d5;
+  background: #faf5ed;
+}
+#byeolitdaGuideDialog .bdg-header small { display: block; color: #977d6b; font-size: 10px; letter-spacing: .08em; }
+#byeolitdaGuideDialog .bdg-header h2 { margin: 3px 0 0; font-size: 17px; line-height: 1.4; color: #493629; }
+#byeolitdaGuideDialog button { cursor: pointer; color: inherit; }
+#byeolitdaGuideDialog .bdg-close {
+  flex: none;
+  min-width: 38px;
+  min-height: 38px;
+  border: 1px solid #e0d1c4;
+  border-radius: 50%;
+  background: #fffdf9;
+  color: #665144;
+  font-size: 25px;
+  line-height: 1;
+}
+#byeolitdaGuideDialog .bdg-content { min-height: 0; padding: 17px 18px; overflow-y: auto; overscroll-behavior: contain; }
+#byeolitdaGuideDialog [hidden] { display: none !important; }
+#byeolitdaGuideDialog .bdg-intro { margin: 0 0 14px; color: #6d584b; font-size: 13px; line-height: 1.7; }
+#byeolitdaGuideDialog .bdg-choices { display: grid; gap: 8px; }
+#byeolitdaGuideDialog .bdg-choice {
+  display: flex;
+  gap: 9px;
+  width: 100%;
+  align-items: center;
+  text-align: left;
+  background: #fcf9f3;
+  border: 1px solid #ebdfd2;
+  border-radius: 11px;
+  padding: 10px 12px;
+  color: #4b3a30;
+  font-size: 13px;
+  line-height: 1.5;
+}
+#byeolitdaGuideDialog .bdg-choice:hover { background: #f4ebe0; border-color: #d2bda8; }
+#byeolitdaGuideDialog .bdg-choice-icon { display: inline-block; flex: none; width: 19px; color: #bb7861; text-align: center; font-size: 18px; }
+#byeolitdaGuideDialog .bdg-back { margin-bottom: 15px; padding: 0; background: none; border: none; color: #956445; font-size: 13px; }
+#byeolitdaGuideDialog .bdg-badge {
+  display: table;
+  padding: 3px 9px;
+  border-radius: 100px;
+  background: #f5ede4;
+  color: #8c654c;
+  font-size: 11px;
+}
+#byeolitdaGuideDialog .bdg-detail h3 { margin: 11px 0 9px; color: #493629; font-size: 17px; line-height: 1.45; }
+#byeolitdaGuideDialog .bdg-description { margin: 0 0 11px; font-size: 13px; line-height: 1.7; }
+#byeolitdaGuideDialog .bdg-facts {
+  margin: 0 0 17px;
+  padding: 12px 12px 12px 30px;
+  border: 1px solid #ebdfd2;
+  border-radius: 12px;
+  background: #faf6ef;
+  color: #5d4a3e;
+  font-size: 12.5px;
+  line-height: 1.75;
+}
+#byeolitdaGuideDialog .bdg-facts li + li { margin-top: 5px; }
+#byeolitdaGuideDialog .bdg-go {
+  width: 100%;
+  padding: 11px;
+  background: #705441;
+  border: 1px solid #705441;
+  border-radius: 11px;
+  color: #fff;
+  font-size: 13px;
+}
+#byeolitdaGuideDialog .bdg-go:hover { background: #543d2d; }
+#byeolitdaGuideDialog .bdg-footer {
+  flex: none;
+  padding: 10px 16px;
+  border-top: 1px solid #eae0d5;
+  background: #faf5ed;
+  color: #967e6e;
+  text-align: center;
+  font-size: 11px;
+}
+@media (max-width: 480px) {
+  #byeolitdaGuideButton { right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); }
+  #byeolitdaGuideDialog {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(62px, calc(env(safe-area-inset-bottom) + 62px));
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    max-height: calc(100dvh - 86px);
+  }
+}
