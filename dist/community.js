@@ -88,14 +88,15 @@ async function loadPosts(reset=true){
       board:'eq.'+current,order:'created_at.desc,id.desc',limit:LIMIT+1,offset:at
     });
     if(current!==board)return;
-    if(reset)list.replaceChildren();
+    if(reset){
+      list.replaceChildren();
+      // Permanent onboarding guidance remains visible even after real posts arrive.
+      if(starterContent[current])showStarterContent(list,current);
+    }
     for(const post of data.slice(0,LIMIT))list.append(postRow(post));
     offset=at+Math.min(LIMIT,data.length);
     $('cmOlderPosts').hidden=data.length<=LIMIT;
-    if(!list.children.length){
-      if(starterContent[current])showStarterContent(list,current);
-      else list.append(node('p','cm-empty','아직 글이 없어요. 첫 이야기를 남겨주세요.'));
-    }
+    if(!list.children.length)list.append(node('p','cm-empty','아직 글이 없어요. 첫 이야기를 남겨주세요.'));
   }catch(err){
     if(reset)list.replaceChildren(node('p','cm-empty',err.message));
     else list.append(node('p','cm-feedback',err.message));
