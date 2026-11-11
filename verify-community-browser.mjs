@@ -8,6 +8,7 @@ const require=createRequire(import.meta.url);
 const {chromium}=require('playwright');
 const dist=resolve(import.meta.dirname,'dist');
 const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml'};
+assert((await readFile(resolve(dist,'community.html'),'utf8')).includes('/community.js?v=20261112-content2'),'new community code must invalidate old browser cache');
 const server=createServer(async(req,res)=>{
   const url=new URL(req.url,'http://localhost');
   const file=resolve(dist,decodeURIComponent(url.pathname).slice(1)||'index.html');
