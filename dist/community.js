@@ -98,8 +98,13 @@ async function loadPosts(reset=true){
     $('cmOlderPosts').hidden=data.length<=LIMIT;
     if(!list.children.length)list.append(node('p','cm-empty','아직 글이 없어요. 첫 이야기를 남겨주세요.'));
   }catch(err){
-    if(reset)list.replaceChildren(node('p','cm-empty',err.message));
-    else list.append(node('p','cm-feedback',err.message));
+    if(current!==board)return;
+    if(reset){
+      list.replaceChildren();
+      // Guides are local content, so a temporary Data API outage must not hide them.
+      if(starterContent[current])showStarterContent(list,current);
+      list.append(node('p','cm-feedback','게시글을 불러오지 못했습니다: '+err.message));
+    }else list.append(node('p','cm-feedback',err.message));
     $('cmOlderPosts').hidden=true;
   }finally{
     loading=false;$('cmOlderPosts').disabled=false;
