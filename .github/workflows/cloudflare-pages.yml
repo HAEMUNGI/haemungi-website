@@ -67,6 +67,11 @@ jobs:
           node verify-temple.mjs
           node verify-christmas.mjs
 
+      - name: Browser regression for community posts and mobile layout
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          node verify-community-browser.mjs
+
       # Cache only derivatives keyed by all eight immutable WebP masters and the renderer.
       # Original artworks and the on-site warm colour treatment remain unchanged.
       - name: Reuse verified warm Christmas JPEG derivatives
